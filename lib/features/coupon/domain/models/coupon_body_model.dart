@@ -1,4 +1,4 @@
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 
 class CouponBodyModel {
   int? id;

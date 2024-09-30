@@ -1,32 +1,33 @@
 import 'dart:async';
-import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
-import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_button_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/language/controllers/localization_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/controllers/order_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_details_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/widgets/invoice_dialog_widget.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_button_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/language/controllers/localization_controller.dart';
+import 'package:surties_food_restaurant/features/order/controllers/order_controller.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_details_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
+import 'package:surties_food_restaurant/features/order/widgets/invoice_dialog_widget.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class InVoicePrintScreen extends StatefulWidget {
   final OrderModel? order;
   final List<OrderDetailsModel>? orderDetails;
-  const InVoicePrintScreen({super.key, required this.order, required this.orderDetails});
+  const InVoicePrintScreen(
+      {super.key, required this.order, required this.orderDetails});
 
   @override
   State<InVoicePrintScreen> createState() => _InVoicePrintScreenState();
 }
 
 class _InVoicePrintScreenState extends State<InVoicePrintScreen> {
-
   bool connected = false;
   List<BluetoothInfo>? availableBluetoothDevices;
   bool _isLoading = false;
@@ -41,28 +42,30 @@ class _InVoicePrintScreenState extends State<InVoicePrintScreen> {
       _isLoading = true;
     });
 
-    final List<BluetoothInfo> bluetoothDevices = await PrintBluetoothThermal.pairedBluetooths;
+    final List<BluetoothInfo> bluetoothDevices =
+        await PrintBluetoothThermal.pairedBluetooths;
     if (kDebugMode) {
       print("Bluetooth list: $bluetoothDevices");
     }
     connected = await PrintBluetoothThermal.connectionStatus;
 
-    if(!connected) {
+    if (!connected) {
       _warningMessage = null;
       Get.find<OrderController>().setBluetoothMacAddress('');
     } else {
-      _warningMessage = 'please_enable_your_location_and_bluetooth_in_your_system'.tr;
+      _warningMessage =
+          'please_enable_your_location_and_bluetooth_in_your_system'.tr;
     }
 
     setState(() {
       availableBluetoothDevices = bluetoothDevices;
       _isLoading = false;
     });
-
   }
 
   Future<void> setConnect(String mac) async {
-    final bool result = await PrintBluetoothThermal.connect(macPrinterAddress: mac);
+    final bool result =
+        await PrintBluetoothThermal.connect(macPrinterAddress: mac);
 
     if (result) {
       setState(() {
@@ -103,9 +106,11 @@ class _InVoicePrintScreenState extends State<InVoicePrintScreen> {
   Future<List<int>> testTicket(Uint8List screenshot) async {
     List<int> bytes = [];
     final img.Image? image = img.decodeImage(screenshot);
-    img.Image resized = img.copyResize(image!, width: _selectedSize == 80 ? 500 : 365);
+    img.Image resized =
+        img.copyResize(image!, width: _selectedSize == 80 ? 500 : 365);
     final profile = await CapabilityProfile.load();
-    final generator = Generator(_selectedSize == 80 ? PaperSize.mm80 : PaperSize.mm58, profile);
+    final generator = Generator(
+        _selectedSize == 80 ? PaperSize.mm80 : PaperSize.mm58, profile);
 
     // Using `ESC *`
     bytes += generator.image(resized);
@@ -117,132 +122,171 @@ class _InVoicePrintScreenState extends State<InVoicePrintScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
-
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeDefault),
+          padding: const EdgeInsets.symmetric(
+              horizontal: Dimensions.paddingSizeDefault,
+              vertical: Dimensions.paddingSizeDefault),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(children: [
-                Text('paired_bluetooth'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                Text('paired_bluetooth'.tr,
+                    style: robotoMedium.copyWith(
+                        fontSize: Dimensions.fontSizeLarge)),
                 const SizedBox(width: Dimensions.paddingSizeSmall),
-
-                SizedBox(height: 20, width: 20,
-                  child: _isLoading ?  CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                  ) : InkWell(
-                    onTap: () => getBluetooth(),
-                    child: Icon(Icons.refresh, color: Theme.of(context).primaryColor),
-                  ),
+                SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: _isLoading
+                      ? CircularProgressIndicator(
+                          color: Theme.of(context).primaryColor,
+                        )
+                      : InkWell(
+                          onTap: () => getBluetooth(),
+                          child: Icon(Icons.refresh,
+                              color: Theme.of(context).primaryColor),
+                        ),
                 ),
               ]),
-
-              SizedBox(width: 100, child: DropdownButton<int>(
-                hint: Text('select'.tr),
-                value: _selectedSize,
-                items: _paperSizeList.map((int? value) {
-                  return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text('$value''mm'));
-                }).toList(),
-                onChanged: (int? value) {
-                  setState(() {
-                    _selectedSize = value!;
-                  });
-                },
-                isExpanded: true, underline: const SizedBox(),
-              )),
-
+              SizedBox(
+                  width: 100,
+                  child: DropdownButton<int>(
+                    hint: Text('select'.tr),
+                    value: _selectedSize,
+                    items: _paperSizeList.map((int? value) {
+                      return DropdownMenuItem<int>(
+                          value: value, child: Text('$value' 'mm'));
+                    }).toList(),
+                    onChanged: (int? value) {
+                      setState(() {
+                        _selectedSize = value!;
+                      });
+                    },
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                  )),
             ],
           ),
         ),
-
         Expanded(
           child: SingleChildScrollView(
             child: Column(children: [
-              availableBluetoothDevices != null && (availableBluetoothDevices?.length ?? 0) > 0 ? ListView.builder(
-                itemCount: availableBluetoothDevices?.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return GetBuilder<OrderController>(
-                    builder: (orderController) {
-                      bool isConnected = connected &&  availableBluetoothDevices![index].macAdress == orderController.getBluetoothMacAddress();
+              availableBluetoothDevices != null &&
+                      (availableBluetoothDevices?.length ?? 0) > 0
+                  ? ListView.builder(
+                      itemCount: availableBluetoothDevices?.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return GetBuilder<OrderController>(
+                            builder: (orderController) {
+                          bool isConnected = connected &&
+                              availableBluetoothDevices![index].macAdress ==
+                                  orderController.getBluetoothMacAddress();
 
-                      return Stack(children: [
-
-                        ListTile(
-                          selected: isConnected,
-                          onTap: () {
-                            if(availableBluetoothDevices?[index].macAdress.isNotEmpty ?? false) {
-                              if(!connected) {
-                                orderController.setBluetoothMacAddress(availableBluetoothDevices?[index].macAdress);
-                              }
-                              setConnect(availableBluetoothDevices?[index].macAdress ?? '');
-                            }
-                          },
-                          title: Text(availableBluetoothDevices?[index].name ?? ''),
-                          subtitle: Text(
-                            isConnected ? 'connected'.tr : "click_to_connect".tr,
-                            style: robotoRegular.copyWith(color: isConnected ? null : Theme.of(context).primaryColor),
-                          ),
-                        ),
-
-                        if(availableBluetoothDevices?[index].macAdress == orderController.getBluetoothMacAddress())
-                          Positioned.fill(
-                            child: Align(alignment: Get.find<LocalizationController>().isLtr ? Alignment.centerRight : Alignment.centerLeft, child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Dimensions.paddingSizeExtraSmall,
-                                horizontal: Dimensions.paddingSizeLarge,
+                          return Stack(
+                            children: [
+                              ListTile(
+                                selected: isConnected,
+                                onTap: () {
+                                  if (availableBluetoothDevices?[index]
+                                          .macAdress
+                                          .isNotEmpty ??
+                                      false) {
+                                    if (!connected) {
+                                      orderController.setBluetoothMacAddress(
+                                          availableBluetoothDevices?[index]
+                                              .macAdress);
+                                    }
+                                    setConnect(availableBluetoothDevices?[index]
+                                            .macAdress ??
+                                        '');
+                                  }
+                                },
+                                title: Text(
+                                    availableBluetoothDevices?[index].name ??
+                                        ''),
+                                subtitle: Text(
+                                  isConnected
+                                      ? 'connected'.tr
+                                      : "click_to_connect".tr,
+                                  style: robotoRegular.copyWith(
+                                      color: isConnected
+                                          ? null
+                                          : Theme.of(context).primaryColor),
+                                ),
                               ),
-                              child: Icon(Icons.check_circle_outline_outlined, color: Theme.of(context).primaryColor,),
-                            )),
-                          ),
-                        ],
-                      );
-                    }
-                );
-              }) : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-                child: Text(
-                  _warningMessage?? '',
-                  style: robotoRegular.copyWith(color: Colors.redAccent),
-                ),
-              ),
-
+                              if (availableBluetoothDevices?[index].macAdress ==
+                                  orderController.getBluetoothMacAddress())
+                                Positioned.fill(
+                                  child: Align(
+                                      alignment:
+                                          Get.find<LocalizationController>()
+                                                  .isLtr
+                                              ? Alignment.centerRight
+                                              : Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical:
+                                              Dimensions.paddingSizeExtraSmall,
+                                          horizontal:
+                                              Dimensions.paddingSizeLarge,
+                                        ),
+                                        child: Icon(
+                                          Icons.check_circle_outline_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      )),
+                                ),
+                            ],
+                          );
+                        });
+                      })
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeSmall),
+                      child: Text(
+                        _warningMessage ?? '',
+                        style: robotoRegular.copyWith(color: Colors.redAccent),
+                      ),
+                    ),
               InvoiceDialogWidget(
-                order: widget.order, orderDetails: widget.orderDetails,
+                order: widget.order,
+                orderDetails: widget.orderDetails,
                 screenshotController: screenshotController,
               ),
             ]),
           ),
         ),
-
         CustomButtonWidget(
-          buttonText: _printLoading ? 'printing'.tr : 'print_invoice'.tr, height: 40,
-          margin: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
-          onPressed: _printLoading ? null : () {
-            setState(() {
-              _printLoading = true;
-            });
-            screenshotController.capture(delay: const Duration(milliseconds: 10)).then((Uint8List? capturedImage) {
-              //Capture Done
-              if (kDebugMode) {
-                print('its calling :  $capturedImage');
-              }
-              _printReceipt(capturedImage!);
-
-            }).catchError((onError) {
-              if (kDebugMode) {
-                print(onError);
-              }
-            });
-          },
+          buttonText: _printLoading ? 'printing'.tr : 'print_invoice'.tr,
+          height: 40,
+          margin: const EdgeInsets.symmetric(
+              horizontal: Dimensions.paddingSizeSmall,
+              vertical: Dimensions.paddingSizeExtraSmall),
+          onPressed: _printLoading
+              ? null
+              : () {
+                  setState(() {
+                    _printLoading = true;
+                  });
+                  screenshotController
+                      .capture(delay: const Duration(milliseconds: 10))
+                      .then((Uint8List? capturedImage) {
+                    //Capture Done
+                    if (kDebugMode) {
+                      print('its calling :  $capturedImage');
+                    }
+                    _printReceipt(capturedImage!);
+                  }).catchError((onError) {
+                    if (kDebugMode) {
+                      print(onError);
+                    }
+                  });
+                },
         ),
-
       ],
     );
   }

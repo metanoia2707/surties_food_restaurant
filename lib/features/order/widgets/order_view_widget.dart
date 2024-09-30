@@ -1,9 +1,9 @@
-import 'package:stackfood_multivendor_restaurant/common/widgets/order_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/controllers/order_controller.dart';
-import 'package:stackfood_multivendor_restaurant/helper/custom_print_helper.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/common/widgets/order_widget.dart';
+import 'package:surties_food_restaurant/features/order/controllers/order_controller.dart';
+import 'package:surties_food_restaurant/helper/custom_print_helper.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
 
 class OrderViewWidget extends StatefulWidget {
   const OrderViewWidget({super.key});
@@ -21,15 +21,18 @@ class _OrderViewWidgetState extends State<OrderViewWidget> {
 
     Get.find<OrderController>().setOffset(1);
     scrollController.addListener(() {
-      if (scrollController.position.pixels == scrollController.position.maxScrollExtent
-          && Get.find<OrderController>().historyOrderList != null
-          && !Get.find<OrderController>().paginate) {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          Get.find<OrderController>().historyOrderList != null &&
+          !Get.find<OrderController>().paginate) {
         int pageSize = (Get.find<OrderController>().pageSize! / 10).ceil();
         if (Get.find<OrderController>().offset < pageSize) {
-          Get.find<OrderController>().setOffset(Get.find<OrderController>().offset+1);
+          Get.find<OrderController>()
+              .setOffset(Get.find<OrderController>().offset + 1);
           customPrint('end of the page');
           Get.find<OrderController>().showBottomLoader();
-          Get.find<OrderController>().getPaginatedOrders(Get.find<OrderController>().offset, false);
+          Get.find<OrderController>()
+              .getPaginatedOrders(Get.find<OrderController>().offset, false);
         }
       }
     });
@@ -39,10 +42,10 @@ class _OrderViewWidgetState extends State<OrderViewWidget> {
   Widget build(BuildContext context) {
     return GetBuilder<OrderController>(builder: (orderController) {
       return Column(children: [
-
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () async => await orderController.getPaginatedOrders(1, true),
+            onRefresh: () async =>
+                await orderController.getPaginatedOrders(1, true),
             child: ListView.builder(
               controller: scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
@@ -50,19 +53,22 @@ class _OrderViewWidgetState extends State<OrderViewWidget> {
               itemBuilder: (context, index) {
                 return OrderWidget(
                   orderModel: orderController.historyOrderList![index],
-                  hasDivider: index != orderController.historyOrderList!.length-1, isRunning: false,
+                  hasDivider:
+                      index != orderController.historyOrderList!.length - 1,
+                  isRunning: false,
                   showStatus: orderController.historyIndex == 0,
                 );
               },
             ),
           ),
         ),
-
-        orderController.paginate ? const Center(child: Padding(
-          padding: EdgeInsets.all(Dimensions.paddingSizeSmall),
-          child: CircularProgressIndicator(),
-        )) : const SizedBox(),
-
+        orderController.paginate
+            ? const Center(
+                child: Padding(
+                padding: EdgeInsets.all(Dimensions.paddingSizeSmall),
+                child: CircularProgressIndicator(),
+              ))
+            : const SizedBox(),
       ]);
     });
   }

@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/models/place_details_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/models/prediction_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/models/zone_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/models/zone_response_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/repositories/location_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/services/location_service_interface.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:surties_food_restaurant/features/auth/domain/models/place_details_model.dart';
+import 'package:surties_food_restaurant/features/auth/domain/models/prediction_model.dart';
+import 'package:surties_food_restaurant/features/auth/domain/models/zone_model.dart';
+import 'package:surties_food_restaurant/features/auth/domain/models/zone_response_model.dart';
+import 'package:surties_food_restaurant/features/auth/domain/repositories/location_repository_interface.dart';
+import 'package:surties_food_restaurant/features/auth/domain/services/location_service_interface.dart';
 
 class LocationService implements LocationServiceInterface {
   final LocationRepositoryInterface locationRepositoryInterface;
@@ -51,9 +51,9 @@ class LocationService implements LocationServiceInterface {
   @override
   LatLng? setRestaurantLocation(ZoneResponseModel response, LatLng location) {
     LatLng? restaurantLocation;
-    if(response.isSuccess && response.zoneIds.isNotEmpty) {
+    if (response.isSuccess && response.zoneIds.isNotEmpty) {
       restaurantLocation = location;
-    }else {
+    } else {
       restaurantLocation = null;
     }
     return restaurantLocation;
@@ -62,20 +62,21 @@ class LocationService implements LocationServiceInterface {
   @override
   List<int>? setZoneIds(ZoneResponseModel response) {
     List<int>? zoneIds;
-    if(response.isSuccess && response.zoneIds.isNotEmpty) {
+    if (response.isSuccess && response.zoneIds.isNotEmpty) {
       zoneIds = response.zoneIds;
-    }else {
+    } else {
       zoneIds = null;
     }
     return zoneIds;
   }
 
   @override
-  int? setSelectedZoneIndex(ZoneResponseModel response, List<int>? zoneIds, int? selectedZoneIndex, List<ZoneModel>? zoneList) {
+  int? setSelectedZoneIndex(ZoneResponseModel response, List<int>? zoneIds,
+      int? selectedZoneIndex, List<ZoneModel>? zoneList) {
     int? zoneIndex = selectedZoneIndex;
-    if(response.isSuccess && response.zoneIds.isNotEmpty) {
-      for(int index=0; index<zoneList!.length; index++) {
-        if(zoneIds!.contains(zoneList[index].id)) {
+    if (response.isSuccess && response.zoneIds.isNotEmpty) {
+      for (int index = 0; index < zoneList!.length; index++) {
+        if (zoneIds!.contains(zoneList[index].id)) {
           zoneIndex = index;
           break;
         }
@@ -85,25 +86,29 @@ class LocationService implements LocationServiceInterface {
   }
 
   @override
-  Future<void> prepareZoomToFit(GoogleMapController googleMapController, LatLngBounds bounds, LatLng centerBounds, double padding) async {
+  Future<void> prepareZoomToFit(GoogleMapController googleMapController,
+      LatLngBounds bounds, LatLng centerBounds, double padding) async {
     bool keepZoomingOut = true;
     int count = 0;
 
-    while(keepZoomingOut) {
+    while (keepZoomingOut) {
       count++;
-      final LatLngBounds screenBounds = await googleMapController.getVisibleRegion();
-      if(_fits(bounds, screenBounds) || count == 200) {
+      final LatLngBounds screenBounds =
+          await googleMapController.getVisibleRegion();
+      if (_fits(bounds, screenBounds) || count == 200) {
         keepZoomingOut = false;
-        final double zoomLevel = await googleMapController.getZoomLevel() - padding;
-        googleMapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        final double zoomLevel =
+            await googleMapController.getZoomLevel() - padding;
+        googleMapController
+            .moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: centerBounds,
           zoom: zoomLevel,
         )));
         break;
-      }
-      else {
+      } else {
         final double zoomLevel = await googleMapController.getZoomLevel() - 0.1;
-        googleMapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        googleMapController
+            .moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: centerBounds,
           zoom: zoomLevel,
         )));
@@ -112,13 +117,20 @@ class LocationService implements LocationServiceInterface {
   }
 
   bool _fits(LatLngBounds fitBounds, LatLngBounds screenBounds) {
-    final bool northEastLatitudeCheck = screenBounds.northeast.latitude >= fitBounds.northeast.latitude;
-    final bool northEastLongitudeCheck = screenBounds.northeast.longitude >= fitBounds.northeast.longitude;
+    final bool northEastLatitudeCheck =
+        screenBounds.northeast.latitude >= fitBounds.northeast.latitude;
+    final bool northEastLongitudeCheck =
+        screenBounds.northeast.longitude >= fitBounds.northeast.longitude;
 
-    final bool southWestLatitudeCheck = screenBounds.southwest.latitude <= fitBounds.southwest.latitude;
-    final bool southWestLongitudeCheck = screenBounds.southwest.longitude <= fitBounds.southwest.longitude;
+    final bool southWestLatitudeCheck =
+        screenBounds.southwest.latitude <= fitBounds.southwest.latitude;
+    final bool southWestLongitudeCheck =
+        screenBounds.southwest.longitude <= fitBounds.southwest.longitude;
 
-    return northEastLatitudeCheck && northEastLongitudeCheck && southWestLatitudeCheck && southWestLongitudeCheck;
+    return northEastLatitudeCheck &&
+        northEastLongitudeCheck &&
+        southWestLatitudeCheck &&
+        southWestLongitudeCheck;
   }
 
   @override
@@ -136,7 +148,7 @@ class LocationService implements LocationServiceInterface {
       west = min(west, latLng.longitude);
       east = max(east, latLng.longitude);
     }
-    return LatLngBounds(southwest: LatLng(south, west), northeast: LatLng(north, east));
+    return LatLngBounds(
+        southwest: LatLng(south, west), northeast: LatLng(north, east));
   }
-
 }

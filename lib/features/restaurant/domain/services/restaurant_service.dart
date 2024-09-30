@@ -1,10 +1,10 @@
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/cuisine_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/review_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/repositories/restaurant_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/services/restaurant_service_interface.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/cuisine_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/review_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/repositories/restaurant_repository_interface.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/services/restaurant_service_interface.dart';
 
 class RestaurantService implements RestaurantServiceInterface {
   final RestaurantRepositoryInterface restaurantRepositoryInterface;
@@ -16,18 +16,35 @@ class RestaurantService implements RestaurantServiceInterface {
   }
 
   @override
-  Future<ProductModel?> getProductList(String offset, String type, int? categoryId) async {
-    return await restaurantRepositoryInterface.getProductList(offset, type, categoryId);
+  Future<ProductModel?> getProductList(
+      String offset, String type, int? categoryId) async {
+    return await restaurantRepositoryInterface.getProductList(
+        offset, type, categoryId);
   }
 
   @override
-  Future<bool> updateRestaurant(Restaurant restaurant, List<String> cuisines, XFile? logo, XFile? cover, String token, List<Translation> translation, String characteristics) async {
-    return await restaurantRepositoryInterface.updateRestaurant(restaurant, cuisines, logo, cover, token, translation, characteristics);
+  Future<bool> updateRestaurant(
+      Restaurant restaurant,
+      List<String> cuisines,
+      XFile? logo,
+      XFile? cover,
+      String token,
+      List<Translation> translation,
+      String characteristics) async {
+    return await restaurantRepositoryInterface.updateRestaurant(
+        restaurant, cuisines, logo, cover, token, translation, characteristics);
   }
 
   @override
-  Future<bool> addProduct(Product product, XFile? image, bool isAdd, String tags, List<int> deletedVariationIds, List<int> deletedVariationOptionIds) async {
-    return await restaurantRepositoryInterface.addProduct(product, image, isAdd, tags, deletedVariationIds, deletedVariationOptionIds);
+  Future<bool> addProduct(
+      Product product,
+      XFile? image,
+      bool isAdd,
+      String tags,
+      List<int> deletedVariationIds,
+      List<int> deletedVariationOptionIds) async {
+    return await restaurantRepositoryInterface.addProduct(product, image, isAdd,
+        tags, deletedVariationIds, deletedVariationOptionIds);
   }
 
   @override
@@ -36,8 +53,10 @@ class RestaurantService implements RestaurantServiceInterface {
   }
 
   @override
-  Future<List<ReviewModel>?> getRestaurantReviewList(int? restaurantID, String? searchText) async {
-    return await restaurantRepositoryInterface.getRestaurantReviewList(restaurantID, searchText);
+  Future<List<ReviewModel>?> getRestaurantReviewList(
+      int? restaurantID, String? searchText) async {
+    return await restaurantRepositoryInterface.getRestaurantReviewList(
+        restaurantID, searchText);
   }
 
   @override
@@ -47,12 +66,15 @@ class RestaurantService implements RestaurantServiceInterface {
 
   @override
   Future<bool> updateProductStatus(int? productID, int status) async {
-    return await restaurantRepositoryInterface.updateProductStatus(productID, status);
+    return await restaurantRepositoryInterface.updateProductStatus(
+        productID, status);
   }
 
   @override
-  Future<bool> updateRecommendedProductStatus(int? productID, int status) async {
-    return await restaurantRepositoryInterface.updateRecommendedProductStatus(productID, status);
+  Future<bool> updateRecommendedProductStatus(
+      int? productID, int status) async {
+    return await restaurantRepositoryInterface.updateRecommendedProductStatus(
+        productID, status);
   }
 
   @override
@@ -72,7 +94,8 @@ class RestaurantService implements RestaurantServiceInterface {
 
   @override
   Future<bool> updateAnnouncement(int status, String announcement) async {
-    return await restaurantRepositoryInterface.updateAnnouncement(status, announcement);
+    return await restaurantRepositoryInterface.updateAnnouncement(
+        status, announcement);
   }
 
   @override
@@ -82,12 +105,14 @@ class RestaurantService implements RestaurantServiceInterface {
 
   @override
   Future<List<String?>?> getCharacteristicSuggestionList() async {
-    return await restaurantRepositoryInterface.getCharacteristicSuggestionList();
+    return await restaurantRepositoryInterface
+        .getCharacteristicSuggestionList();
   }
 
   @override
-  Future<bool> updateProductStock(String foodId, String itemStock, Product product, List<List<String>> variationStock) async {
-    return await restaurantRepositoryInterface.updateProductStock(foodId, itemStock, product, variationStock);
+  Future<bool> updateProductStock(String foodId, String itemStock,
+      Product product, List<List<String>> variationStock) async {
+    return await restaurantRepositoryInterface.updateProductStock(
+        foodId, itemStock, product, variationStock);
   }
-
 }

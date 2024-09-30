@@ -1,4 +1,4 @@
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 
 class ProfileModel {
   int? id;
@@ -112,7 +112,9 @@ class ProfileModel {
     if (json['subscription'] != null) {
       subscription = Subscription.fromJson(json['subscription']);
     }
-    subscriptionOtherData = json['subscription_other_data'] != null ? SubscriptionOtherData.fromJson(json['subscription_other_data']) : null;
+    subscriptionOtherData = json['subscription_other_data'] != null
+        ? SubscriptionOtherData.fromJson(json['subscription_other_data'])
+        : null;
     if (json['translations'] != null) {
       translations = [];
       json['translations'].forEach((v) {
@@ -321,7 +323,8 @@ class Restaurant {
     restaurantModel = json['restaurant_model'];
     veg = json['veg'];
     nonVeg = json['non_veg'];
-    discount = json['discount'] != null ? Discount.fromJson(json['discount']) : null;
+    discount =
+        json['discount'] != null ? Discount.fromJson(json['discount']) : null;
     if (json['schedules'] != null) {
       schedules = <Schedules>[];
       json['schedules'].forEach((v) {
@@ -348,7 +351,8 @@ class Restaurant {
     announcementMessage = json['announcement_message'];
     isAnnouncementActive = json['announcement'];
     instanceOrder = json['instant_order'];
-    extraPackagingStatus = json['extra_packaging_status'].runtimeType == bool ? 1 : 0;
+    extraPackagingStatus =
+        json['extra_packaging_status'].runtimeType == bool ? 1 : 0;
     extraPackagingAmount = json['extra_packaging_amount']?.toDouble();
     isHalalActive = json['halal_tag_status'] ?? false;
     characteristics = json['characteristics'].cast<String>();
@@ -635,7 +639,8 @@ class Subscription {
     totalPackageRenewed = json['total_package_renewed'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    package = json['package'] != null ? Package.fromJson(json['package']) : null;
+    package =
+        json['package'] != null ? Package.fromJson(json['package']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -684,7 +689,8 @@ class Package {
   Package({
     this.id,
     this.packageName,
-    this.price, this.validity,
+    this.price,
+    this.validity,
     this.maxOrder,
     this.maxProduct,
     this.pos,
@@ -700,46 +706,46 @@ class Package {
     this.updatedAt,
   });
 
-Package.fromJson(Map<String, dynamic> json) {
-  id = json['id'];
-  packageName = json['package_name'];
-  price = json['price']?.toDouble();
-  validity = json['validity'];
-  maxOrder = json['max_order'];
-  maxProduct = json['max_product'];
-  pos = json['pos'];
-  mobileApp = json['mobile_app'];
-  chat = json['chat'];
-  review = json['review'];
-  selfDelivery = json['self_delivery'];
-  status = json['status'];
-  def = json['default'];
-  colour = json['colour'];
-  text = json['text'];
-  createdAt = json['created_at'];
-  updatedAt = json['updated_at'];
-}
+  Package.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    packageName = json['package_name'];
+    price = json['price']?.toDouble();
+    validity = json['validity'];
+    maxOrder = json['max_order'];
+    maxProduct = json['max_product'];
+    pos = json['pos'];
+    mobileApp = json['mobile_app'];
+    chat = json['chat'];
+    review = json['review'];
+    selfDelivery = json['self_delivery'];
+    status = json['status'];
+    def = json['default'];
+    colour = json['colour'];
+    text = json['text'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
 
-Map<String, dynamic> toJson() {
-  final Map<String, dynamic> data = <String, dynamic>{};
-  data['id'] = id;
-  data['package_name'] = packageName;
-  data['price'] = price;
-  data['validity'] = validity;
-  data['max_order'] = maxOrder;
-  data['max_product'] = maxProduct;
-  data['pos'] = pos;
-  data['mobile_app'] = mobileApp;
-  data['chat'] = chat;
-  data['review'] = review;
-  data['self_delivery'] = selfDelivery;
-  data['status'] = status;
-  data['default'] = def;
-  data['colour'] = colour;
-  data['text'] = text;
-  data['created_at'] = createdAt;
-  data['updated_at'] = updatedAt;
-  return data;
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['package_name'] = packageName;
+    data['price'] = price;
+    data['validity'] = validity;
+    data['max_order'] = maxOrder;
+    data['max_product'] = maxProduct;
+    data['pos'] = pos;
+    data['mobile_app'] = mobileApp;
+    data['chat'] = chat;
+    data['review'] = review;
+    data['self_delivery'] = selfDelivery;
+    data['status'] = status;
+    data['default'] = def;
+    data['colour'] = colour;
+    data['text'] = text;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
   }
 }
 
@@ -755,10 +761,10 @@ class SubscriptionOtherData {
   }
 
   Map<String, dynamic> toJson() {
-  final Map<String, dynamic> data = <String, dynamic>{};
-  data['total_bill'] = totalBill;
-  data['max_product_uploads'] = maxProductUpload;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['total_bill'] = totalBill;
+    data['max_product_uploads'] = maxProductUpload;
 
-  return data;
+    return data;
   }
 }

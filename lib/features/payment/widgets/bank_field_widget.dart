@@ -1,6 +1,6 @@
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class BankFieldWidget extends StatelessWidget {
   final String hintText;
@@ -9,16 +9,23 @@ class BankFieldWidget extends StatelessWidget {
   final FocusNode? nextFocus;
   final TextInputAction inputAction;
   final TextCapitalization capitalization;
-  const BankFieldWidget({super.key, this.hintText = '', this.controller, this.focusNode, this.nextFocus, this.inputAction = TextInputAction.next,
-    this.capitalization = TextCapitalization.none});
+  const BankFieldWidget(
+      {super.key,
+      this.hintText = '',
+      this.controller,
+      this.focusNode,
+      this.nextFocus,
+      this.inputAction = TextInputAction.next,
+      this.capitalization = TextCapitalization.none});
 
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-      Text(hintText, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
+      Text(hintText,
+          style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeSmall,
+              color: Theme.of(context).disabledColor)),
       const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-
       TextField(
         controller: controller,
         focusNode: focusNode,
@@ -32,12 +39,13 @@ class BankFieldWidget extends StatelessWidget {
           isDense: true,
           filled: true,
           fillColor: Theme.of(context).disabledColor.withOpacity(0.2),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall), borderSide: BorderSide.none),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+              borderSide: BorderSide.none),
           hintStyle: robotoRegular.copyWith(color: Theme.of(context).hintColor),
         ),
       ),
       const SizedBox(height: Dimensions.paddingSizeDefault),
-
     ]);
   }
 }

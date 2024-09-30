@@ -1,15 +1,15 @@
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_button_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/controllers/payment_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/splash/controllers/splash_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/business/widgets/payment_method_bottom_sheet_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/widgets/withdraw_request_bottom_sheet_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/controllers/profile_controller.dart';
-import 'package:stackfood_multivendor_restaurant/helper/price_converter_helper.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/images.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_button_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/payment/controllers/payment_controller.dart';
+import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
+import 'package:surties_food_restaurant/features/business/widgets/payment_method_bottom_sheet_widget.dart';
+import 'package:surties_food_restaurant/features/payment/widgets/withdraw_request_bottom_sheet_widget.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/helper/price_converter_helper.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/images.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

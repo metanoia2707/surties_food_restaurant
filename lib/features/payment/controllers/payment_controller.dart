@@ -1,14 +1,14 @@
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/services/payment_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/bank_info_body_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/wallet_payment_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/withdraw_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/bank_info_body_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/wallet_payment_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/withdraw_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/services/payment_service_interface.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class PaymentController extends GetxController implements GetxService {
   final PaymentServiceInterface paymentServiceInterface;
@@ -56,17 +56,19 @@ class PaymentController extends GetxController implements GetxService {
   bool _adjustmentLoading = false;
   bool get adjustmentLoading => _adjustmentLoading;
 
-  void setMethod({bool willUpdate = true}){
+  void setMethod({bool willUpdate = true}) {
     _methodList = [];
     _textControllerList = [];
     _methodFields = [];
     _focusList = [];
-    if(widthDrawMethods != null && widthDrawMethods!.isNotEmpty){
-      for(int i=0; i< widthDrawMethods!.length; i++){
-        _methodList.add(DropdownMenuItem<int>(value: i, child: SizedBox(
-          width: Get.context!.width-100,
-          child: Text(widthDrawMethods![i].methodName!, style: robotoBold),
-        )));
+    if (widthDrawMethods != null && widthDrawMethods!.isNotEmpty) {
+      for (int i = 0; i < widthDrawMethods!.length; i++) {
+        _methodList.add(DropdownMenuItem<int>(
+            value: i,
+            child: SizedBox(
+              width: Get.context!.width - 100,
+              child: Text(widthDrawMethods![i].methodName!, style: robotoBold),
+            )));
       }
       _textControllerList = [];
       _methodFields = [];
@@ -76,7 +78,7 @@ class PaymentController extends GetxController implements GetxService {
         _focusList.add(FocusNode());
       }
     }
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
@@ -85,7 +87,7 @@ class PaymentController extends GetxController implements GetxService {
     _isLoading = true;
     update();
     bool isSuccess = await paymentServiceInterface.updateBankInfo(bankInfoBody);
-    if(isSuccess) {
+    if (isSuccess) {
       Get.find<ProfileController>().getProfile();
       Get.back();
       showCustomSnackBar('bank_info_updated'.tr, isError: false);
@@ -95,8 +97,9 @@ class PaymentController extends GetxController implements GetxService {
   }
 
   Future<void> getWithdrawList() async {
-    List<WithdrawModel>? withdrawList = await paymentServiceInterface.getWithdrawList();
-    if(withdrawList != null) {
+    List<WithdrawModel>? withdrawList =
+        await paymentServiceInterface.getWithdrawList();
+    if (withdrawList != null) {
       _withdrawList = [];
       _allWithdrawList = [];
 
@@ -107,8 +110,9 @@ class PaymentController extends GetxController implements GetxService {
   }
 
   Future<List<WidthDrawMethodModel>?> getWithdrawMethodList() async {
-    List<WidthDrawMethodModel>? widthDrawMethodList = await paymentServiceInterface.getWithdrawMethodList();
-    if(widthDrawMethodList != null) {
+    List<WidthDrawMethodModel>? widthDrawMethodList =
+        await paymentServiceInterface.getWithdrawMethodList();
+    if (widthDrawMethodList != null) {
       _widthDrawMethods = [];
       _widthDrawMethods!.addAll(widthDrawMethodList);
     }
@@ -123,11 +127,11 @@ class PaymentController extends GetxController implements GetxService {
   void filterWithdrawList(int index) {
     _filterIndex = index;
     _withdrawList = [];
-    if(index == 0) {
+    if (index == 0) {
       _withdrawList!.addAll(_allWithdrawList);
-    }else {
+    } else {
       for (var withdraw in _allWithdrawList) {
-        if(withdraw.status == _statusList[index]) {
+        if (withdraw.status == _statusList[index]) {
           _withdrawList!.add(withdraw);
         }
       }
@@ -139,7 +143,7 @@ class PaymentController extends GetxController implements GetxService {
     _isLoading = true;
     update();
     bool isSuccess = await paymentServiceInterface.requestWithdraw(data);
-    if(isSuccess) {
+    if (isSuccess) {
       Get.back();
       getWithdrawList();
       Get.find<ProfileController>().getProfile();
@@ -149,10 +153,12 @@ class PaymentController extends GetxController implements GetxService {
     update();
   }
 
-  Future<ResponseModel> makeCollectCashPayment(double amount, String paymentGatewayName) async {
+  Future<ResponseModel> makeCollectCashPayment(
+      double amount, String paymentGatewayName) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await paymentServiceInterface.makeCollectCashPayment(amount, paymentGatewayName);
+    ResponseModel responseModel = await paymentServiceInterface
+        .makeCollectCashPayment(amount, paymentGatewayName);
     _isLoading = false;
     update();
     return responseModel;
@@ -162,11 +168,11 @@ class PaymentController extends GetxController implements GetxService {
     _adjustmentLoading = true;
     update();
     bool isSuccess = await paymentServiceInterface.makeWalletAdjustment();
-    if(isSuccess) {
+    if (isSuccess) {
       Get.back();
       Get.find<ProfileController>().getProfile();
       showCustomSnackBar('wallet_adjustment_successfully'.tr, isError: false);
-    }else {
+    } else {
       Get.back();
     }
     _adjustmentLoading = false;
@@ -180,12 +186,12 @@ class PaymentController extends GetxController implements GetxService {
 
   Future<void> getWalletPaymentList() async {
     _transactions = null;
-    List<Transactions>? transactions = await paymentServiceInterface.getWalletPaymentList();
-    if(transactions != null) {
+    List<Transactions>? transactions =
+        await paymentServiceInterface.getWalletPaymentList();
+    if (transactions != null) {
       _transactions = [];
       _transactions!.addAll(transactions);
     }
     update();
   }
-
 }

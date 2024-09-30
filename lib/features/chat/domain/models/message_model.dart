@@ -1,4 +1,4 @@
-import 'package:stackfood_multivendor_restaurant/features/chat/domain/models/conversation_model.dart';
+import 'package:surties_food_restaurant/features/chat/domain/models/conversation_model.dart';
 
 class MessageModel {
   int? totalSize;
@@ -8,14 +8,22 @@ class MessageModel {
   Conversation? conversation;
   List<Message>? messages;
 
-  MessageModel({this.totalSize, this.limit, this.offset, this.messages, this.status, this.conversation});
+  MessageModel(
+      {this.totalSize,
+      this.limit,
+      this.offset,
+      this.messages,
+      this.status,
+      this.conversation});
 
   MessageModel.fromJson(Map<String, dynamic> json) {
     totalSize = json['total_size'];
     limit = json['limit'];
     offset = json['offset'];
     status = json['status'];
-    conversation = json['conversation'] != null ? Conversation.fromJson(json['conversation']) : null;
+    conversation = json['conversation'] != null
+        ? Conversation.fromJson(json['conversation'])
+        : null;
     if (json['messages'] != null) {
       messages = <Message>[];
       json['messages'].forEach((v) {

@@ -1,20 +1,22 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/repositories/forgot_password_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/features/auth/domain/repositories/forgot_password_repository_interface.dart';
+import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
-  ForgotPasswordRepository({required this.apiClient, required this.sharedPreferences});
+  ForgotPasswordRepository(
+      {required this.apiClient, required this.sharedPreferences});
 
   @override
   Future<ResponseModel> forgotPassword(String? email) async {
     ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.forgetPasswordUri, {"email": email});
+    Response response = await apiClient
+        .postData(AppConstants.forgetPasswordUri, {"email": email});
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
@@ -26,7 +28,8 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
   @override
   Future<ResponseModel> verifyToken(String? email, String token) async {
     ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.verifyTokenUri, {"email": email, "reset_token": token});
+    Response response = await apiClient.postData(
+        AppConstants.verifyTokenUri, {"email": email, "reset_token": token});
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
@@ -36,9 +39,17 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
   }
 
   @override
-  Future<bool> changePassword(ProfileModel userInfoModel, String password) async {
-    Response response = await apiClient.postData(AppConstants.updateProfileUri, {'_method': 'put', 'f_name': userInfoModel.fName,
-      'l_name': userInfoModel.lName, 'phone': userInfoModel.phone, 'password': password, 'token': _getUserToken()});
+  Future<bool> changePassword(
+      ProfileModel userInfoModel, String password) async {
+    Response response =
+        await apiClient.postData(AppConstants.updateProfileUri, {
+      '_method': 'put',
+      'f_name': userInfoModel.fName,
+      'l_name': userInfoModel.lName,
+      'phone': userInfoModel.phone,
+      'password': password,
+      'token': _getUserToken()
+    });
     return (response.statusCode == 200);
   }
 
@@ -47,10 +58,17 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
   }
 
   @override
-  Future<ResponseModel> resetPassword(String? resetToken, String? email, String password, String confirmPassword) async {
+  Future<ResponseModel> resetPassword(String? resetToken, String? email,
+      String password, String confirmPassword) async {
     ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.resetPasswordUri,
-      {"_method": "put", "email": email, "reset_token": resetToken, "password": password, "confirm_password": confirmPassword});
+    Response response =
+        await apiClient.postData(AppConstants.resetPasswordUri, {
+      "_method": "put",
+      "email": email,
+      "reset_token": resetToken,
+      "password": password,
+      "confirm_password": confirmPassword
+    });
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {
@@ -88,5 +106,4 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     // TODO: implement update
     throw UnimplementedError();
   }
-
 }

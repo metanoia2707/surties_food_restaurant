@@ -1,8 +1,8 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/repositories/profile_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/services/profile_service_interface.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
+import 'package:surties_food_restaurant/features/profile/domain/repositories/profile_repository_interface.dart';
+import 'package:surties_food_restaurant/features/profile/domain/services/profile_service_interface.dart';
 
 class ProfileService implements ProfileServiceInterface {
   final ProfileRepositoryInterface profileRepositoryInterface;
@@ -34,8 +34,8 @@ class ProfileService implements ProfileServiceInterface {
   }
 
   @override
-  Future<bool> updateProfile(ProfileModel userInfoModel, XFile? data, String token) {
+  Future<bool> updateProfile(
+      ProfileModel userInfoModel, XFile? data, String token) {
     return profileRepositoryInterface.updateProfile(userInfoModel, data, token);
   }
-
 }

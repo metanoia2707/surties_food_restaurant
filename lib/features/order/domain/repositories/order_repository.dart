@@ -1,12 +1,12 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_cancellation_body_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/update_status_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/repositories/order_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_cancellation_body_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/update_status_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/repositories/order_repository_interface.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class OrderRepository implements OrderRepositoryInterface {
   final ApiClient apiClient;
@@ -36,9 +36,11 @@ class OrderRepository implements OrderRepositoryInterface {
   }
 
   @override
-  Future<PaginatedOrderModel?> getPaginatedOrderList(int offset, String status) async {
+  Future<PaginatedOrderModel?> getPaginatedOrderList(
+      int offset, String status) async {
     PaginatedOrderModel? historyOrderModel;
-    Response response = await apiClient.getData('${AppConstants.completedOrdersUri}?status=$status&offset=$offset&limit=10');
+    Response response = await apiClient.getData(
+        '${AppConstants.completedOrdersUri}?status=$status&offset=$offset&limit=10');
     if (response.statusCode == 200) {
       historyOrderModel = PaginatedOrderModel.fromJson(response.body);
     }
@@ -46,9 +48,15 @@ class OrderRepository implements OrderRepositoryInterface {
   }
 
   @override
-  Future<ResponseModel> updateOrderStatus(UpdateStatusModel updateStatusBody, List<MultipartBody> proofAttachment) async {
+  Future<ResponseModel> updateOrderStatus(UpdateStatusModel updateStatusBody,
+      List<MultipartBody> proofAttachment) async {
     ResponseModel responseModel;
-    Response response = await apiClient.postMultipartData(AppConstants.updateOrderStatusUri, updateStatusBody.toJson(), proofAttachment, [], handleError: false);
+    Response response = await apiClient.postMultipartData(
+        AppConstants.updateOrderStatusUri,
+        updateStatusBody.toJson(),
+        proofAttachment,
+        [],
+        handleError: false);
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body['message']);
     } else {
@@ -60,8 +68,9 @@ class OrderRepository implements OrderRepositoryInterface {
   @override
   Future<OrderModel?> getOrderWithId(int? orderId) async {
     OrderModel? orderModel;
-    Response response = await apiClient.getData('${AppConstants.currentOrderDetailsUri}$orderId');
-    if(response.statusCode == 200) {
+    Response response = await apiClient
+        .getData('${AppConstants.currentOrderDetailsUri}$orderId');
+    if (response.statusCode == 200) {
       orderModel = OrderModel.fromJson(response.body);
     }
     return orderModel;
@@ -70,9 +79,11 @@ class OrderRepository implements OrderRepositoryInterface {
   @override
   Future<List<CancellationData>?> getCancelReasons() async {
     List<CancellationData>? orderCancelReasons;
-    Response response = await apiClient.getData('${AppConstants.orderCancellationUri}?offset=1&limit=30&type=restaurant');
+    Response response = await apiClient.getData(
+        '${AppConstants.orderCancellationUri}?offset=1&limit=30&type=restaurant');
     if (response.statusCode == 200) {
-      OrderCancellationBodyModel orderCancellationBody = OrderCancellationBodyModel.fromJson(response.body);
+      OrderCancellationBodyModel orderCancellationBody =
+          OrderCancellationBodyModel.fromJson(response.body);
       orderCancelReasons = [];
       for (var element in orderCancellationBody.reasons!) {
         orderCancelReasons.add(element);
@@ -83,7 +94,9 @@ class OrderRepository implements OrderRepositoryInterface {
 
   @override
   Future<bool> sendDeliveredNotification(int? orderID) async {
-    Response response = await apiClient.postData(AppConstants.deliveredOrderNotificationUri, {"_method": "put", 'token': _getUserToken(), 'order_id': orderID});
+    Response response = await apiClient.postData(
+        AppConstants.deliveredOrderNotificationUri,
+        {"_method": "put", 'token': _getUserToken(), 'order_id': orderID});
     return (response.statusCode == 200);
   }
 
@@ -113,9 +126,11 @@ class OrderRepository implements OrderRepositoryInterface {
 
   @override
   Future<void> setBluetoothAddress(String? address) async {
-    await sharedPreferences.setString(AppConstants.bluetoothMacAddress, address ?? '');
+    await sharedPreferences.setString(
+        AppConstants.bluetoothMacAddress, address ?? '');
   }
+
   @override
-  String? getBluetoothAddress() => sharedPreferences.getString(AppConstants.bluetoothMacAddress);
-  
+  String? getBluetoothAddress() =>
+      sharedPreferences.getString(AppConstants.bluetoothMacAddress);
 }

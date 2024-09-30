@@ -1,13 +1,12 @@
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/models/delivery_man_list_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/models/delivery_man_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/services/deliveryman_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/controllers/order_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/review_model.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/models/delivery_man_list_model.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/models/delivery_man_model.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/services/deliveryman_service_interface.dart';
+import 'package:surties_food_restaurant/features/order/controllers/order_controller.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/review_model.dart';
 
 class DeliveryManController extends GetxController implements GetxService {
   final DeliverymanServiceInterface deliverymanServiceInterface;
@@ -38,30 +37,39 @@ class DeliveryManController extends GetxController implements GetxService {
   bool get isSuspended => _isSuspended;
 
   List<DeliveryManListModel> _selectableDeliveryman = [];
-  List<DeliveryManListModel> get selectableDeliveryman => _selectableDeliveryman;
+  List<DeliveryManListModel> get selectableDeliveryman =>
+      _selectableDeliveryman;
 
   List<DeliveryManListModel>? _availableDeliveryManList;
-  List<DeliveryManListModel>? get availableDeliveryManList => _availableDeliveryManList;
+  List<DeliveryManListModel>? get availableDeliveryManList =>
+      _availableDeliveryManList;
 
   DeliveryManListModel? _selectedDeliveryman;
   DeliveryManListModel? get selectedDeliveryMan => _selectedDeliveryman;
 
   Future<void> getDeliveryManList() async {
-    List<DeliveryManModel>? deliveryManList = await deliverymanServiceInterface.getDeliveryManList();
-    if(deliveryManList != null) {
+    List<DeliveryManModel>? deliveryManList =
+        await deliverymanServiceInterface.getDeliveryManList();
+    if (deliveryManList != null) {
       _deliveryManList = [];
       _deliveryManList!.addAll(deliveryManList);
     }
     update();
   }
 
-  Future<void> addDeliveryMan(DeliveryManModel deliveryMan, String pass, String token, bool isAdd) async {
+  Future<void> addDeliveryMan(DeliveryManModel deliveryMan, String pass,
+      String token, bool isAdd) async {
     _isLoading = true;
     update();
-    bool isSuccess = await deliverymanServiceInterface.addDeliveryMan(deliveryMan, pass, _pickedImage, _pickedIdentities, token, isAdd);
-    if(isSuccess) {
+    bool isSuccess = await deliverymanServiceInterface.addDeliveryMan(
+        deliveryMan, pass, _pickedImage, _pickedIdentities, token, isAdd);
+    if (isSuccess) {
       Get.back();
-      showCustomSnackBar(isAdd ? 'delivery_man_added_successfully'.tr : 'delivery_man_updated_successfully'.tr, isError: false);
+      showCustomSnackBar(
+          isAdd
+              ? 'delivery_man_added_successfully'.tr
+              : 'delivery_man_updated_successfully'.tr,
+          isError: false);
       getDeliveryManList();
     }
     _isLoading = false;
@@ -71,10 +79,12 @@ class DeliveryManController extends GetxController implements GetxService {
   Future<void> deleteDeliveryMan(int deliveryManID) async {
     _isLoading = true;
     update();
-    bool isSuccess = await deliverymanServiceInterface.deleteDeliveryMan(deliveryManID);
-    if(isSuccess) {
+    bool isSuccess =
+        await deliverymanServiceInterface.deleteDeliveryMan(deliveryManID);
+    if (isSuccess) {
       Get.back();
-      showCustomSnackBar('delivery_man_deleted_successfully'.tr, isError: false);
+      showCustomSnackBar('delivery_man_deleted_successfully'.tr,
+          isError: false);
       getDeliveryManList();
     }
     _isLoading = false;
@@ -88,11 +98,16 @@ class DeliveryManController extends GetxController implements GetxService {
   void toggleSuspensionDeliveryMan(int? deliveryManID) async {
     _isLoading = true;
     update();
-    bool isSuccess = await deliverymanServiceInterface.updateDeliveryManStatus(deliveryManID, _isSuspended ? 1 : 0);
-    if(isSuccess) {
+    bool isSuccess = await deliverymanServiceInterface.updateDeliveryManStatus(
+        deliveryManID, _isSuspended ? 1 : 0);
+    if (isSuccess) {
       Get.back();
       getDeliveryManList();
-      showCustomSnackBar(_isSuspended ? 'delivery_man_unsuspended_successfully'.tr : 'delivery_man_suspended_successfully'.tr, isError: false);
+      showCustomSnackBar(
+          _isSuspended
+              ? 'delivery_man_unsuspended_successfully'.tr
+              : 'delivery_man_suspended_successfully'.tr,
+          isError: false);
       _isSuspended = !_isSuspended;
     }
     _isLoading = false;
@@ -101,8 +116,9 @@ class DeliveryManController extends GetxController implements GetxService {
 
   Future<void> getDeliveryManReviewList(int? deliveryManID) async {
     _dmReviewList = null;
-    List<ReviewModel>? dmReviewList = await deliverymanServiceInterface.getDeliveryManReviews(deliveryManID);
-    if(dmReviewList != null) {
+    List<ReviewModel>? dmReviewList =
+        await deliverymanServiceInterface.getDeliveryManReviews(deliveryManID);
+    if (dmReviewList != null) {
       _dmReviewList = [];
       _dmReviewList!.addAll(dmReviewList);
     }
@@ -111,28 +127,30 @@ class DeliveryManController extends GetxController implements GetxService {
 
   void setIdentityTypeIndex(String? identityType, bool notify) {
     int index0 = 0;
-    for(int index=0; index<_identityTypeList.length; index++) {
-      if(_identityTypeList[index] == identityType) {
+    for (int index = 0; index < _identityTypeList.length; index++) {
+      if (_identityTypeList[index] == identityType) {
         index0 = index;
         break;
       }
     }
     _identityTypeIndex = index0;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
 
   void pickImage(bool isLogo, bool isRemove) async {
-    if(isRemove) {
+    if (isRemove) {
       _pickedImage = null;
       _pickedIdentities = [];
-    }else {
+    } else {
       if (isLogo) {
-        _pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+        _pickedImage =
+            await ImagePicker().pickImage(source: ImageSource.gallery);
       } else {
-        XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-        if(xFile != null) {
+        XFile? xFile =
+            await ImagePicker().pickImage(source: ImageSource.gallery);
+        if (xFile != null) {
           _pickedIdentities.add(xFile);
         }
       }
@@ -147,9 +165,9 @@ class DeliveryManController extends GetxController implements GetxService {
 
   Future<List<DeliveryManListModel>> searchDeliveryMan(String text) async {
     _selectableDeliveryman = [];
-    if(text.isNotEmpty) {
+    if (text.isNotEmpty) {
       for (var deliveryMan in _availableDeliveryManList!) {
-        if(deliveryMan.name!.startsWith(text)){
+        if (deliveryMan.name!.startsWith(text)) {
           _selectableDeliveryman.add(deliveryMan);
         }
       }
@@ -157,17 +175,19 @@ class DeliveryManController extends GetxController implements GetxService {
     return _selectableDeliveryman;
   }
 
-  void selectDeliveryManInMap(DeliveryManListModel? deliveryMan, {bool canUpdate = true}) {
+  void selectDeliveryManInMap(DeliveryManListModel? deliveryMan,
+      {bool canUpdate = true}) {
     _selectedDeliveryman = deliveryMan;
-    if(canUpdate) {
+    if (canUpdate) {
       update();
     }
   }
 
   Future<void> getAvailableDeliveryManList() async {
     _availableDeliveryManList = null;
-    List<DeliveryManListModel>? availableDeliveryManList = await deliverymanServiceInterface.getAvailableDeliveryManList();
-    if(availableDeliveryManList != null) {
+    List<DeliveryManListModel>? availableDeliveryManList =
+        await deliverymanServiceInterface.getAvailableDeliveryManList();
+    if (availableDeliveryManList != null) {
       _availableDeliveryManList = [];
       _availableDeliveryManList!.addAll(availableDeliveryManList);
     }
@@ -177,18 +197,18 @@ class DeliveryManController extends GetxController implements GetxService {
   Future<bool> assignDeliveryMan(int? deliveryManId, int? orderId) async {
     _isLoading = true;
     update();
-    bool isSuccess = await deliverymanServiceInterface.assignDeliveryMan(deliveryManId, orderId);
+    bool isSuccess = await deliverymanServiceInterface.assignDeliveryMan(
+        deliveryManId, orderId);
     bool success;
-    if(isSuccess) {
+    if (isSuccess) {
       success = true;
       Get.find<OrderController>().setOrderDetails(OrderModel(id: orderId));
       Get.back();
-    }else {
+    } else {
       success = false;
     }
     _isLoading = false;
     update();
     return success;
   }
-
 }

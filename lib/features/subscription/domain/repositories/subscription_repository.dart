@@ -1,16 +1,17 @@
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/subscription/domain/repositories/subscription_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/features/subscription/domain/repositories/subscription_repository_interface.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class SubscriptionRepository implements SubscriptionRepositoryInterface {
   final ApiClient apiClient;
   SubscriptionRepository({required this.apiClient});
 
-
   @override
-  Future<Response> renewBusinessPlan(Map<String, String> body, Map<String, String>? headers) async {
-    return await apiClient.postData(AppConstants.renewBusinessPlanUri, body, headers: headers);
+  Future<Response> renewBusinessPlan(
+      Map<String, String> body, Map<String, String>? headers) async {
+    return await apiClient.postData(AppConstants.renewBusinessPlanUri, body,
+        headers: headers);
   }
 
   @override
@@ -42,5 +43,4 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface {
     // TODO: implement update
     throw UnimplementedError();
   }
-
 }

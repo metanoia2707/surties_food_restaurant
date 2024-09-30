@@ -1,6 +1,6 @@
-import 'package:stackfood_multivendor_restaurant/features/pos/domain/repositories/pos_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/pos/domain/services/pos_service_interface.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/pos/domain/repositories/pos_repository_interface.dart';
+import 'package:surties_food_restaurant/features/pos/domain/services/pos_service_interface.dart';
 
 class PosService implements PosServiceInterface {
   final PosRepositoryInterface posRepositoryInterface;
@@ -25,5 +25,4 @@ class PosService implements PosServiceInterface {
   Future<Response> getPosOrders() async {
     return await posRepositoryInterface.getPosOrders();
   }
-
 }

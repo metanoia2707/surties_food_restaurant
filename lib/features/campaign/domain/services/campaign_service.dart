@@ -1,13 +1,13 @@
-import 'package:stackfood_multivendor_restaurant/features/campaign/domain/models/campaign_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/campaign/domain/repositories/campaign_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/campaign/domain/services/campaign_service_interface.dart';
+import 'package:surties_food_restaurant/features/campaign/domain/models/campaign_model.dart';
+import 'package:surties_food_restaurant/features/campaign/domain/repositories/campaign_repository_interface.dart';
+import 'package:surties_food_restaurant/features/campaign/domain/services/campaign_service_interface.dart';
 
 class CampaignService implements CampaignServiceInterface {
   final CampaignRepositoryInterface campaignRepositoryInterface;
   CampaignService({required this.campaignRepositoryInterface});
 
   @override
-  Future getCampaignList() async{
+  Future getCampaignList() async {
     return await campaignRepositoryInterface.getList();
   }
 
@@ -22,15 +22,16 @@ class CampaignService implements CampaignServiceInterface {
   }
 
   @override
-  List<CampaignModel>? filterCampaign(String status, List<CampaignModel> allCampaignList) {
+  List<CampaignModel>? filterCampaign(
+      String status, List<CampaignModel> allCampaignList) {
     List<CampaignModel>? campaignList = [];
-    if(status == 'joined') {
+    if (status == 'joined') {
       for (var campaign in allCampaignList) {
-        if(campaign.isJoined!) {
+        if (campaign.isJoined!) {
           campaignList.add(campaign);
         }
       }
-    }else {
+    } else {
       campaignList.addAll(allCampaignList);
     }
     return campaignList;

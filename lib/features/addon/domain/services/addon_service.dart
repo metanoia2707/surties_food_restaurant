@@ -1,28 +1,28 @@
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/addon/domain/repositories/addon_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/addon/domain/services/addon_service_interface.dart';
+import 'package:surties_food_restaurant/features/addon/domain/repositories/addon_repository_interface.dart';
+import 'package:surties_food_restaurant/features/addon/domain/services/addon_service_interface.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 
 class AddonService implements AddonServiceInterface {
   final AddonRepositoryInterface addonRepoInterface;
   AddonService({required this.addonRepoInterface});
 
   @override
-  Future<List<AddOns>?> getAddonList() async{
+  Future<List<AddOns>?> getAddonList() async {
     return await addonRepoInterface.getList();
   }
 
   @override
-  Future<bool> addAddon(AddOns addonModel) async{
+  Future<bool> addAddon(AddOns addonModel) async {
     return await addonRepoInterface.add(addonModel);
   }
 
   @override
-  Future<bool> updateAddon(Map<String, dynamic> body) async{
+  Future<bool> updateAddon(Map<String, dynamic> body) async {
     return await addonRepoInterface.update(body);
   }
 
   @override
-  Future<bool> deleteAddon(int id) async{
+  Future<bool> deleteAddon(int id) async {
     return await addonRepoInterface.delete(id: id);
   }
 
@@ -34,5 +34,4 @@ class AddonService implements AddonServiceInterface {
     }
     return addonsIds;
   }
-
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_asset_image_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_button_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/controllers/restaurant_controller.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/images.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_asset_image_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_button_widget.dart';
+import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/images.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class ProductDeleteBottomSheet extends StatelessWidget {
   final int productId;
@@ -19,48 +19,55 @@ class ProductDeleteBottomSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(Dimensions.radiusExtraLarge), topRight: Radius.circular(Dimensions.radiusExtraLarge),
+          topLeft: Radius.circular(Dimensions.radiusExtraLarge),
+          topRight: Radius.circular(Dimensions.radiusExtraLarge),
         ),
       ),
       child: GetBuilder<RestaurantController>(builder: (restaurantController) {
         return Column(mainAxisSize: MainAxisSize.min, children: [
-
           Container(
-            height: 5, width: 50,
+            height: 5,
+            width: 50,
             decoration: BoxDecoration(
               color: Theme.of(context).hintColor.withOpacity(0.2),
               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
             ),
           ),
           const SizedBox(height: 35),
-
           const CustomAssetImageWidget(
-            image: Images.warning, height: 50, width: 50,
+            image: Images.warning,
+            height: 50,
+            width: 50,
           ),
           const SizedBox(height: 35),
-
-          Text('are_you_sure'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge), textAlign: TextAlign.center),
+          Text('are_you_sure'.tr,
+              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+              textAlign: TextAlign.center),
           const SizedBox(height: Dimensions.paddingSizeSmall),
-
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
-            child: Text('you_want_to_delete_this_item'.tr, style: robotoRegular.copyWith(color: Theme.of(context).hintColor), textAlign: TextAlign.center),
+            padding: const EdgeInsets.symmetric(
+                horizontal: Dimensions.paddingSizeLarge),
+            child: Text('you_want_to_delete_this_item'.tr,
+                style:
+                    robotoRegular.copyWith(color: Theme.of(context).hintColor),
+                textAlign: TextAlign.center),
           ),
           const SizedBox(height: 50),
-
           Row(children: [
-
             Expanded(
-              child: !restaurantController.isLoading ? CustomButtonWidget(
-                onPressed: () {
-                  restaurantController.deleteProduct(productId);
-                },
-                buttonText: 'delete'.tr,
-                color: Theme.of(context).colorScheme.error,
-              ) : Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.error)),
+              child: !restaurantController.isLoading
+                  ? CustomButtonWidget(
+                      onPressed: () {
+                        restaurantController.deleteProduct(productId);
+                      },
+                      buttonText: 'delete'.tr,
+                      color: Theme.of(context).colorScheme.error,
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.error)),
             ),
             const SizedBox(width: Dimensions.paddingSizeSmall),
-
             Expanded(
               child: CustomButtonWidget(
                 onPressed: () {
@@ -71,9 +78,7 @@ class ProductDeleteBottomSheet extends StatelessWidget {
                 textColor: Theme.of(context).textTheme.bodyLarge!.color,
               ),
             ),
-
           ]),
-
         ]);
       }),
     );

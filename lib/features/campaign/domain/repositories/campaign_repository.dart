@@ -1,8 +1,8 @@
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/campaign/domain/models/campaign_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/campaign/domain/repositories/campaign_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/features/campaign/domain/models/campaign_model.dart';
+import 'package:surties_food_restaurant/features/campaign/domain/repositories/campaign_repository_interface.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class CampaignRepository implements CampaignRepositoryInterface {
   final ApiClient apiClient;
@@ -23,13 +23,15 @@ class CampaignRepository implements CampaignRepositoryInterface {
 
   @override
   Future<bool> joinCampaign(int? campaignID) async {
-    Response response = await apiClient.putData(AppConstants.joinCampaignUri, {'campaign_id': campaignID});
+    Response response = await apiClient
+        .putData(AppConstants.joinCampaignUri, {'campaign_id': campaignID});
     return (response.statusCode == 200);
   }
 
   @override
   Future<bool> leaveCampaign(int? campaignID) async {
-    Response response = await apiClient.putData(AppConstants.leaveCampaignUri, {'campaign_id': campaignID});
+    Response response = await apiClient
+        .putData(AppConstants.leaveCampaignUri, {'campaign_id': campaignID});
     return (response.statusCode == 200);
   }
 
@@ -56,5 +58,4 @@ class CampaignRepository implements CampaignRepositoryInterface {
     // TODO: implement update
     throw UnimplementedError();
   }
-
 }

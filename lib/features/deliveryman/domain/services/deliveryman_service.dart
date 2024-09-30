@@ -1,9 +1,9 @@
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/models/delivery_man_list_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/models/delivery_man_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/repositories/deliveryman_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/services/deliveryman_service_interface.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/review_model.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/models/delivery_man_list_model.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/models/delivery_man_model.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/repositories/deliveryman_repository_interface.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/services/deliveryman_service_interface.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/review_model.dart';
 
 class DeliverymanService implements DeliverymanServiceInterface {
   final DeliverymanRepositoryInterface deliverymanRepositoryInterface;
@@ -15,8 +15,10 @@ class DeliverymanService implements DeliverymanServiceInterface {
   }
 
   @override
-  Future<bool> addDeliveryMan(DeliveryManModel deliveryMan, String pass, XFile? image, List<XFile> identities, String token, bool isAdd) async {
-    return await deliverymanRepositoryInterface.addDeliveryMan(deliveryMan, pass, image, identities, token, isAdd);
+  Future<bool> addDeliveryMan(DeliveryManModel deliveryMan, String pass,
+      XFile? image, List<XFile> identities, String token, bool isAdd) async {
+    return await deliverymanRepositoryInterface.addDeliveryMan(
+        deliveryMan, pass, image, identities, token, isAdd);
   }
 
   @override
@@ -26,12 +28,14 @@ class DeliverymanService implements DeliverymanServiceInterface {
 
   @override
   Future<bool> updateDeliveryManStatus(int? deliveryManID, int status) async {
-    return await deliverymanRepositoryInterface.updateDeliveryManStatus(deliveryManID, status);
+    return await deliverymanRepositoryInterface.updateDeliveryManStatus(
+        deliveryManID, status);
   }
 
   @override
   Future<List<ReviewModel>?> getDeliveryManReviews(int? deliveryManID) async {
-    return await deliverymanRepositoryInterface.getDeliveryManReviews(deliveryManID);
+    return await deliverymanRepositoryInterface
+        .getDeliveryManReviews(deliveryManID);
   }
 
   @override
@@ -41,7 +45,7 @@ class DeliverymanService implements DeliverymanServiceInterface {
 
   @override
   Future<bool> assignDeliveryMan(int? deliveryManId, int? orderId) async {
-    return await deliverymanRepositoryInterface.assignDeliveryMan(deliveryManId, orderId);
+    return await deliverymanRepositoryInterface.assignDeliveryMan(
+        deliveryManId, orderId);
   }
-
 }
