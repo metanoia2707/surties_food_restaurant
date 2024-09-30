@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "217158828499",
+    "project_id": "surtiesfood-ae499",
+    "storage_bucket": "surtiesfood-ae499.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217158828499:android:f8879c5027b08e82a06f26",
+        "android_client_info": {
+          "package_name": "com.food.surties_food_driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjMq1O-IUM0DEseclEX54__ev2LF_z-EU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217158828499:android:15222b5c4662b9cea06f26",
+        "android_client_info": {
+          "package_name": "com.food.surties_food_user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjMq1O-IUM0DEseclEX54__ev2LF_z-EU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
