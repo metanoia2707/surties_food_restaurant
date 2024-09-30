@@ -1,5 +1,5 @@
-import 'package:stackfood_multivendor_restaurant/interface/repository_interface.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:surties_food_restaurant/interface/repository_interface.dart';
 
 abstract class LocationRepositoryInterface extends RepositoryInterface {
   Future<dynamic> getAddressFromGeocode(LatLng latLng);

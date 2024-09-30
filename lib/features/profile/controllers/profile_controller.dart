@@ -1,15 +1,15 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/controllers/auth_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/services/profile_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/helper/route_helper.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
+import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
+import 'package:surties_food_restaurant/features/profile/domain/services/profile_service_interface.dart';
+import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class ProfileController extends GetxController implements GetxService {
   final ProfileServiceInterface profileServiceInterface;
-  ProfileController({required this.profileServiceInterface}){
+  ProfileController({required this.profileServiceInterface}) {
     _notification = profileServiceInterface.isNotificationActive();
   }
 
@@ -24,7 +24,6 @@ class ProfileController extends GetxController implements GetxService {
 
   XFile? _pickedFile;
   XFile? get pickedFile => _pickedFile;
-
 
   void setProfile(ProfileModel? proModel) {
     _profileModel = proModel;
@@ -47,7 +46,7 @@ class ProfileController extends GetxController implements GetxService {
       showCustomSnackBar('your_account_remove_successfully'.tr, isError: false);
       Get.find<AuthController>().clearSharedData();
       Get.offAllNamed(RouteHelper.getSignInRoute());
-    }else{
+    } else {
       Get.back();
       showCustomSnackBar(responseModel.message, isError: true);
     }
@@ -68,10 +67,12 @@ class ProfileController extends GetxController implements GetxService {
     return profileServiceInterface.getUserToken();
   }
 
-  Future<bool> updateUserInfo(ProfileModel updateUserModel, String token) async {
+  Future<bool> updateUserInfo(
+      ProfileModel updateUserModel, String token) async {
     _isLoading = true;
     update();
-    bool success = await profileServiceInterface.updateProfile(updateUserModel, _pickedFile, token);
+    bool success = await profileServiceInterface.updateProfile(
+        updateUserModel, _pickedFile, token);
     _isLoading = false;
     bool isSuccess;
     if (success) {
@@ -90,5 +91,4 @@ class ProfileController extends GetxController implements GetxService {
     _pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     update();
   }
-
 }

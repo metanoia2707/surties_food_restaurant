@@ -1,7 +1,7 @@
-import 'package:stackfood_multivendor_restaurant/features/notification/domain/services/notification_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/notification/domain/models/notification_model.dart';
-import 'package:stackfood_multivendor_restaurant/helper/date_converter_helper.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/notification/domain/models/notification_model.dart';
+import 'package:surties_food_restaurant/features/notification/domain/services/notification_service_interface.dart';
+import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 
 class NotificationController extends GetxController implements GetxService {
   final NotificationServiceInterface notificationServiceInterface;
@@ -11,12 +11,14 @@ class NotificationController extends GetxController implements GetxService {
   List<NotificationModel>? get notificationList => _notificationList;
 
   Future<void> getNotificationList() async {
-    List<NotificationModel>? notificationList = await notificationServiceInterface.getNotificationList();
+    List<NotificationModel>? notificationList =
+        await notificationServiceInterface.getNotificationList();
     if (notificationList != null) {
       _notificationList = [];
       _notificationList!.addAll(notificationList);
       _notificationList!.sort((NotificationModel n1, NotificationModel n2) {
-        return DateConverter.dateTimeStringToDate(n1.createdAt!).compareTo(DateConverter.dateTimeStringToDate(n2.createdAt!));
+        return DateConverter.dateTimeStringToDate(n1.createdAt!)
+            .compareTo(DateConverter.dateTimeStringToDate(n2.createdAt!));
       });
       _notificationList = _notificationList!.reversed.toList();
     }
@@ -34,5 +36,4 @@ class NotificationController extends GetxController implements GetxService {
   void clearNotification() {
     _notificationList = null;
   }
-
 }

@@ -1,20 +1,21 @@
-import 'package:stackfood_multivendor_restaurant/features/auth/controllers/auth_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/language/domain/models/language_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/language/domain/services/language_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/controllers/restaurant_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/controllers/profile_controller.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
+import 'package:surties_food_restaurant/features/language/domain/models/language_model.dart';
+import 'package:surties_food_restaurant/features/language/domain/services/language_service_interface.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class LocalizationController extends GetxController implements GetxService {
   final LanguageServiceInterface languageServiceInterface;
 
-  LocalizationController({required this.languageServiceInterface}){
+  LocalizationController({required this.languageServiceInterface}) {
     loadCurrentLanguage();
   }
 
-  Locale _locale = Locale(AppConstants.languages[0].languageCode!, AppConstants.languages[0].countryCode);
+  Locale _locale = Locale(AppConstants.languages[0].languageCode!,
+      AppConstants.languages[0].countryCode);
   Locale get locale => _locale;
 
   bool _isLtr = true;
@@ -32,11 +33,11 @@ class LocalizationController extends GetxController implements GetxService {
     _locale.languageCode == 'ar' ? _isLtr = false : _isLtr = true;
     languageServiceInterface.updateHeader(_locale);
 
-    if(!fromBottomSheet) {
+    if (!fromBottomSheet) {
       saveLanguage(_locale);
     }
 
-    if(Get.find<AuthController>().isLoggedIn() && !fromBottomSheet){
+    if (Get.find<AuthController>().isLoggedIn() && !fromBottomSheet) {
       Get.find<RestaurantController>().getProductList('1', 'all');
       Get.find<ProfileController>().getProfile();
     }
@@ -51,8 +52,8 @@ class LocalizationController extends GetxController implements GetxService {
   void loadCurrentLanguage() async {
     _locale = languageServiceInterface.getLocaleFromSharedPref();
     _isLtr = _locale.languageCode != 'ar';
-    for(int index = 0; index < AppConstants.languages.length; index++) {
-      if(_locale.languageCode == AppConstants.languages[index].languageCode) {
+    for (int index = 0; index < AppConstants.languages.length; index++) {
+      if (_locale.languageCode == AppConstants.languages[index].languageCode) {
         _selectedLanguageIndex = index;
         break;
       }
@@ -67,7 +68,8 @@ class LocalizationController extends GetxController implements GetxService {
   }
 
   void saveCacheLanguage(Locale? locale) {
-    languageServiceInterface.saveCacheLanguage(locale ?? languageServiceInterface.getLocaleFromSharedPref());
+    languageServiceInterface.saveCacheLanguage(
+        locale ?? languageServiceInterface.getLocaleFromSharedPref());
   }
 
   Locale getCacheLocaleFromSharedPref() {
@@ -76,10 +78,11 @@ class LocalizationController extends GetxController implements GetxService {
 
   void searchSelectedLanguage() {
     for (var language in AppConstants.languages) {
-      if (language.languageCode!.toLowerCase().contains(_locale.languageCode.toLowerCase())) {
+      if (language.languageCode!
+          .toLowerCase()
+          .contains(_locale.languageCode.toLowerCase())) {
         _selectedLanguageIndex = AppConstants.languages.indexOf(language);
       }
     }
   }
-
 }

@@ -1,15 +1,20 @@
-import 'package:stackfood_multivendor_restaurant/common/controllers/theme_controller.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/common/controllers/theme_controller.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class SwitchButtonWidget extends StatefulWidget {
   final IconData icon;
   final String title;
   final bool? isButtonActive;
   final Function onTap;
-  const SwitchButtonWidget({super.key, required this.icon, required this.title, required this.onTap, this.isButtonActive});
+  const SwitchButtonWidget(
+      {super.key,
+      required this.icon,
+      required this.title,
+      required this.onTap,
+      this.isButtonActive});
 
   @override
   State<SwitchButtonWidget> createState() => _SwitchButtonWidgetState();
@@ -25,12 +30,19 @@ class _SwitchButtonWidgetState extends State<SwitchButtonWidget> {
     _buttonActive = widget.isButtonActive;
   }
 
-  final WidgetStateProperty<Icon?> thumbIcon = WidgetStateProperty.resolveWith<Icon?>(
+  final WidgetStateProperty<Icon?> thumbIcon =
+      WidgetStateProperty.resolveWith<Icon?>(
     (Set<WidgetState> states) {
       if (states.contains(WidgetState.selected)) {
-        return Icon(Icons.circle, color: Get.find<ThemeController>().darkTheme ? Colors.black : Colors.white);
+        return Icon(Icons.circle,
+            color: Get.find<ThemeController>().darkTheme
+                ? Colors.black
+                : Colors.white);
       }
-      return Icon(Icons.circle, color: Get.find<ThemeController>().darkTheme ? Colors.white: Colors.black);
+      return Icon(Icons.circle,
+          color: Get.find<ThemeController>().darkTheme
+              ? Colors.white
+              : Colors.black);
     },
   );
 
@@ -38,7 +50,7 @@ class _SwitchButtonWidgetState extends State<SwitchButtonWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if(_buttonActive != null) {
+        if (_buttonActive != null) {
           setState(() {
             _buttonActive = !_buttonActive!;
           });
@@ -48,31 +60,35 @@ class _SwitchButtonWidgetState extends State<SwitchButtonWidget> {
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: Dimensions.paddingSizeSmall,
-          vertical: _buttonActive != null ? Dimensions.paddingSizeExtraSmall : Dimensions.paddingSizeDefault,
+          vertical: _buttonActive != null
+              ? Dimensions.paddingSizeExtraSmall
+              : Dimensions.paddingSizeDefault,
         ),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-          boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 5)],
+          boxShadow: const [
+            BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 5)
+          ],
         ),
         child: Row(children: [
-
           Icon(widget.icon, size: 25),
           const SizedBox(width: Dimensions.paddingSizeSmall),
-
           Expanded(child: Text(widget.title, style: robotoRegular)),
-         _buttonActive != null ? Switch(
-           thumbIcon: thumbIcon,
-            value: _buttonActive!,
-            onChanged: (bool isActive) {
-              if(_buttonActive != null) {
-                setState(() {
-                  _buttonActive = !_buttonActive!;
-                });
-              }
-              widget.onTap();
-            },
-          ) : const SizedBox(),
+          _buttonActive != null
+              ? Switch(
+                  thumbIcon: thumbIcon,
+                  value: _buttonActive!,
+                  onChanged: (bool isActive) {
+                    if (_buttonActive != null) {
+                      setState(() {
+                        _buttonActive = !_buttonActive!;
+                      });
+                    }
+                    widget.onTap();
+                  },
+                )
+              : const SizedBox(),
         ]),
       ),
     );

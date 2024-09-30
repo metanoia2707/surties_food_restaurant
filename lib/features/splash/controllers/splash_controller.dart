@@ -1,8 +1,8 @@
-import 'package:stackfood_multivendor_restaurant/common/models/config_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/controllers/restaurant_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/splash/domain/services/splash_service_interface.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:surties_food_restaurant/common/models/config_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
+import 'package:surties_food_restaurant/features/splash/domain/services/splash_service_interface.dart';
 
 class SplashController extends GetxController implements GetxService {
   final SplashServiceInterface splashServiceInterface;
@@ -18,12 +18,13 @@ class SplashController extends GetxController implements GetxService {
   bool get firstTimeConnectionCheck => _firstTimeConnectionCheck;
 
   Future<bool> getConfigData() async {
-    ConfigModel? configModel  = await splashServiceInterface.getConfigData();
+    ConfigModel? configModel = await splashServiceInterface.getConfigData();
     bool isSuccess = false;
-    if(configModel != null) {
+    if (configModel != null) {
       _configModel = configModel;
       isSuccess = true;
-      Get.find<RestaurantController>().setOrderStatus(_configModel!.instantOrder!, _configModel!.scheduleOrder!);
+      Get.find<RestaurantController>().setOrderStatus(
+          _configModel!.instantOrder!, _configModel!.scheduleOrder!);
     }
     update();
     return isSuccess;
@@ -52,16 +53,17 @@ class SplashController extends GetxController implements GetxService {
   bool isRestaurantClosed() {
     DateTime open = DateFormat('hh:mm').parse('');
     DateTime close = DateFormat('hh:mm').parse('');
-    DateTime openTime = DateTime(_currentTime.year, _currentTime.month, _currentTime.day, open.hour, open.minute);
-    DateTime closeTime = DateTime(_currentTime.year, _currentTime.month, _currentTime.day, close.hour, close.minute);
-    if(closeTime.isBefore(openTime)) {
+    DateTime openTime = DateTime(_currentTime.year, _currentTime.month,
+        _currentTime.day, open.hour, open.minute);
+    DateTime closeTime = DateTime(_currentTime.year, _currentTime.month,
+        _currentTime.day, close.hour, close.minute);
+    if (closeTime.isBefore(openTime)) {
       closeTime = closeTime.add(const Duration(days: 1));
     }
-    if(_currentTime.isAfter(openTime) && _currentTime.isBefore(closeTime)) {
+    if (_currentTime.isAfter(openTime) && _currentTime.isBefore(closeTime)) {
       return false;
-    }else {
+    } else {
       return true;
     }
   }
-
 }

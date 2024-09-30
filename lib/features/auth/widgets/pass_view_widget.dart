@@ -1,8 +1,8 @@
-import 'package:stackfood_multivendor_restaurant/features/auth/controllers/auth_controller.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class PassViewWidget extends StatelessWidget {
   const PassViewWidget({super.key});
@@ -13,17 +13,15 @@ class PassViewWidget extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(top: Dimensions.paddingSizeSmall),
         child: Wrap(children: [
-
-          View(title: '8_or_more_character'.tr, done: authController.lengthCheck),
-
+          View(
+              title: '8_or_more_character'.tr,
+              done: authController.lengthCheck),
           View(title: '1_number'.tr, done: authController.numberCheck),
-
           View(title: '1_upper_case'.tr, done: authController.uppercaseCheck),
-
           View(title: '1_lower_case'.tr, done: authController.lowercaseCheck),
-
-          View(title: '1_special_character'.tr, done: authController.spatialCheck),
-
+          View(
+              title: '1_special_character'.tr,
+              done: authController.spatialCheck),
         ]),
       );
     });
@@ -40,11 +38,14 @@ class View extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: Dimensions.paddingSizeExtraSmall),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-
-        Icon(done ? Icons.check : Icons.clear, color: done ? Colors.green: Theme.of(context).colorScheme.error, size: 12),
-
-        Text(title, style: robotoRegular.copyWith(color: done ? Colors.green : Theme.of(context).colorScheme.error, fontSize: 12)),
-
+        Icon(done ? Icons.check : Icons.clear,
+            color: done ? Colors.green : Theme.of(context).colorScheme.error,
+            size: 12),
+        Text(title,
+            style: robotoRegular.copyWith(
+                color:
+                    done ? Colors.green : Theme.of(context).colorScheme.error,
+                fontSize: 12)),
       ]),
     );
   }

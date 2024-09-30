@@ -1,16 +1,16 @@
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/splash/controllers/splash_controller.dart';
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/common/models/config_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/controllers/profile_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/auth/domain/services/auth_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/helper/route_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/common/models/config_model.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/auth/domain/services/auth_service_interface.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
+import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
+import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthServiceInterface authServiceInterface;
@@ -25,7 +25,7 @@ class AuthController extends GetxController implements GetxService {
   ProfileModel? _profileModel;
   ProfileModel? get profileModel => _profileModel;
 
- XFile? _pickedFile;
+  XFile? _pickedFile;
   XFile? get pickedFile => _pickedFile;
 
   XFile? _pickedLogo;
@@ -79,31 +79,43 @@ class AuthController extends GetxController implements GetxService {
   List<dynamic>? _additionalList;
   List<dynamic>? get additionalList => _additionalList;
 
-
   void setJoinUsPageData({bool willUpdate = true}) {
     _dataList = [];
     _additionalList = [];
-    if(Get.find<SplashController>().configModel!.restaurantAdditionalJoinUsPageData != null) {
-      for (var data in Get.find<SplashController>().configModel!.restaurantAdditionalJoinUsPageData!.data!) {
-        int index = Get.find<SplashController>().configModel!.restaurantAdditionalJoinUsPageData!.data!.indexOf(data);
+    if (Get.find<SplashController>()
+            .configModel!
+            .restaurantAdditionalJoinUsPageData !=
+        null) {
+      for (var data in Get.find<SplashController>()
+          .configModel!
+          .restaurantAdditionalJoinUsPageData!
+          .data!) {
+        int index = Get.find<SplashController>()
+            .configModel!
+            .restaurantAdditionalJoinUsPageData!
+            .data!
+            .indexOf(data);
         _dataList!.add(data);
-        if(data.fieldType == 'text' || data.fieldType == 'number' || data.fieldType == 'email' || data.fieldType == 'phone'){
+        if (data.fieldType == 'text' ||
+            data.fieldType == 'number' ||
+            data.fieldType == 'email' ||
+            data.fieldType == 'phone') {
           _additionalList!.add(TextEditingController());
-        } else if(data.fieldType == 'date') {
+        } else if (data.fieldType == 'date') {
           _additionalList!.add(null);
-        } else if(data.fieldType == 'check_box') {
+        } else if (data.fieldType == 'check_box') {
           _additionalList!.add([]);
-          if(data.checkData != null) {
-            for(int i=0; i<data.checkData!.length; i++) {
+          if (data.checkData != null) {
+            for (int i = 0; i < data.checkData!.length; i++) {
               _additionalList![index].add(0);
             }
           }
-        } else if(data.fieldType == 'file') {
+        } else if (data.fieldType == 'file') {
           _additionalList!.add([]);
         }
       }
     }
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
@@ -114,7 +126,7 @@ class AuthController extends GetxController implements GetxService {
   }
 
   void setAdditionalCheckData(int index, int i, String date) {
-    if(_additionalList![index][i] == date){
+    if (_additionalList![index][i] == date) {
       _additionalList![index][i] = 0;
     } else {
       _additionalList![index][i] = date;
@@ -129,7 +141,7 @@ class AuthController extends GetxController implements GetxService {
 
   Future<void> pickFile(int index, MediaData mediaData) async {
     FilePickerResult? result = await authServiceInterface.picFile(mediaData);
-    if(result != null) {
+    if (result != null) {
       _additionalList![index].add(result);
     }
     update();
@@ -139,20 +151,24 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = true;
     update();
     Response response = await authServiceInterface.login(email, password);
-    _profileModel = authServiceInterface.getProfileModel(response, Get.find<SplashController>().configModel!.businessPlan!.subscription);
+    _profileModel = authServiceInterface.getProfileModel(response,
+        Get.find<SplashController>().configModel!.businessPlan!.subscription);
     _subscriptionType = authServiceInterface.getSubscriptionType(response);
-    _expiredToken = authServiceInterface.getExpiredToken(response, Get.find<SplashController>().configModel!.businessPlan!.subscription);
-    ResponseModel? responseModel = await authServiceInterface.manageLogin(response, Get.find<SplashController>().configModel!.businessPlan!.subscription);
+    _expiredToken = authServiceInterface.getExpiredToken(response,
+        Get.find<SplashController>().configModel!.businessPlan!.subscription);
+    ResponseModel? responseModel = await authServiceInterface.manageLogin(
+        response,
+        Get.find<SplashController>().configModel!.businessPlan!.subscription);
     _isLoading = false;
     update();
     return responseModel;
   }
 
   void pickImageForRegistration(bool isLogo, bool isRemove) async {
-    if(isRemove) {
+    if (isRemove) {
       _pickedLogo = null;
       _pickedCover = null;
-    }else {
+    } else {
       if (isLogo) {
         _pickedLogo = await authServiceInterface.pickImageFromGallery();
       } else {
@@ -233,45 +249,50 @@ class AuthController extends GetxController implements GetxService {
       showCustomSnackBar('your_account_remove_successfully'.tr, isError: false);
       Get.find<AuthController>().clearSharedData();
       Get.offAllNamed(RouteHelper.getSignInRoute());
-    }else{
+    } else {
       Get.back();
     }
   }
 
-  Future<void> registerRestaurant(Map<String, String> data, List<FilePickerResult> additionalDocuments, List<String> inputTypeList) async {
+  Future<void> registerRestaurant(
+      Map<String, String> data,
+      List<FilePickerResult> additionalDocuments,
+      List<String> inputTypeList) async {
     _isLoading = true;
     update();
-    List<MultipartDocument> multiPartsDocuments = authServiceInterface.prepareMultipartDocuments(inputTypeList, additionalDocuments);
-    await authServiceInterface.registerRestaurant(data, _pickedLogo, _pickedCover, multiPartsDocuments);
+    List<MultipartDocument> multiPartsDocuments = authServiceInterface
+        .prepareMultipartDocuments(inputTypeList, additionalDocuments);
+    await authServiceInterface.registerRestaurant(
+        data, _pickedLogo, _pickedCover, multiPartsDocuments);
     _isLoading = false;
     update();
   }
 
-  void storeStatusChange(double value, {bool willUpdate = true}){
+  void storeStatusChange(double value, {bool willUpdate = true}) {
     _storeStatus = value;
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
 
-  void showHidePass({bool willUpdate = true}){
-    _showPassView = ! _showPassView;
-    if(willUpdate) {
+  void showHidePass({bool willUpdate = true}) {
+    _showPassView = !_showPassView;
+    if (willUpdate) {
       update();
     }
   }
 
-  void minTimeChange(String time){
+  void minTimeChange(String time) {
     _storeMinTime = time;
     update();
   }
 
-  void maxTimeChange(String time){
+  void maxTimeChange(String time) {
     _storeMaxTime = time;
     update();
   }
 
-  void timeUnitChange(String unit){
+  void timeUnitChange(String unit) {
     _storeTimeUnit = unit;
     update();
   }
@@ -283,24 +304,23 @@ class AuthController extends GetxController implements GetxService {
     _lowercaseCheck = false;
     _spatialCheck = false;
 
-    if(pass.length > 7){
+    if (pass.length > 7) {
       _lengthCheck = true;
     }
-    if(pass.contains(RegExp(r'[a-z]'))){
+    if (pass.contains(RegExp(r'[a-z]'))) {
       _lowercaseCheck = true;
     }
-    if(pass.contains(RegExp(r'[A-Z]'))){
+    if (pass.contains(RegExp(r'[A-Z]'))) {
       _uppercaseCheck = true;
     }
-    if(pass.contains(RegExp(r'[ .!@#$&*~^%]'))){
+    if (pass.contains(RegExp(r'[ .!@#$&*~^%]'))) {
       _spatialCheck = true;
     }
-    if(pass.contains(RegExp(r'[\d+]'))){
+    if (pass.contains(RegExp(r'[\d+]'))) {
       _numberCheck = true;
     }
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
-
 }

@@ -1,10 +1,10 @@
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_app_bar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/splash/controllers/splash_controller.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_app_bar_widget.dart';
+import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
 import 'package:get/get.dart';
-import 'package:stackfood_multivendor_restaurant/util/images.dart';
+import 'package:surties_food_restaurant/util/images.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class HtmlViewerScreen extends StatelessWidget {

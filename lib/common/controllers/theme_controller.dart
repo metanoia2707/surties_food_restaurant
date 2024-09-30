@@ -1,6 +1,6 @@
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class ThemeController extends GetxController {
   final SharedPreferences sharedPreferences;

@@ -1,8 +1,8 @@
-import 'package:stackfood_multivendor_restaurant/features/reports/domain/services/report_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/reports/domain/models/report_model.dart';
-import 'package:stackfood_multivendor_restaurant/helper/date_converter_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/reports/domain/models/report_model.dart';
+import 'package:surties_food_restaurant/features/reports/domain/services/report_service_interface.dart';
+import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 
 class ReportController extends GetxController implements GetxService {
   final ReportServiceInterface reportServiceInterface;
@@ -61,12 +61,15 @@ class ReportController extends GetxController implements GetxService {
   String? get avgType => _avgType;
 
   void initSetDate() {
-    _from = DateConverter.dateTimeForCoupon(DateTime.now().subtract(const Duration(days: 30)));
+    _from = DateConverter.dateTimeForCoupon(
+        DateTime.now().subtract(const Duration(days: 30)));
     _to = DateConverter.dateTimeForCoupon(DateTime.now());
   }
 
-  Future<void> getTransactionReportList({required String offset, required String? from, required String? to}) async {
-
+  Future<void> getTransactionReportList(
+      {required String offset,
+      required String? from,
+      required String? to}) async {
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -77,7 +80,9 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      TransactionReportModel? transactionReport = await reportServiceInterface.getTransactionReportList(offset: int.parse(offset), from: from, to: to);
+      TransactionReportModel? transactionReport =
+          await reportServiceInterface.getTransactionReportList(
+              offset: int.parse(offset), from: from, to: to);
       if (transactionReport != null) {
         TransactionReportModel transactionReportModel = transactionReport;
         _onHold = transactionReportModel.onHold;
@@ -99,8 +104,10 @@ class ReportController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getOrderReportList({required String offset, required String? from, required String? to}) async {
-
+  Future<void> getOrderReportList(
+      {required String offset,
+      required String? from,
+      required String? to}) async {
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -111,7 +118,8 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      OrderReportModel? orderReport = await reportServiceInterface.getOrderReportList(offset: int.parse(offset), from: from, to: to);
+      OrderReportModel? orderReport = await reportServiceInterface
+          .getOrderReportList(offset: int.parse(offset), from: from, to: to);
       if (orderReport != null) {
         OrderReportModel orderReportModel = orderReport;
         _otherData = orderReportModel.otherData;
@@ -131,8 +139,10 @@ class ReportController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getCampaignReportList({required String offset, required String? from, required String? to}) async {
-
+  Future<void> getCampaignReportList(
+      {required String offset,
+      required String? from,
+      required String? to}) async {
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -143,7 +153,8 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      OrderReportModel? campaignReport = await reportServiceInterface.getCampaignReportList(offset: int.parse(offset), from: from, to: to);
+      OrderReportModel? campaignReport = await reportServiceInterface
+          .getCampaignReportList(offset: int.parse(offset), from: from, to: to);
       if (campaignReport != null) {
         OrderReportModel campaignReportModel = campaignReport;
         if (offset == '1') {
@@ -162,8 +173,10 @@ class ReportController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getFoodReportList({required String offset, required String? from, required String? to}) async {
-
+  Future<void> getFoodReportList(
+      {required String offset,
+      required String? from,
+      required String? to}) async {
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -177,7 +190,8 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      FoodReportModel? foodReport = await reportServiceInterface.getFoodReportList(offset: int.parse(offset), from: from, to: to);
+      FoodReportModel? foodReport = await reportServiceInterface
+          .getFoodReportList(offset: int.parse(offset), from: from, to: to);
       if (foodReport != null) {
         FoodReportModel foodReportModel = foodReport;
         if (offset == '1') {
@@ -213,7 +227,10 @@ class ReportController extends GetxController implements GetxService {
     update();
   }
 
-  void showDatePicker(BuildContext context, {bool transaction = false, bool order = false, bool campaign = false}) async {
+  void showDatePicker(BuildContext context,
+      {bool transaction = false,
+      bool order = false,
+      bool campaign = false}) async {
     final DateTimeRange? result = await showDateRangePicker(
       context: context,
       firstDate: DateTime.now().subtract(const Duration(days: 365)),
@@ -233,17 +250,16 @@ class ReportController extends GetxController implements GetxService {
       _from = _selectedDateRange.start.toString().split(' ')[0];
       _to = _selectedDateRange.end.toString().split(' ')[0];
       update();
-      if(transaction){
+      if (transaction) {
         getTransactionReportList(offset: '1', from: _from, to: _to);
       }
-      if(order){
+      if (order) {
         getOrderReportList(offset: '1', from: _from, to: _to);
       }
-      if(campaign) {
+      if (campaign) {
         getCampaignReportList(offset: '1', from: _from, to: _to);
       }
       getFoodReportList(offset: '1', from: _from, to: _to);
     }
   }
-
 }

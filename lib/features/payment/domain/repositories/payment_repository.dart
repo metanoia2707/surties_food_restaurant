@@ -1,14 +1,14 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/bank_info_body_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/wallet_payment_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/withdraw_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/repositories/payment_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/helper/route_helper.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/bank_info_body_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/wallet_payment_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/withdraw_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/repositories/payment_repository_interface.dart';
+import 'package:surties_food_restaurant/helper/route_helper.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class PaymentRepository implements PaymentRepositoryInterface {
   final ApiClient apiClient;
@@ -30,24 +30,28 @@ class PaymentRepository implements PaymentRepositoryInterface {
 
   @override
   Future<bool> updateBankInfo(BankInfoBodyModel bankInfoBody) async {
-    Response response = await apiClient.putData(AppConstants.updateBankInfoUri, bankInfoBody.toJson());
+    Response response = await apiClient.putData(
+        AppConstants.updateBankInfoUri, bankInfoBody.toJson());
     return (response.statusCode == 200);
   }
 
   @override
   Future<bool> requestWithdraw(Map<String?, String> data) async {
-    Response response = await apiClient.postData(AppConstants.withdrawRequestUri, data);
+    Response response =
+        await apiClient.postData(AppConstants.withdrawRequestUri, data);
     return (response.statusCode == 200);
   }
 
   @override
   Future<List<WidthDrawMethodModel>?> getWithdrawMethodList() async {
     List<WidthDrawMethodModel>? widthDrawMethodList;
-    Response response = await apiClient.getData(AppConstants.withdrawRequestMethodUri);
+    Response response =
+        await apiClient.getData(AppConstants.withdrawRequestMethodUri);
     if (response.statusCode == 200) {
       widthDrawMethodList = [];
       response.body.forEach((method) {
-        WidthDrawMethodModel withdrawMethod = WidthDrawMethodModel.fromJson(method);
+        WidthDrawMethodModel withdrawMethod =
+            WidthDrawMethodModel.fromJson(method);
         widthDrawMethodList!.add(withdrawMethod);
       });
     }
@@ -55,22 +59,22 @@ class PaymentRepository implements PaymentRepositoryInterface {
   }
 
   @override
-  Future<ResponseModel> makeCollectCashPayment(double amount, String paymentGatewayName) async {
+  Future<ResponseModel> makeCollectCashPayment(
+      double amount, String paymentGatewayName) async {
     ResponseModel responseModel;
-    Response response = await apiClient.postData(AppConstants.makeCollectedCashPaymentUri,
-      {
-        "amount": amount,
-        "payment_gateway": paymentGatewayName,
-        "callback": RouteHelper.success,
-        "token": _getUserToken(),
-      }
-    );
+    Response response =
+        await apiClient.postData(AppConstants.makeCollectedCashPaymentUri, {
+      "amount": amount,
+      "payment_gateway": paymentGatewayName,
+      "callback": RouteHelper.success,
+      "token": _getUserToken(),
+    });
     if (response.statusCode == 200) {
       String redirectUrl = response.body['redirect_link'];
       Get.back();
-      if(GetPlatform.isWeb) {
+      if (GetPlatform.isWeb) {
         // html.window.open(redirectUrl,"_self");
-      } else{
+      } else {
         Get.toNamed(RouteHelper.getPaymentRoute(null, redirectUrl));
       }
       responseModel = ResponseModel(true, response.body.toString());
@@ -82,17 +86,20 @@ class PaymentRepository implements PaymentRepositoryInterface {
 
   @override
   Future<bool> makeWalletAdjustment() async {
-    Response response = await apiClient.postData(AppConstants.makeWalletAdjustmentUri, {'token': _getUserToken()});
+    Response response = await apiClient.postData(
+        AppConstants.makeWalletAdjustmentUri, {'token': _getUserToken()});
     return (response.statusCode == 200);
   }
 
   @override
   Future<List<Transactions>?> getWalletPaymentList() async {
     List<Transactions>? transactions;
-    Response response = await apiClient.getData(AppConstants.walletPaymentListUri);
+    Response response =
+        await apiClient.getData(AppConstants.walletPaymentListUri);
     if (response.statusCode == 200) {
       transactions = [];
-      WalletPaymentModel walletPaymentModel = WalletPaymentModel.fromJson(response.body);
+      WalletPaymentModel walletPaymentModel =
+          WalletPaymentModel.fromJson(response.body);
       transactions.addAll(walletPaymentModel.transactions!);
     }
     return transactions;
@@ -125,5 +132,4 @@ class PaymentRepository implements PaymentRepositoryInterface {
     // TODO: implement update
     throw UnimplementedError();
   }
-
 }

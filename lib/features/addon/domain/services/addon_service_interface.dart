@@ -1,4 +1,4 @@
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 
 abstract class AddonServiceInterface {
   Future<List<AddOns>?> getAddonList();

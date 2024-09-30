@@ -1,19 +1,19 @@
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_button_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_image_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_text_form_field_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/pos/controllers/pos_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/controllers/profile_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/pos/widgets/pos_product_widget.dart';
-import 'package:stackfood_multivendor_restaurant/helper/date_converter_helper.dart';
-import 'package:stackfood_multivendor_restaurant/helper/price_converter_helper.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_button_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_image_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_text_form_field_widget.dart';
+import 'package:surties_food_restaurant/features/pos/controllers/pos_controller.dart';
+import 'package:surties_food_restaurant/features/pos/widgets/pos_product_widget.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
+import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
+import 'package:surties_food_restaurant/helper/price_converter_helper.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class PosScreen extends StatefulWidget {
   const PosScreen({super.key});
@@ -23,7 +23,6 @@ class PosScreen extends StatefulWidget {
 }
 
 class _PosScreenState extends State<PosScreen> {
-
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _discountController = TextEditingController();
   final TextEditingController _taxController = TextEditingController();
@@ -31,7 +30,6 @@ class _PosScreenState extends State<PosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -51,11 +49,15 @@ class _PosScreenState extends State<PosScreen> {
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(style: BorderStyle.none, width: 0),
               ),
-              hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).hintColor),
-              filled: true, fillColor: Theme.of(context).cardColor,
+              hintStyle: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: Theme.of(context).hintColor),
+              filled: true,
+              fillColor: Theme.of(context).cardColor,
             ),
             style: robotoRegular.copyWith(
-              color: Theme.of(context).textTheme.bodyLarge!.color, fontSize: Dimensions.fontSizeLarge,
+              color: Theme.of(context).textTheme.bodyLarge!.color,
+              fontSize: Dimensions.fontSizeLarge,
             ),
           ),
           suggestionsCallback: (pattern) async {
@@ -65,30 +67,37 @@ class _PosScreenState extends State<PosScreen> {
             return Padding(
               padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
               child: Row(children: [
-
                 ClipRRect(
                   borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                   child: CustomImageWidget(
                     image: '${suggestion.imageFullUrl}',
-                    height: 40, width: 40, fit: BoxFit.cover,
+                    height: 40,
+                    width: 40,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 const SizedBox(width: Dimensions.paddingSizeSmall),
-
                 Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                    Text(suggestion.name!, maxLines: 1, overflow: TextOverflow.ellipsis, style: robotoRegular.copyWith(
-                      color: Theme.of(context).textTheme.bodyLarge!.color, fontSize: Dimensions.fontSizeLarge,
-                    )),
-
-                    Text(PriceConverter.convertPrice(suggestion.price), style: robotoRegular.copyWith(
-                      color: Theme.of(context).textTheme.bodyLarge!.color, fontSize: Dimensions.fontSizeSmall,
-                    ), textDirection: TextDirection.ltr),
-
-                  ]),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(suggestion.name!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: robotoRegular.copyWith(
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge!.color,
+                              fontSize: Dimensions.fontSizeLarge,
+                            )),
+                        Text(PriceConverter.convertPrice(suggestion.price),
+                            style: robotoRegular.copyWith(
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge!.color,
+                              fontSize: Dimensions.fontSizeSmall,
+                            ),
+                            textDirection: TextDirection.ltr),
+                      ]),
                 ),
-
               ]),
             );
           },
@@ -108,9 +117,7 @@ class _PosScreenState extends State<PosScreen> {
           ),
         ],
       ),
-
       body: GetBuilder<PosController>(builder: (posController) {
-
         List<List<AddOns>> addOnsList = [];
         List<bool> availableList = [];
         double itemPrice = 0;
@@ -118,15 +125,17 @@ class _PosScreenState extends State<PosScreen> {
         double? discount = 0;
         double tax = 0;
         double orderAmount = 0;
-        Restaurant? restaurant = Get.find<ProfileController>().profileModel != null ? Get.find<ProfileController>().profileModel!.restaurants![0] : null;
+        Restaurant? restaurant =
+            Get.find<ProfileController>().profileModel != null
+                ? Get.find<ProfileController>().profileModel!.restaurants![0]
+                : null;
 
-        if(restaurant != null) {
+        if (restaurant != null) {
           for (var cartModel in posController.cartList) {
-
             List<AddOns> addOnList = [];
             for (var addOnId in cartModel.addOnIds!) {
-              for(AddOns addOns in cartModel.product!.addOns!) {
-                if(addOns.id == addOnId.id) {
+              for (AddOns addOns in cartModel.product!.addOns!) {
+                if (addOns.id == addOnId.id) {
                   addOnList.add(addOns);
                   break;
                 }
@@ -134,153 +143,225 @@ class _PosScreenState extends State<PosScreen> {
             }
             addOnsList.add(addOnList);
 
-            availableList.add(DateConverter.isAvailable(cartModel.product!.availableTimeStarts, cartModel.product!.availableTimeEnds));
+            availableList.add(DateConverter.isAvailable(
+                cartModel.product!.availableTimeStarts,
+                cartModel.product!.availableTimeEnds));
 
-            for(int index=0; index<addOnList.length; index++) {
-              addOns = addOns + (addOnList[index].price! * cartModel.addOnIds![index].quantity!);
+            for (int index = 0; index < addOnList.length; index++) {
+              addOns = addOns +
+                  (addOnList[index].price! *
+                      cartModel.addOnIds![index].quantity!);
             }
 
             itemPrice = itemPrice + (cartModel.price! * cartModel.quantity!);
 
-            double? dis = (restaurant.discount != null
-                && DateConverter.isAvailable(restaurant.discount!.startTime, restaurant.discount!.endTime, isoTime: true))
-                ? restaurant.discount!.discount : cartModel.product!.discount;
+            double? dis = (restaurant.discount != null &&
+                    DateConverter.isAvailable(restaurant.discount!.startTime,
+                        restaurant.discount!.endTime,
+                        isoTime: true))
+                ? restaurant.discount!.discount
+                : cartModel.product!.discount;
 
-            String? disType = (restaurant.discount != null
-                && DateConverter.isAvailable(restaurant.discount!.startTime, restaurant.discount!.endTime, isoTime: true))
-                ? 'percent' : cartModel.product!.discountType;
-            discount = discount! + ((cartModel.price! - PriceConverter.convertWithDiscount(cartModel.price, dis, disType)!) * cartModel.quantity!);
+            String? disType = (restaurant.discount != null &&
+                    DateConverter.isAvailable(restaurant.discount!.startTime,
+                        restaurant.discount!.endTime,
+                        isoTime: true))
+                ? 'percent'
+                : cartModel.product!.discountType;
+            discount = discount! +
+                ((cartModel.price! -
+                        PriceConverter.convertWithDiscount(
+                            cartModel.price, dis, disType)!) *
+                    cartModel.quantity!);
           }
 
           if (restaurant.discount != null) {
-            if (restaurant.discount!.maxDiscount != 0 && restaurant.discount!.maxDiscount! < discount!) {
+            if (restaurant.discount!.maxDiscount != 0 &&
+                restaurant.discount!.maxDiscount! < discount!) {
               discount = restaurant.discount!.maxDiscount;
             }
-            if (restaurant.discount!.minPurchase != 0 && restaurant.discount!.minPurchase! > (itemPrice + addOns)) {
+            if (restaurant.discount!.minPurchase != 0 &&
+                restaurant.discount!.minPurchase! > (itemPrice + addOns)) {
               discount = 0;
             }
           }
           orderAmount = (itemPrice - discount!) + addOns;
-          tax = PriceConverter.calculation(orderAmount, restaurant.tax, 'percent', 1);
+          tax = PriceConverter.calculation(
+              orderAmount, restaurant.tax, 'percent', 1);
         }
 
         double subTotal = itemPrice + addOns;
-        double total = subTotal - discount+ tax;
+        double total = subTotal - discount + tax;
 
-        if(posController.discount != -1) {
+        if (posController.discount != -1) {
           discount = posController.discount;
         }
 
         _discountController.text = discount.toString();
         _taxController.text = tax.toString();
 
-        return posController.cartList.isNotEmpty ? Column(children: [
+        return posController.cartList.isNotEmpty
+            ? Column(children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                    physics: const BouncingScrollPhysics(),
+                    child: Center(
+                      child: SizedBox(
+                        width: 1170,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Product
+                              ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: posController.cartList.length,
+                                itemBuilder: (context, index) {
+                                  return PosProductWidget(
+                                    cart: posController.cartList[index],
+                                    cartIndex: index,
+                                    addOns: addOnsList[index],
+                                    isAvailable: availableList[index],
+                                  );
+                                },
+                              ),
+                              const SizedBox(
+                                  height: Dimensions.paddingSizeSmall),
 
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(Dimensions.paddingSizeSmall), physics: const BouncingScrollPhysics(),
-              child: Center(
-                child: SizedBox(
-                  width: 1170,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              // Total
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('item_price'.tr, style: robotoRegular),
+                                    Text(
+                                      PriceConverter.convertPrice(itemPrice),
+                                      style: robotoRegular,
+                                      textDirection: TextDirection.ltr,
+                                    ),
+                                  ]),
+                              const SizedBox(height: 10),
 
-                    // Product
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: posController.cartList.length,
-                      itemBuilder: (context, index) {
-                        return PosProductWidget(
-                          cart: posController.cartList[index], cartIndex: index,
-                          addOns: addOnsList[index], isAvailable: availableList[index],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('addons'.tr, style: robotoRegular),
+                                    Text(
+                                      '(+) ${PriceConverter.convertPrice(addOns)}',
+                                      style: robotoRegular,
+                                      textDirection: TextDirection.ltr,
+                                    ),
+                                  ]),
 
-                    // Total
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text('item_price'.tr, style: robotoRegular),
-                      Text(PriceConverter.convertPrice(itemPrice), style: robotoRegular, textDirection: TextDirection.ltr,),
-                    ]),
-                    const SizedBox(height: 10),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: Dimensions.paddingSizeSmall),
+                                child: Divider(
+                                    thickness: 1,
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.5)),
+                              ),
 
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text('addons'.tr, style: robotoRegular),
-                      Text('(+) ${PriceConverter.convertPrice(addOns)}', style: robotoRegular, textDirection: TextDirection.ltr,),
-                    ]),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('subtotal'.tr, style: robotoMedium),
+                                    Text(
+                                      PriceConverter.convertPrice(subTotal),
+                                      style: robotoMedium,
+                                      textDirection: TextDirection.ltr,
+                                    ),
+                                  ]),
+                              const SizedBox(
+                                  height: Dimensions.paddingSizeSmall),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
-                      child: Divider(thickness: 1, color: Theme.of(context).hintColor.withOpacity(0.5)),
-                    ),
+                              Row(children: [
+                                Expanded(
+                                    child: Text('discount'.tr,
+                                        style: robotoRegular)),
+                                SizedBox(
+                                  width: 70,
+                                  child: CustomTextFormFieldWidget(
+                                    showTitle: false,
+                                    controller: _discountController,
+                                    onSubmit: (text) =>
+                                        posController.setDiscount(text),
+                                    inputAction: TextInputAction.done,
+                                  ),
+                                ),
+                                Text(
+                                    '(-) ${PriceConverter.convertPrice(discount)}',
+                                    style: robotoRegular,
+                                    textDirection: TextDirection.ltr),
+                              ]),
+                              const SizedBox(
+                                  height: Dimensions.paddingSizeSmall),
 
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text('subtotal'.tr, style: robotoMedium),
-                      Text(PriceConverter.convertPrice(subTotal), style: robotoMedium, textDirection: TextDirection.ltr,),
-                    ]),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('vat_tax'.tr, style: robotoRegular),
+                                    Text(
+                                      '(+) ${PriceConverter.convertPrice(tax)}',
+                                      style: robotoRegular,
+                                      textDirection: TextDirection.ltr,
+                                    ),
+                                  ]),
 
-                    Row(children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: Dimensions.paddingSizeSmall),
+                                child: Divider(
+                                    thickness: 1,
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.5)),
+                              ),
 
-                      Expanded(child: Text('discount'.tr, style: robotoRegular)),
-
-                      SizedBox(
-                        width: 70,
-                        child: CustomTextFormFieldWidget(
-                          showTitle: false,
-                          controller: _discountController,
-                          onSubmit: (text) => posController.setDiscount(text),
-                          inputAction: TextInputAction.done,
-                        ),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'total_amount'.tr,
+                                      style: robotoMedium.copyWith(
+                                          fontSize: Dimensions.fontSizeLarge,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                    Text(
+                                      PriceConverter.convertPrice(total),
+                                      textDirection: TextDirection.ltr,
+                                      style: robotoMedium.copyWith(
+                                          fontSize: Dimensions.fontSizeLarge,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                  ]),
+                            ]),
                       ),
-
-                      Text('(-) ${PriceConverter.convertPrice(discount)}', style: robotoRegular, textDirection: TextDirection.ltr),
-
-                    ]),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
-
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text('vat_tax'.tr, style: robotoRegular),
-                      Text('(+) ${PriceConverter.convertPrice(tax)}', style: robotoRegular, textDirection: TextDirection.ltr,),
-                    ]),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
-                      child: Divider(thickness: 1, color: Theme.of(context).hintColor.withOpacity(0.5)),
                     ),
-
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-
-                      Text(
-                        'total_amount'.tr,
-                        style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).primaryColor),
-                      ),
-
-                      Text(
-                        PriceConverter.convertPrice(total), textDirection: TextDirection.ltr,
-                        style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).primaryColor),
-                      ),
-
-                    ]),
-
-                  ]),
+                  ),
                 ),
-              ),
-            ),
-          ),
-
-          Container(
-            width: 1170,
-            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-            child: CustomButtonWidget(buttonText: 'order_now'.tr, onPressed: () {
-              if(availableList.contains(false)) {
-                showCustomSnackBar('one_or_more_product_unavailable'.tr);
-              }
-            }),
-          ),
-
-        ]) : Center(child: Text('no_food_available'.tr));
+                Container(
+                  width: 1170,
+                  padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                  child: CustomButtonWidget(
+                      buttonText: 'order_now'.tr,
+                      onPressed: () {
+                        if (availableList.contains(false)) {
+                          showCustomSnackBar(
+                              'one_or_more_product_unavailable'.tr);
+                        }
+                      }),
+                ),
+              ])
+            : Center(child: Text('no_food_available'.tr));
       }),
     );
   }

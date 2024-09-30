@@ -1,11 +1,11 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_cancellation_body_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/update_status_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/repositories/order_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/domain/services/order_service_interface.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_cancellation_body_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/update_status_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/repositories/order_repository_interface.dart';
+import 'package:surties_food_restaurant/features/order/domain/services/order_service_interface.dart';
 
 class OrderService implements OrderServiceInterface {
   final OrderRepositoryInterface orderRepositoryInterface;
@@ -22,13 +22,16 @@ class OrderService implements OrderServiceInterface {
   }
 
   @override
-  Future<PaginatedOrderModel?> getPaginatedOrderList(int offset, String status) async {
+  Future<PaginatedOrderModel?> getPaginatedOrderList(
+      int offset, String status) async {
     return await orderRepositoryInterface.getPaginatedOrderList(offset, status);
   }
 
   @override
-  Future<ResponseModel> updateOrderStatus(UpdateStatusModel updateStatusBody, List<MultipartBody> proofAttachment) async {
-    return await orderRepositoryInterface.updateOrderStatus(updateStatusBody, proofAttachment);
+  Future<ResponseModel> updateOrderStatus(UpdateStatusModel updateStatusBody,
+      List<MultipartBody> proofAttachment) async {
+    return await orderRepositoryInterface.updateOrderStatus(
+        updateStatusBody, proofAttachment);
   }
 
   @override
@@ -52,6 +55,6 @@ class OrderService implements OrderServiceInterface {
   }
 
   @override
-  String? getBluetoothAddress() => orderRepositoryInterface.getBluetoothAddress();
-
+  String? getBluetoothAddress() =>
+      orderRepositoryInterface.getBluetoothAddress();
 }

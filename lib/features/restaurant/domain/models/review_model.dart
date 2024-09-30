@@ -1,4 +1,4 @@
-import 'package:stackfood_multivendor_restaurant/features/order/domain/models/order_model.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
 
 class ReviewModel {
   int? id;
@@ -38,7 +38,8 @@ class ReviewModel {
     customerName = json['customer_name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    customer = json['customer'] != null ? Customer.fromJson(json['customer']) : null;
+    customer =
+        json['customer'] != null ? Customer.fromJson(json['customer']) : null;
     orderId = json['order_id'];
     reply = json['reply'];
     customerPhone = json['customer_phone'];
