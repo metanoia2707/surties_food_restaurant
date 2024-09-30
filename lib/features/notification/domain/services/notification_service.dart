@@ -1,6 +1,6 @@
-import 'package:stackfood_multivendor_restaurant/features/notification/domain/models/notification_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/notification/domain/repositories/notification_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/notification/domain/services/notification_service_interface.dart';
+import 'package:surties_food_restaurant/features/notification/domain/models/notification_model.dart';
+import 'package:surties_food_restaurant/features/notification/domain/repositories/notification_repository_interface.dart';
+import 'package:surties_food_restaurant/features/notification/domain/services/notification_service_interface.dart';
 
 class NotificationService implements NotificationServiceInterface {
   final NotificationRepositoryInterface notificationRepositoryInterface;
@@ -20,5 +20,4 @@ class NotificationService implements NotificationServiceInterface {
   int? getSeenNotificationCount() {
     return notificationRepositoryInterface.getSeenNotificationCount();
   }
-
 }

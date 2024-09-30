@@ -1,6 +1,6 @@
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
 
 class OrderShimmerWidget extends StatelessWidget {
   final bool isEnabled;
@@ -12,27 +12,20 @@ class OrderShimmerWidget extends StatelessWidget {
       duration: const Duration(seconds: 2),
       enabled: isEnabled,
       child: Column(children: [
-
         Padding(
           padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
               Container(height: 15, width: 100, color: Colors.grey[300]),
               const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-
               Container(height: 10, width: 150, color: Colors.grey[300]),
-
             ]),
-
-            Icon(Icons.keyboard_arrow_right, size: 30, color: Theme.of(context).disabledColor),
-
+            Icon(Icons.keyboard_arrow_right,
+                size: 30, color: Theme.of(context).disabledColor),
           ]),
         ),
-
         Divider(color: Theme.of(context).disabledColor),
-
       ]),
     );
   }

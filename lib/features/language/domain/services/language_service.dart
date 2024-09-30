@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stackfood_multivendor_restaurant/features/language/domain/repositories/language_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/language/domain/services/language_service_interface.dart';
+import 'package:surties_food_restaurant/features/language/domain/repositories/language_repository_interface.dart';
+import 'package:surties_food_restaurant/features/language/domain/services/language_service_interface.dart';
 
 class LanguageService implements LanguageServiceInterface {
   final LanguageRepositoryInterface languageRepositoryInterface;
@@ -30,5 +30,4 @@ class LanguageService implements LanguageServiceInterface {
   Locale getCacheLocaleFromSharedPref() {
     return languageRepositoryInterface.getCacheLocaleFromSharedPref();
   }
-
 }

@@ -1,51 +1,62 @@
-import 'package:stackfood_multivendor_restaurant/helper/price_converter_helper.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:surties_food_restaurant/helper/price_converter_helper.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/styles.dart';
 
 class WalletWidget extends StatelessWidget {
   final String title;
   final double? value;
   final String? image;
-  const WalletWidget({super.key, required this.title, required this.value, this.image});
+  const WalletWidget(
+      {super.key, required this.title, required this.value, this.image});
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-
       Container(
         height: 90,
-        padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeLarge, horizontal: Dimensions.paddingSizeSmall),
+        padding: const EdgeInsets.symmetric(
+            vertical: Dimensions.paddingSizeLarge,
+            horizontal: Dimensions.paddingSizeSmall),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-          border: Border.all(color: Theme.of(context).disabledColor.withOpacity(0.1), width: 1.5),
+          border: Border.all(
+              color: Theme.of(context).disabledColor.withOpacity(0.1),
+              width: 1.5),
         ),
       ),
-
       Positioned(
-        top: -5, right: -5,
-        child: Image.asset(image!, opacity: const AlwaysStoppedAnimation(0.06), height: 65, width: 65),
+        top: -5,
+        right: -5,
+        child: Image.asset(image!,
+            opacity: const AlwaysStoppedAnimation(0.06), height: 65, width: 65),
       ),
-
       Positioned(
-        left: 0, right: 0, top: 0, bottom: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-
           Text(
-            PriceConverter.convertPrice(value), textDirection: TextDirection.ltr,
+            PriceConverter.convertPrice(value),
+            textDirection: TextDirection.ltr,
             style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge),
           ),
           const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-
           Text(
-            title, textAlign: TextAlign.center,
-            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.6)),
+            title,
+            textAlign: TextAlign.center,
+            style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeSmall,
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .color!
+                    .withOpacity(0.6)),
           ),
-
         ]),
       ),
-        
     ]);
   }
 }

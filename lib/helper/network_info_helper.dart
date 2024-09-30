@@ -1,7 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:stackfood_multivendor_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 
 class NetworkInfo {
   final Connectivity connectivity;
@@ -14,11 +14,13 @@ class NetworkInfo {
 
   static void checkConnectivity(BuildContext context) {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if(Get.find<SplashController>().firstTimeConnectionCheck) {
+      if (Get.find<SplashController>().firstTimeConnectionCheck) {
         Get.find<SplashController>().initialConnectionCheck(false);
-      }else {
+      } else {
         bool isNotConnected = result == ConnectivityResult.none;
-        isNotConnected ? const SizedBox() : ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        isNotConnected
+            ? const SizedBox()
+            : ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: isNotConnected ? Colors.red : Colors.green,
           duration: Duration(seconds: isNotConnected ? 6000 : 3),

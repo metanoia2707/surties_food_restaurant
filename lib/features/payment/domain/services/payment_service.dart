@@ -1,10 +1,10 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/bank_info_body_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/wallet_payment_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/models/withdraw_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/repositories/payment_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/domain/services/payment_service_interface.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/bank_info_body_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/wallet_payment_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/models/withdraw_model.dart';
+import 'package:surties_food_restaurant/features/payment/domain/repositories/payment_repository_interface.dart';
+import 'package:surties_food_restaurant/features/payment/domain/services/payment_service_interface.dart';
 
 class PaymentService implements PaymentServiceInterface {
   final PaymentRepositoryInterface paymentRepositoryInterface;
@@ -31,8 +31,10 @@ class PaymentService implements PaymentServiceInterface {
   }
 
   @override
-  Future<ResponseModel> makeCollectCashPayment(double amount, String paymentGatewayName) async {
-    return await paymentRepositoryInterface.makeCollectCashPayment(amount, paymentGatewayName);
+  Future<ResponseModel> makeCollectCashPayment(
+      double amount, String paymentGatewayName) async {
+    return await paymentRepositoryInterface.makeCollectCashPayment(
+        amount, paymentGatewayName);
   }
 
   @override
@@ -44,5 +46,4 @@ class PaymentService implements PaymentServiceInterface {
   Future<List<Transactions>?> getWalletPaymentList() async {
     return await paymentRepositoryInterface.getWalletPaymentList();
   }
-
 }

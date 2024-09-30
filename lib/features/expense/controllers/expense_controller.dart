@@ -1,9 +1,9 @@
-import 'package:stackfood_multivendor_restaurant/features/expense/domain/services/expense_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/expense/domain/models/expense_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/controllers/profile_controller.dart';
-import 'package:stackfood_multivendor_restaurant/helper/date_converter_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/expense/domain/models/expense_model.dart';
+import 'package:surties_food_restaurant/features/expense/domain/services/expense_service_interface.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 
 class ExpenseController extends GetxController implements GetxService {
   final ExpenseServiceInterface expenseServiceInterface;
@@ -37,21 +37,30 @@ class ExpenseController extends GetxController implements GetxService {
   bool _searchMode = false;
   bool get searchMode => _searchMode;
 
-  void initSetDate(){
-    _from = DateConverter.dateTimeForCoupon(DateTime.now().subtract(const Duration(days: 30)));
+  void initSetDate() {
+    _from = DateConverter.dateTimeForCoupon(
+        DateTime.now().subtract(const Duration(days: 30)));
     _to = DateConverter.dateTimeForCoupon(DateTime.now());
     _searchText = '';
   }
 
-  void setSearchText({required String offset, required String? from, required String? to, required String searchText}){
+  void setSearchText(
+      {required String offset,
+      required String? from,
+      required String? to,
+      required String searchText}) {
     _searchText = searchText;
     _searchMode = !_searchMode;
-    getExpenseList(offset: offset.toString(), from: from, to: to, searchText: searchText);
+    getExpenseList(
+        offset: offset.toString(), from: from, to: to, searchText: searchText);
   }
 
-  Future<void> getExpenseList({required String offset, required String? from, required String? to, required String? searchText}) async {
-
-    if(offset == '1') {
+  Future<void> getExpenseList(
+      {required String offset,
+      required String? from,
+      required String? to,
+      required String? searchText}) async {
+    if (offset == '1') {
       _offsetList = [];
       _offset = 1;
       _expenses = null;
@@ -61,8 +70,16 @@ class ExpenseController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      ExpenseBodyModel expenseModel = await expenseServiceInterface.getExpenseList(offset: int.parse(offset), from: from, to: to,
-        restaurantId: Get.find<ProfileController>().profileModel!.restaurants![0].id, searchText: searchText);
+      ExpenseBodyModel expenseModel =
+          await expenseServiceInterface.getExpenseList(
+              offset: int.parse(offset),
+              from: from,
+              to: to,
+              restaurantId: Get.find<ProfileController>()
+                  .profileModel!
+                  .restaurants![0]
+                  .id,
+              searchText: searchText);
       if (expenseModel.expense != null) {
         if (offset == '1') {
           _expenses = [];
@@ -72,8 +89,8 @@ class ExpenseController extends GetxController implements GetxService {
         _isLoading = false;
         update();
       }
-    }else {
-      if(isLoading) {
+    } else {
+      if (isLoading) {
         _isLoading = false;
         update();
       }
@@ -112,5 +129,4 @@ class ExpenseController extends GetxController implements GetxService {
       getExpenseList(offset: '1', from: _from, to: _to, searchText: searchText);
     }
   }
-
 }

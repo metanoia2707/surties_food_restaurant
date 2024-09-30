@@ -1,7 +1,7 @@
-import 'package:stackfood_multivendor_restaurant/common/models/response_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/coupon/domain/models/coupon_body_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/coupon/domain/repositories/coupon_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/coupon/domain/services/coupon_service_interface.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
+import 'package:surties_food_restaurant/features/coupon/domain/models/coupon_body_model.dart';
+import 'package:surties_food_restaurant/features/coupon/domain/repositories/coupon_repository_interface.dart';
+import 'package:surties_food_restaurant/features/coupon/domain/services/coupon_service_interface.dart';
 
 class CouponService implements CouponServiceInterface {
   final CouponRepositoryInterface couponRepositoryInterface;
@@ -36,5 +36,4 @@ class CouponService implements CouponServiceInterface {
   Future<ResponseModel?> deleteCoupon(int couponId) async {
     return await couponRepositoryInterface.delete(id: couponId);
   }
-
 }

@@ -1,9 +1,9 @@
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/business/domain/models/business_plan_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/business/domain/models/package_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/business/domain/repositories/business_repository_interface.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/features/business/domain/models/business_plan_model.dart';
+import 'package:surties_food_restaurant/features/business/domain/models/package_model.dart';
+import 'package:surties_food_restaurant/features/business/domain/repositories/business_repository_interface.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class BusinessRepository implements BusinessRepositoryInterface<PackageModel> {
   final ApiClient apiClient;
@@ -12,21 +12,25 @@ class BusinessRepository implements BusinessRepositoryInterface<PackageModel> {
   @override
   Future<PackageModel?> getList() async {
     PackageModel? packageModel;
-    Response response = await apiClient.getData(AppConstants.restaurantPackagesUri);
-    if(response.statusCode == 200) {
+    Response response =
+        await apiClient.getData(AppConstants.restaurantPackagesUri);
+    if (response.statusCode == 200) {
       packageModel = PackageModel.fromJson(response.body);
     }
     return packageModel;
   }
 
   @override
-  Future<Response> setUpBusinessPlan(BusinessPlanModel businessPlanModel) async {
-    return await apiClient.postData(AppConstants.businessPlanUri, businessPlanModel.toJson());
+  Future<Response> setUpBusinessPlan(
+      BusinessPlanModel businessPlanModel) async {
+    return await apiClient.postData(
+        AppConstants.businessPlanUri, businessPlanModel.toJson());
   }
 
   @override
   Future<Response> subscriptionPayment(String id, String? paymentName) async {
-    return await apiClient.postData(AppConstants.businessPlanPaymentUri, {'id': id, 'payment_gateway': paymentName});
+    return await apiClient.postData(AppConstants.businessPlanPaymentUri,
+        {'id': id, 'payment_gateway': paymentName});
   }
 
   @override
@@ -52,5 +56,4 @@ class BusinessRepository implements BusinessRepositoryInterface<PackageModel> {
     // TODO: implement update
     throw UnimplementedError();
   }
-
 }

@@ -1,23 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/common/models/config_model.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_bottom_sheet_widget.dart';
-import 'package:stackfood_multivendor_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/advertisement/domain/services/advertisement_service_interface.dart';
-import 'package:get/get.dart';
-import 'package:stackfood_multivendor_restaurant/features/advertisement/enums/ads_type.dart';
-import 'package:stackfood_multivendor_restaurant/features/advertisement/models/ads_details_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/advertisement/models/advertisement_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/advertisement/models/popup_menu_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/advertisement/widgets/ads_create_success_bottom_sheet.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
-import 'package:stackfood_multivendor_restaurant/helper/date_converter_helper.dart';
-import 'package:stackfood_multivendor_restaurant/helper/image_size_checker.dart';
-import 'package:stackfood_multivendor_restaurant/util/app_constants.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/common/models/config_model.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_bottom_sheet_widget.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/advertisement/domain/services/advertisement_service_interface.dart';
+import 'package:surties_food_restaurant/features/advertisement/enums/ads_type.dart';
+import 'package:surties_food_restaurant/features/advertisement/models/ads_details_model.dart';
+import 'package:surties_food_restaurant/features/advertisement/models/advertisement_model.dart';
+import 'package:surties_food_restaurant/features/advertisement/models/popup_menu_model.dart';
+import 'package:surties_food_restaurant/features/advertisement/widgets/ads_create_success_bottom_sheet.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
+import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
+import 'package:surties_food_restaurant/helper/image_size_checker.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 import 'package:video_player/video_player.dart';
 
 class AdvertisementController extends GetxController implements GetxService {
@@ -49,7 +50,15 @@ class AdvertisementController extends GetxController implements GetxService {
   List<Adds>? _advertisementList;
   List<Adds>? get advertisementList => _advertisementList;
 
-  final List<String> _statusList = ['all', 'pending', 'running', 'approved', 'expired', 'denied', 'paused'];
+  final List<String> _statusList = [
+    'all',
+    'pending',
+    'running',
+    'approved',
+    'expired',
+    'denied',
+    'paused'
+  ];
   List<String> get statusList => _statusList;
 
   AdsDetailsModel? _adsDetailsModel;
@@ -74,7 +83,6 @@ class AdvertisementController extends GetxController implements GetxService {
   bool _isRatingsChecked = false;
   bool get isRatingsChecked => _isRatingsChecked;
 
-
   bool _isReviewChecked = false;
   bool get isReviewChecked => _isReviewChecked;
 
@@ -96,7 +104,6 @@ class AdvertisementController extends GetxController implements GetxService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-
   TextEditingController? noteController = TextEditingController();
   final GlobalKey<FormState> noteFormKey = GlobalKey<FormState>();
 
@@ -117,7 +124,7 @@ class AdvertisementController extends GetxController implements GetxService {
 
   void setStatusIndex(int index, {bool willUpdate = true}) {
     _statusIndex = index;
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
@@ -133,12 +140,12 @@ class AdvertisementController extends GetxController implements GetxService {
 
   void setAdsType({required String type, bool shouldUpdate = true}) {
     _selectedAdsType = type;
-    if(shouldUpdate){
+    if (shouldUpdate) {
       update();
     }
   }
 
-  void initializeAdvertisementValues(AdsDetailsModel adsDetailsModel){
+  void initializeAdvertisementValues(AdsDetailsModel adsDetailsModel) {
     resetAllValues();
     setAdsType(type: adsDetailsModel.addType ?? "", shouldUpdate: false);
     _networkProfileImage = adsDetailsModel.profileImageFullUrl;
@@ -146,81 +153,87 @@ class AdvertisementController extends GetxController implements GetxService {
     _networkVideoFile = adsDetailsModel.videoAttachmentFullUrl;
     _isReviewChecked = adsDetailsModel.isReviewActive == 1;
     _isRatingsChecked = adsDetailsModel.isRatingActive == 1;
-    if(_networkVideoFile != null){
+    if (_networkVideoFile != null) {
       initializeVideoPlayerForNetwork();
     }
   }
 
   void pickVideoFile(bool isRemove) async {
-    if(isRemove) {
+    if (isRemove) {
       _pickedVideoFile = null;
       _networkVideoFile = null;
-      if( videoPlayerController != null && videoPlayerController!.value.isInitialized){
+      if (videoPlayerController != null &&
+          videoPlayerController!.value.isInitialized) {
         videoPlayerController!.dispose();
       }
       update();
     } else {
       _networkVideoFile = null;
-      _pickedVideoFile = await ImagePicker().pickVideo(source: ImageSource.gallery);
-      if(_pickedVideoFile != null){
-        double videoSize = await ImageSize.getImageSizeFromXFile(_pickedVideoFile!);
-        if(videoSize > AppConstants.limitOfPickedVideoSizeInMB){
+      _pickedVideoFile =
+          await ImagePicker().pickVideo(source: ImageSource.gallery);
+      if (_pickedVideoFile != null) {
+        double videoSize =
+            await ImageSize.getImageSizeFromXFile(_pickedVideoFile!);
+        if (videoSize > AppConstants.limitOfPickedVideoSizeInMB) {
           _pickedVideoFile = null;
           _isVideoValid = false;
           showCustomSnackBar("video_size_greater_than".tr);
           update();
-        }else{
+        } else {
           _isVideoValid = true;
           update();
           initializeVideoPlayerForPicked();
         }
-
       }
     }
-
   }
 
   void initializeVideoPlayerForPicked() {
-    if( videoPlayerController != null && videoPlayerController!.value.isInitialized){
+    if (videoPlayerController != null &&
+        videoPlayerController!.value.isInitialized) {
       videoPlayerController!.dispose();
     }
-    videoPlayerController = VideoPlayerController.file(File(_pickedVideoFile!.path))
-      ..initialize().then((_) {
-        update();
-      });
+    videoPlayerController =
+        VideoPlayerController.file(File(_pickedVideoFile!.path))
+          ..initialize().then((_) {
+            update();
+          });
   }
 
   void initializeVideoPlayerForNetwork() {
-    if( videoPlayerController != null && videoPlayerController!.value.isInitialized){
+    if (videoPlayerController != null &&
+        videoPlayerController!.value.isInitialized) {
       videoPlayerController!.dispose();
     }
 
-    videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(networkVideoFile ?? ""))
-      ..initialize().then((_) {
-        update();
-      });
+    videoPlayerController =
+        VideoPlayerController.networkUrl(Uri.parse(networkVideoFile ?? ""))
+          ..initialize().then((_) {
+            update();
+          });
   }
 
-  void toggleReviewChecked(){
+  void toggleReviewChecked() {
     _isReviewChecked = !_isReviewChecked;
     update();
   }
 
-
-  void toggleRatingChecked(){
+  void toggleRatingChecked() {
     _isRatingsChecked = !_isRatingsChecked;
     update();
   }
 
   void pickProfileImage(bool isRemove) async {
-    if(isRemove){
+    if (isRemove) {
       _pickedProfileImage = null;
       _networkProfileImage = null;
     } else {
       _networkProfileImage = null;
-      _pickedProfileImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if(_pickedProfileImage != null) {
-        double imageSize = await ImageSize.getImageSizeFromXFile(_pickedProfileImage!);
+      _pickedProfileImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (_pickedProfileImage != null) {
+        double imageSize =
+            await ImageSize.getImageSizeFromXFile(_pickedProfileImage!);
         if (imageSize > AppConstants.maxSizeOfASingleFile) {
           _pickedProfileImage = null;
           showCustomSnackBar("profile_size_greater_than".tr);
@@ -233,15 +246,17 @@ class AdvertisementController extends GetxController implements GetxService {
   }
 
   void pickCoverImage(bool isRemove) async {
-    if(isRemove) {
+    if (isRemove) {
       _pickedCoverImage = null;
       _networkCoverImage = null;
     } else {
       _networkCoverImage = null;
-      _pickedCoverImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-      double imageSize = await ImageSize.getImageSizeFromXFile(_pickedCoverImage!);
-      if(imageSize > AppConstants.maxSizeOfASingleFile){
-        _pickedCoverImage =null;
+      _pickedCoverImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      double imageSize =
+          await ImageSize.getImageSizeFromXFile(_pickedCoverImage!);
+      if (imageSize > AppConstants.maxSizeOfASingleFile) {
+        _pickedCoverImage = null;
         showCustomSnackBar("cover_image_size_greater_than".tr);
       } else {
         _isCoverImageValid = true;
@@ -250,38 +265,41 @@ class AdvertisementController extends GetxController implements GetxService {
     update();
   }
 
-  bool validateTimeRange(TextEditingController? timeRange){
+  bool validateTimeRange(TextEditingController? timeRange) {
     bool isBefore = false;
-    if(timeRange != null) {
+    if (timeRange != null) {
       List<String> parts = timeRange.text.split('-');
       String formattedString = parts[1].removeAllWhitespace;
       DateTime networkStartDate;
-      try{
-        networkStartDate = DateFormat("MM/dd/yyyy").parse(formattedString).toLocal();
-      } catch(e) {
-        networkStartDate = DateFormat('d MMM,y').parse(formattedString).toLocal();
+      try {
+        networkStartDate =
+            DateFormat("MM/dd/yyyy").parse(formattedString).toLocal();
+      } catch (e) {
+        networkStartDate =
+            DateFormat('d MMM,y').parse(formattedString).toLocal();
       }
 
-      DateTime todayDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+      DateTime todayDate = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day);
       isBefore = networkStartDate.isBefore(todayDate);
     }
     return isBefore;
   }
 
-  void checkFileValidation () {
-    if(selectedAdsType == AdsType.video_promotion.name) {
-      if(_pickedVideoFile == null && _networkVideoFile == null) {
+  void checkFileValidation() {
+    if (selectedAdsType == AdsType.video_promotion.name) {
+      if (_pickedVideoFile == null && _networkVideoFile == null) {
         _isVideoValid = false;
       } else {
         _isVideoValid = true;
       }
     } else {
-      if(_pickedProfileImage == null && _networkProfileImage == null) {
+      if (_pickedProfileImage == null && _networkProfileImage == null) {
         _isProfileImageValid = false;
       } else {
         _isProfileImageValid = true;
       }
-      if(_pickedCoverImage == null && _networkCoverImage == null){
+      if (_pickedCoverImage == null && _networkCoverImage == null) {
         _isCoverImageValid = false;
       } else {
         _isCoverImageValid = true;
@@ -290,7 +308,7 @@ class AdvertisementController extends GetxController implements GetxService {
     update();
   }
 
-  void resetAllValues({bool shouldUpdate = false}){
+  void resetAllValues({bool shouldUpdate = false}) {
     // _isEditScreen = false;
     // _selectedAdsType = "video_promotion";
     _selectedAdsType = AdsType.video_promotion.name;
@@ -311,17 +329,20 @@ class AdvertisementController extends GetxController implements GetxService {
     _isReviewChecked = false;
     dateTimeRange = null;
     // noteController?.text = '';
-    if(shouldUpdate){
+    if (shouldUpdate) {
       update();
     }
   }
 
-  Future<void> submitNewAdvertisement({List<TextEditingController>? titleController, List<TextEditingController>? descriptionController, List<Language>? languageList}) async{
+  Future<void> submitNewAdvertisement(
+      {List<TextEditingController>? titleController,
+      List<TextEditingController>? descriptionController,
+      List<Language>? languageList}) async {
     _isLoading = true;
     update();
 
     List<MultipartBody> selectedFiles = [];
-    if(selectedAdsType == AdsType.restaurant_promotion.name){
+    if (selectedAdsType == AdsType.restaurant_promotion.name) {
       selectedFiles.add(MultipartBody('profile_image', _pickedProfileImage!));
       selectedFiles.add(MultipartBody('cover_image', _pickedCoverImage!));
     } else {
@@ -330,46 +351,56 @@ class AdvertisementController extends GetxController implements GetxService {
 
     Map<String, String> body = {
       'advertisement_type': selectedAdsType,
-      'dates': "${DateConverter.stringToMDY(dateTimeRange?.start.toString() ?? "")} - ${DateConverter.stringToMDY(dateTimeRange?.end.toString() ?? "")}",
+      'dates':
+          "${DateConverter.stringToMDY(dateTimeRange?.start.toString() ?? "")} - ${DateConverter.stringToMDY(dateTimeRange?.end.toString() ?? "")}",
       'is_rating_active': isReviewChecked ? "1" : "0",
       'is_review_active': isRatingsChecked ? "1" : "0",
     };
     List<Translation> translations = [];
-    for(int index=0; index<languageList!.length; index++) {
+    for (int index = 0; index < languageList!.length; index++) {
       translations.add(Translation(
-        locale: languageList[index].key, key: 'title',
-        value: titleController![index].text.trim().isNotEmpty ? titleController[index].text.trim()
+        locale: languageList[index].key,
+        key: 'title',
+        value: titleController![index].text.trim().isNotEmpty
+            ? titleController[index].text.trim()
             : titleController[0].text.trim(),
       ));
       translations.add(Translation(
-        locale: languageList[index].key, key: 'description',
-        value: descriptionController![index].text.trim().isNotEmpty ? descriptionController[index].text.trim()
+        locale: languageList[index].key,
+        key: 'description',
+        value: descriptionController![index].text.trim().isNotEmpty
+            ? descriptionController[index].text.trim()
             : descriptionController[0].text.trim(),
       ));
     }
-    body['translations'] = jsonEncode(translations.map((v) => v.toJson()).toList());
+    body['translations'] =
+        jsonEncode(translations.map((v) => v.toJson()).toList());
 
-
-    Response response = await advertisementServiceInterface.submitNewAdvertisement(body, selectedFiles);
-    if(response.statusCode == 200){
+    Response response = await advertisementServiceInterface
+        .submitNewAdvertisement(body, selectedFiles);
+    if (response.statusCode == 200) {
       getAdvertisementList('1', _type);
       Get.back();
       Future.delayed(const Duration(milliseconds: 800), () {
         showCustomBottomSheet(child: const AdsCreateSuccessBottomSheet());
       });
-    }else{
+    } else {
       showCustomSnackBar(response.statusText, isError: true);
     }
     _isLoading = false;
     update();
   }
 
-  Future<void> copyAddAdvertisement({required int adsId, List<TextEditingController>? titleController, List<TextEditingController>? descriptionController, List<Language>? languageList}) async{
+  Future<void> copyAddAdvertisement(
+      {required int adsId,
+      List<TextEditingController>? titleController,
+      List<TextEditingController>? descriptionController,
+      List<Language>? languageList}) async {
     _isLoading = true;
     update();
 
     List<MultipartBody> selectedFiles = [];
-    if(selectedAdsType == AdsType.restaurant_promotion.name){
+    if (selectedAdsType == AdsType.restaurant_promotion.name) {
       selectedFiles.add(MultipartBody('profile_image', _pickedProfileImage));
       selectedFiles.add(MultipartBody('cover_image', _pickedCoverImage));
     } else {
@@ -380,55 +411,66 @@ class AdvertisementController extends GetxController implements GetxService {
       'id': adsId.toString(),
       'advertisement_type': selectedAdsType,
       // 'dates': '07/19/2024 - 07/24/2024',
-      'dates': "${DateConverter.stringToMDY(dateTimeRange?.start.toString() ?? "")} - ${DateConverter.stringToMDY(dateTimeRange?.end.toString() ?? "")}",
+      'dates':
+          "${DateConverter.stringToMDY(dateTimeRange?.start.toString() ?? "")} - ${DateConverter.stringToMDY(dateTimeRange?.end.toString() ?? "")}",
       'is_rating_active': isReviewChecked ? "1" : "0",
       'is_review_active': isRatingsChecked ? "1" : "0",
     };
     List<Translation> translations = [];
-    for(int index=0; index<languageList!.length; index++) {
+    for (int index = 0; index < languageList!.length; index++) {
       translations.add(Translation(
-        locale: languageList[index].key, key: 'title',
-        value: titleController![index].text.trim().isNotEmpty ? titleController[index].text.trim()
+        locale: languageList[index].key,
+        key: 'title',
+        value: titleController![index].text.trim().isNotEmpty
+            ? titleController[index].text.trim()
             : titleController[0].text.trim(),
       ));
       translations.add(Translation(
-        locale: languageList[index].key, key: 'description',
-        value: descriptionController![index].text.trim().isNotEmpty ? descriptionController[index].text.trim()
+        locale: languageList[index].key,
+        key: 'description',
+        value: descriptionController![index].text.trim().isNotEmpty
+            ? descriptionController[index].text.trim()
             : descriptionController[0].text.trim(),
       ));
     }
-    body['translations'] = jsonEncode(translations.map((v) => v.toJson()).toList());
+    body['translations'] =
+        jsonEncode(translations.map((v) => v.toJson()).toList());
 
-
-    Response response = await advertisementServiceInterface.copyAddAdvertisement(body, selectedFiles);
-    if(response.statusCode == 200){
+    Response response = await advertisementServiceInterface
+        .copyAddAdvertisement(body, selectedFiles);
+    if (response.statusCode == 200) {
       getAdvertisementList('1', _type);
       Get.back();
       Future.delayed(const Duration(milliseconds: 800), () {
         showCustomBottomSheet(child: const AdsCreateSuccessBottomSheet());
       });
-    }else{
+    } else {
       showCustomSnackBar(response.statusText, isError: true);
     }
     _isLoading = false;
     update();
   }
 
-  Future<void> editAdvertisement(AdsDetailsModel advertisementData, {required bool isFromDetailsPage, required TextEditingController validationController, List<TextEditingController>? titleController, List<TextEditingController>? descriptionController, List<Language>? languageList}) async {
+  Future<void> editAdvertisement(AdsDetailsModel advertisementData,
+      {required bool isFromDetailsPage,
+      required TextEditingController validationController,
+      List<TextEditingController>? titleController,
+      List<TextEditingController>? descriptionController,
+      List<Language>? languageList}) async {
     _isLoading = true;
     update();
 
     List<MultipartBody> selectedFiles = [];
-    if(selectedAdsType == 'profile_promotion'){
-      if(_pickedProfileImage != null){
+    if (selectedAdsType == 'profile_promotion') {
+      if (_pickedProfileImage != null) {
         selectedFiles.add(MultipartBody('profile_image', _pickedProfileImage!));
       }
-      if(_pickedCoverImage != null){
+      if (_pickedCoverImage != null) {
         selectedFiles.add(MultipartBody('cover_image', _pickedCoverImage!));
       }
-    }else if (selectedAdsType == 'video_promotion'){
-      if(_pickedVideoFile != null){
-        selectedFiles.add(MultipartBody('video_attachment',_pickedVideoFile!));
+    } else if (selectedAdsType == 'video_promotion') {
+      if (_pickedVideoFile != null) {
+        selectedFiles.add(MultipartBody('video_attachment', _pickedVideoFile!));
       }
     }
 
@@ -441,41 +483,49 @@ class AdvertisementController extends GetxController implements GetxService {
     };
 
     List<Translation> translations = [];
-    for(int index=0; index<languageList!.length; index++) {
+    for (int index = 0; index < languageList!.length; index++) {
       translations.add(Translation(
-        locale: languageList[index].key, key: 'title',
-        value: titleController![index].text.trim().isNotEmpty ? titleController[index].text.trim()
+        locale: languageList[index].key,
+        key: 'title',
+        value: titleController![index].text.trim().isNotEmpty
+            ? titleController[index].text.trim()
             : titleController[0].text.trim(),
       ));
       translations.add(Translation(
-        locale: languageList[index].key, key: 'description',
-        value: descriptionController![index].text.trim().isNotEmpty ? descriptionController[index].text.trim()
+        locale: languageList[index].key,
+        key: 'description',
+        value: descriptionController![index].text.trim().isNotEmpty
+            ? descriptionController[index].text.trim()
             : descriptionController[0].text.trim(),
       ));
     }
-    body['translations'] = jsonEncode(translations.map((v) => v.toJson()).toList());
+    body['translations'] =
+        jsonEncode(translations.map((v) => v.toJson()).toList());
 
-
-    Response response = await advertisementServiceInterface.editAdvertisement(id: advertisementData.id.toString(), body: body, selectedFile: selectedFiles);
-    if(response.statusCode == 200){
+    Response response = await advertisementServiceInterface.editAdvertisement(
+        id: advertisementData.id.toString(),
+        body: body,
+        selectedFile: selectedFiles);
+    if (response.statusCode == 200) {
       await getAdvertisementList('1', _type);
       await getAdvertisementDetails(id: advertisementData.id!);
-      if(isFromDetailsPage){
+      if (isFromDetailsPage) {
         Get.back();
       }
     }
 
     _isLoading = false;
     update();
-
   }
 
-  Future<bool> deleteAdvertisement(int id) async{
+  Future<bool> deleteAdvertisement(int id) async {
     _isLoading = true;
     update();
-    bool? success = await advertisementServiceInterface.deleteAdvertisement(id: id);
-    if(success) {
-      showCustomSnackBar('advertisement_deleted_successfully'.tr, isError: false);
+    bool? success =
+        await advertisementServiceInterface.deleteAdvertisement(id: id);
+    if (success) {
+      showCustomSnackBar('advertisement_deleted_successfully'.tr,
+          isError: false);
       getAdvertisementList('1', _type);
     } else {
       showCustomSnackBar('advertisement_not_deleted'.tr);
@@ -487,7 +537,7 @@ class AdvertisementController extends GetxController implements GetxService {
   }
 
   Future<void> getAdvertisementList(String offset, String type) async {
-    if(offset == '1') {
+    if (offset == '1') {
       _offsetList = [];
       _offset = 1;
       _type = type;
@@ -496,7 +546,8 @@ class AdvertisementController extends GetxController implements GetxService {
     }
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
-      advertisementModel = await advertisementServiceInterface.getAdvertisementList(offset, _type);
+      advertisementModel = await advertisementServiceInterface
+          .getAdvertisementList(offset, _type);
       if (advertisementModel != null) {
         if (offset == '1') {
           _advertisementList = [];
@@ -507,7 +558,7 @@ class AdvertisementController extends GetxController implements GetxService {
         update();
       }
     } else {
-      if(isLoading) {
+      if (isLoading) {
         _isLoading = false;
         update();
       }
@@ -515,35 +566,35 @@ class AdvertisementController extends GetxController implements GetxService {
   }
 
   Future<AdsDetailsModel?> getAdvertisementDetails({required int id}) async {
-
     _adsDetailsModel = null;
-    AdsDetailsModel? adsDetailsModel = await advertisementServiceInterface.getAdvertisementDetails(id: id);
-    if(adsDetailsModel != null) {
+    AdsDetailsModel? adsDetailsModel =
+        await advertisementServiceInterface.getAdvertisementDetails(id: id);
+    if (adsDetailsModel != null) {
       _adsDetailsModel = adsDetailsModel;
     }
     update();
     return _adsDetailsModel;
   }
 
-  List<PopupMenuModel> getPopupMenuList(String status , int active) {
+  List<PopupMenuModel> getPopupMenuList(String status, int active) {
     bool isExpired = (status == "approved" && active == 0);
     bool isRunning = (status == "approved" && active == 1);
     bool isApproved = (status == "approved" && active == 2);
-    if(status == "pending"){
+    if (status == "pending") {
       return [
         PopupMenuModel(title: "view_ads", icon: Icons.remove_red_eye_sharp),
         PopupMenuModel(title: "edit_ads", icon: Icons.edit),
         PopupMenuModel(title: "copy_ads", icon: Icons.restore),
         PopupMenuModel(title: "delete_ads", icon: Icons.delete),
       ];
-    } else if(isApproved){
+    } else if (isApproved) {
       return [
         PopupMenuModel(title: "view_ads", icon: Icons.remove_red_eye_sharp),
         PopupMenuModel(title: "edit_ads", icon: Icons.edit),
         PopupMenuModel(title: "copy_ads", icon: Icons.restore),
         PopupMenuModel(title: "delete_ads", icon: Icons.delete),
       ];
-    } else if(isRunning){
+    } else if (isRunning) {
       return [
         PopupMenuModel(title: "view_ads", icon: Icons.remove_red_eye_sharp),
         PopupMenuModel(title: "edit_ads", icon: Icons.edit),
@@ -551,14 +602,14 @@ class AdvertisementController extends GetxController implements GetxService {
         PopupMenuModel(title: "copy_ads", icon: Icons.restore),
         PopupMenuModel(title: "delete_ads", icon: Icons.delete),
       ];
-    } else if(isExpired || status == 'denied'){
+    } else if (isExpired || status == 'denied') {
       return [
         PopupMenuModel(title: "view_ads", icon: Icons.remove_red_eye_sharp),
         PopupMenuModel(title: "edit_and_resubmit_ads", icon: Icons.edit),
         PopupMenuModel(title: "copy_ads", icon: Icons.restore),
         PopupMenuModel(title: "delete_ads", icon: Icons.delete),
       ];
-    } else if (status == 'paused'){
+    } else if (status == 'paused') {
       return [
         PopupMenuModel(title: "view_ads", icon: Icons.remove_red_eye_sharp),
         PopupMenuModel(title: "edit_ads", icon: Icons.edit),
@@ -566,7 +617,7 @@ class AdvertisementController extends GetxController implements GetxService {
         PopupMenuModel(title: "copy_ads", icon: Icons.restore),
         PopupMenuModel(title: "delete_ads", icon: Icons.delete),
       ];
-    } else if (status == 'resumed'){
+    } else if (status == 'resumed') {
       return [
         PopupMenuModel(title: "view_ads", icon: Icons.remove_red_eye_sharp),
         PopupMenuModel(title: "edit_ads", icon: Icons.edit),
@@ -574,7 +625,7 @@ class AdvertisementController extends GetxController implements GetxService {
         PopupMenuModel(title: "copy_ads", icon: Icons.restore),
         PopupMenuModel(title: "delete_ads", icon: Icons.delete),
       ];
-    } else if (status == 'canceled'){
+    } else if (status == 'canceled') {
       return [
         PopupMenuModel(title: "view_ads", icon: Icons.remove_red_eye_sharp),
         PopupMenuModel(title: "edit_ads", icon: Icons.edit),
@@ -585,16 +636,18 @@ class AdvertisementController extends GetxController implements GetxService {
     return [];
   }
 
-  Future<bool> changeAdvertisementStatus({required String status, required int id}) async {
+  Future<bool> changeAdvertisementStatus(
+      {required String status, required int id}) async {
     _isLoading = true;
     update();
-    bool success = await advertisementServiceInterface.changeAdvertisementStatus(note: noteController!.text.trim(), status: status, id: id);
-    if(success) {
+    bool success =
+        await advertisementServiceInterface.changeAdvertisementStatus(
+            note: noteController!.text.trim(), status: status, id: id);
+    if (success) {
       getAdvertisementList('1', _type);
     }
     _isLoading = false;
     update();
     return success;
   }
-
 }

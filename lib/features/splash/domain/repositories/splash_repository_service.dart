@@ -1,4 +1,4 @@
-import 'package:stackfood_multivendor_restaurant/interface/repository_interface.dart';
+import 'package:surties_food_restaurant/interface/repository_interface.dart';
 
 abstract class SplashRepositoryInterface implements RepositoryInterface {
   Future<dynamic> getConfigData();

@@ -1,8 +1,8 @@
-import 'package:stackfood_multivendor_restaurant/features/category/domain/models/category_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/category/domain/services/categoty_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/controllers/restaurant_controller.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/domain/models/product_model.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/category/domain/models/category_model.dart';
+import 'package:surties_food_restaurant/features/category/domain/services/categoty_service_interface.dart';
+import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 
 class CategoryController extends GetxController implements GetxService {
   final CategoryServiceInterface categoryServiceInterface;
@@ -30,24 +30,27 @@ class CategoryController extends GetxController implements GetxService {
   bool get isExpanded => _isExpanded;
 
   Future<void> getCategoryList(Product? product) async {
-
     _categoryIds = [];
     _subCategoryIds = [];
     _categoryIds.add(0);
     _subCategoryIds.add(0);
 
-    List<CategoryModel>? categoryList = await categoryServiceInterface.getCategoryList();
+    List<CategoryModel>? categoryList =
+        await categoryServiceInterface.getCategoryList();
 
-    if(categoryList != null) {
+    if (categoryList != null) {
       _categoryList = [];
       _categoryList!.addAll(categoryList);
-      if(_categoryList != null){
-        for(int index=0; index<_categoryList!.length; index++) {
+      if (_categoryList != null) {
+        for (int index = 0; index < _categoryList!.length; index++) {
           _categoryIds.add(_categoryList![index].id);
         }
-        if(product != null) {
-          setCategoryIndex(_categoryIds.indexOf(int.parse(product.categoryIds![0].id!)), false);
-          await getSubCategoryList(int.parse(product.categoryIds![0].id!), product);
+        if (product != null) {
+          setCategoryIndex(
+              _categoryIds.indexOf(int.parse(product.categoryIds![0].id!)),
+              false);
+          await getSubCategoryList(
+              int.parse(product.categoryIds![0].id!), product);
         }
       }
     }
@@ -55,23 +58,25 @@ class CategoryController extends GetxController implements GetxService {
   }
 
   Future<void> getSubCategoryList(int? categoryID, Product? product) async {
-
     _subCategoryIndex = 0;
     _subCategoryList = [];
     _subCategoryIds = [];
     _subCategoryIds.add(0);
 
-    if(categoryID != 0) {
-      List<CategoryModel>? subCategoryList = await categoryServiceInterface.getSubCategoryList(categoryID);
-      if(subCategoryList != null){
+    if (categoryID != 0) {
+      List<CategoryModel>? subCategoryList =
+          await categoryServiceInterface.getSubCategoryList(categoryID);
+      if (subCategoryList != null) {
         _subCategoryList = [];
         _subCategoryList!.addAll(subCategoryList);
-        if(_subCategoryList != null){
-          for(int index=0; index<_subCategoryList!.length; index++) {
+        if (_subCategoryList != null) {
+          for (int index = 0; index < _subCategoryList!.length; index++) {
             _subCategoryIds.add(_subCategoryList![index].id);
           }
-          if(product != null && product.categoryIds!.length > 1) {
-            setSubCategoryIndex(_subCategoryIds.indexOf(int.parse(product.categoryIds![1].id!)), false);
+          if (product != null && product.categoryIds!.length > 1) {
+            setSubCategoryIndex(
+                _subCategoryIds.indexOf(int.parse(product.categoryIds![1].id!)),
+                false);
           }
         }
       }
@@ -81,19 +86,19 @@ class CategoryController extends GetxController implements GetxService {
 
   void setCategoryIndex(int? index, bool notify) {
     _categoryIndex = index;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
 
   void setSubCategoryIndex(int? index, bool notify) {
     _subCategoryIndex = index;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
 
-  void expandedUpdate(bool status){
+  void expandedUpdate(bool status) {
     _isExpanded = status;
     update();
   }
@@ -112,8 +117,9 @@ class CategoryController extends GetxController implements GetxService {
   void setCategory(int index) {
     _categoryIndex0 = index;
     Get.find<RestaurantController>().productList == null;
-    Get.find<RestaurantController>().getProductList('1', Get.find<RestaurantController>().type, categoryId: _categoryIndex0 != 0 ? _categoryList![index].id : 0);
+    Get.find<RestaurantController>().getProductList(
+        '1', Get.find<RestaurantController>().type,
+        categoryId: _categoryIndex0 != 0 ? _categoryList![index].id : 0);
     update();
   }
-
 }

@@ -1,9 +1,10 @@
-import 'package:stackfood_multivendor_restaurant/features/deliveryman/domain/models/delivery_man_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:surties_food_restaurant/features/deliveryman/domain/models/delivery_man_model.dart';
 
 abstract class DeliverymanServiceInterface {
   Future<dynamic> getDeliveryManList();
-  Future<dynamic> addDeliveryMan(DeliveryManModel deliveryMan, String pass, XFile? image, List<XFile> identities, String token, bool isAdd);
+  Future<dynamic> addDeliveryMan(DeliveryManModel deliveryMan, String pass,
+      XFile? image, List<XFile> identities, String token, bool isAdd);
   Future<dynamic> deleteDeliveryMan(int deliveryManID);
   Future<dynamic> updateDeliveryManStatus(int? deliveryManID, int status);
   Future<dynamic> getDeliveryManReviews(int? deliveryManID);

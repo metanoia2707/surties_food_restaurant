@@ -1,23 +1,23 @@
 import 'package:flutter/foundation.dart';
-import 'package:stackfood_multivendor_restaurant/features/chat/domain/services/chat_service_interface.dart';
-import 'package:stackfood_multivendor_restaurant/api/api_client.dart';
-import 'package:stackfood_multivendor_restaurant/features/chat/domain/models/notification_body_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/chat/domain/models/conversation_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/chat/domain/models/message_model.dart';
-import 'package:stackfood_multivendor_restaurant/features/profile/controllers/profile_controller.dart';
-import 'package:stackfood_multivendor_restaurant/helper/date_converter_helper.dart';
-import 'package:stackfood_multivendor_restaurant/helper/user_type.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/features/chat/domain/models/conversation_model.dart';
+import 'package:surties_food_restaurant/features/chat/domain/models/message_model.dart';
+import 'package:surties_food_restaurant/features/chat/domain/models/notification_body_model.dart';
+import 'package:surties_food_restaurant/features/chat/domain/services/chat_service_interface.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
+import 'package:surties_food_restaurant/helper/user_type.dart';
 
 class ChatController extends GetxController implements GetxService {
   final ChatServiceInterface chatServiceInterface;
   ChatController({required this.chatServiceInterface});
 
-  bool _isLoading= false;
+  bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  bool _tabLoading= false;
+  bool _tabLoading = false;
   bool get tabLoading => _tabLoading;
 
   List<bool>? _showDate;
@@ -38,7 +38,7 @@ class ChatController extends GetxController implements GetxService {
   bool _isMe = false;
   bool get isMe => _isMe;
 
-  List <XFile>?_chatImage = [];
+  List<XFile>? _chatImage = [];
   List<XFile>? get chatImage => _chatImage;
 
   int? _pageSize;
@@ -74,22 +74,25 @@ class ChatController extends GetxController implements GetxService {
   bool _isClickedOnImageOrFile = false;
   bool get isClickedOnImageOrFile => _isClickedOnImageOrFile;
 
-  Future<void> getConversationList(int offset, {String type = '', bool canUpdate = true, bool fromTab = true}) async {
-    if(fromTab) {
+  Future<void> getConversationList(int offset,
+      {String type = '', bool canUpdate = true, bool fromTab = true}) async {
+    if (fromTab) {
       _tabLoading = true;
     }
-    if(canUpdate) {
+    if (canUpdate) {
       update();
     }
     _searchConversationModel = null;
-    ConversationsModel? conversationModel = await chatServiceInterface.getConversationList(offset, type);
-    if(conversationModel != null) {
-      if(offset == 1) {
+    ConversationsModel? conversationModel =
+        await chatServiceInterface.getConversationList(offset, type);
+    if (conversationModel != null) {
+      if (offset == 1) {
         _conversationModel = conversationModel;
-      }else {
+      } else {
         _conversationModel!.totalSize = conversationModel.totalSize;
         _conversationModel!.offset = conversationModel.offset;
-        _conversationModel!.conversations!.addAll(conversationModel.conversations!);
+        _conversationModel!.conversations!
+            .addAll(conversationModel.conversations!);
       }
     }
     _tabLoading = false;
@@ -99,8 +102,9 @@ class ChatController extends GetxController implements GetxService {
   Future<void> searchConversation(String name) async {
     _searchConversationModel = ConversationsModel();
     update();
-    ConversationsModel? searchConversationModel = await chatServiceInterface.searchConversationList(name);
-    if(searchConversationModel != null) {
+    ConversationsModel? searchConversationModel =
+        await chatServiceInterface.searchConversationList(name);
+    if (searchConversationModel != null) {
       _searchConversationModel = searchConversationModel;
     }
     update();
@@ -111,50 +115,70 @@ class ChatController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> getMessages(int offset, NotificationBodyModel notificationBody, User? user, int? conversationID, {bool firstLoad = false}) async {
+  Future<void> getMessages(int offset, NotificationBodyModel notificationBody,
+      User? user, int? conversationID,
+      {bool firstLoad = false}) async {
     Response? response;
-    if(firstLoad) {
+    if (firstLoad) {
       _messageModel = null;
     }
 
-    if(notificationBody.customerId != null || notificationBody.type == UserType.customer.name || notificationBody.type == UserType.user.name) {
-      response = await chatServiceInterface.getMessages(offset, notificationBody.customerId, UserType.user, conversationID);
-    }else if(notificationBody.deliveryManId != null || notificationBody.type == UserType.delivery_man.name) {
-      response = await chatServiceInterface.getMessages(offset, notificationBody.deliveryManId, UserType.delivery_man, conversationID);
+    if (notificationBody.customerId != null ||
+        notificationBody.type == UserType.customer.name ||
+        notificationBody.type == UserType.user.name) {
+      response = await chatServiceInterface.getMessages(
+          offset, notificationBody.customerId, UserType.user, conversationID);
+    } else if (notificationBody.deliveryManId != null ||
+        notificationBody.type == UserType.delivery_man.name) {
+      response = await chatServiceInterface.getMessages(
+          offset,
+          notificationBody.deliveryManId,
+          UserType.delivery_man,
+          conversationID);
     }
 
-    if (response != null && response.body['messages'] != {} && response.statusCode == 200) {
+    if (response != null &&
+        response.body['messages'] != {} &&
+        response.statusCode == 200) {
       if (offset == 1) {
-        if(Get.find<ProfileController>().profileModel == null) {
+        if (Get.find<ProfileController>().profileModel == null) {
           await Get.find<ProfileController>().getProfile();
         }
         _messageModel = MessageModel.fromJson(response.body);
-        if(_messageModel!.conversation == null && user != null) {
-          _messageModel!.conversation = Conversation(sender: User(
-            id: Get.find<ProfileController>().profileModel!.id, imageFullUrl: Get.find<ProfileController>().profileModel!.imageFullUrl,
-            fName: Get.find<ProfileController>().profileModel!.fName, lName: Get.find<ProfileController>().profileModel!.lName,
-          ), receiver: user);
-        }else if(_messageModel!.conversation != null && _messageModel!.conversation!.receiverType == 'vendor') {
+        if (_messageModel!.conversation == null && user != null) {
+          _messageModel!.conversation = Conversation(
+              sender: User(
+                id: Get.find<ProfileController>().profileModel!.id,
+                imageFullUrl:
+                    Get.find<ProfileController>().profileModel!.imageFullUrl,
+                fName: Get.find<ProfileController>().profileModel!.fName,
+                lName: Get.find<ProfileController>().profileModel!.lName,
+              ),
+              receiver: user);
+        } else if (_messageModel!.conversation != null &&
+            _messageModel!.conversation!.receiverType == 'vendor') {
           User? receiver = _messageModel!.conversation!.receiver;
-          _messageModel!.conversation!.receiver = _messageModel!.conversation!.sender;
+          _messageModel!.conversation!.receiver =
+              _messageModel!.conversation!.sender;
           _messageModel!.conversation!.sender = receiver;
         }
-      }else {
-        _messageModel!.totalSize = MessageModel.fromJson(response.body).totalSize;
+      } else {
+        _messageModel!.totalSize =
+            MessageModel.fromJson(response.body).totalSize;
         _messageModel!.offset = MessageModel.fromJson(response.body).offset;
-        _messageModel!.messages!.addAll(MessageModel.fromJson(response.body).messages!);
+        _messageModel!.messages!
+            .addAll(MessageModel.fromJson(response.body).messages!);
       }
     }
     _isLoading = false;
     update();
-
   }
 
   void pickImage(bool isRemove) async {
-    if(isRemove) {
+    if (isRemove) {
       _imageFiles = [];
       _chatImage = [];
-    }else {
+    } else {
       _imageFiles = await ImagePicker().pickMultiImage(imageQuality: 40);
       if (_imageFiles != null) {
         _chatImage = imageFiles;
@@ -164,12 +188,15 @@ class ChatController extends GetxController implements GetxService {
     update();
   }
 
-  void removeImage(int index){
+  void removeImage(int index) {
     chatImage!.removeAt(index);
     update();
   }
 
-  Future<Response?> sendMessage({required String message, required NotificationBodyModel? notificationBody, required int? conversationId}) async {
+  Future<Response?> sendMessage(
+      {required String message,
+      required NotificationBodyModel? notificationBody,
+      required int? conversationId}) async {
     Response? response;
     _isLoading = true;
     update();
@@ -179,11 +206,20 @@ class ChatController extends GetxController implements GetxService {
       myImages.add(MultipartBody('image[]', image));
     }
 
-    if(notificationBody != null && (notificationBody.customerId != null || notificationBody.type == UserType.customer.name)) {
-      response = await chatServiceInterface.sendMessage(message, myImages, conversationId , notificationBody.customerId, UserType.customer);
-    }
-    else if(notificationBody != null && (notificationBody.deliveryManId != null || notificationBody.type == UserType.delivery_man.name)){
-      response = await chatServiceInterface.sendMessage(message, myImages, conversationId , notificationBody.deliveryManId, UserType.delivery_man);
+    if (notificationBody != null &&
+        (notificationBody.customerId != null ||
+            notificationBody.type == UserType.customer.name)) {
+      response = await chatServiceInterface.sendMessage(message, myImages,
+          conversationId, notificationBody.customerId, UserType.customer);
+    } else if (notificationBody != null &&
+        (notificationBody.deliveryManId != null ||
+            notificationBody.type == UserType.delivery_man.name)) {
+      response = await chatServiceInterface.sendMessage(
+          message,
+          myImages,
+          conversationId,
+          notificationBody.deliveryManId,
+          UserType.delivery_man);
     }
 
     if (response!.statusCode == 200) {
@@ -192,9 +228,11 @@ class ChatController extends GetxController implements GetxService {
       _isSendButtonActive = false;
       _isLoading = false;
       _messageModel = MessageModel.fromJson(response.body);
-      if(_messageModel!.conversation != null && _messageModel!.conversation!.receiverType == 'vendor') {
+      if (_messageModel!.conversation != null &&
+          _messageModel!.conversation!.receiverType == 'vendor') {
         User? receiver = _messageModel!.conversation!.receiver;
-        _messageModel!.conversation!.receiver = _messageModel!.conversation!.sender;
+        _messageModel!.conversation!.receiver =
+            _messageModel!.conversation!.sender;
         _messageModel!.conversation!.sender = receiver;
       }
     }
@@ -232,11 +270,14 @@ class ChatController extends GetxController implements GetxService {
 
   String getChatTime(String todayChatTimeInUtc, String? nextChatTimeInUtc) {
     String chatTime = '';
-    DateTime todayConversationDateTime = DateConverter.isoUtcStringToLocalTimeOnly(todayChatTimeInUtc);
-    try{
-      todayConversationDateTime = DateConverter.isoUtcStringToLocalTimeOnly(todayChatTimeInUtc);
-    }catch(e) {
-      todayConversationDateTime = DateConverter.dateTimeStringToDate(todayChatTimeInUtc);
+    DateTime todayConversationDateTime =
+        DateConverter.isoUtcStringToLocalTimeOnly(todayChatTimeInUtc);
+    try {
+      todayConversationDateTime =
+          DateConverter.isoUtcStringToLocalTimeOnly(todayChatTimeInUtc);
+    } catch (e) {
+      todayConversationDateTime =
+          DateConverter.dateTimeStringToDate(todayChatTimeInUtc);
     }
 
     if (kDebugMode) {
@@ -246,52 +287,67 @@ class ChatController extends GetxController implements GetxService {
     DateTime nextConversationDateTime;
     DateTime currentDate = DateTime.now();
 
-    if(nextChatTimeInUtc == null){
-      return chatTime = DateConverter.isoStringToLocalDateAndTime(todayChatTimeInUtc);
-    }else{
-      nextConversationDateTime = DateConverter.isoUtcStringToLocalTimeOnly(nextChatTimeInUtc);
+    if (nextChatTimeInUtc == null) {
+      return chatTime =
+          DateConverter.isoStringToLocalDateAndTime(todayChatTimeInUtc);
+    } else {
+      nextConversationDateTime =
+          DateConverter.isoUtcStringToLocalTimeOnly(nextChatTimeInUtc);
       if (kDebugMode) {
         print("Next Message DateTime: $nextConversationDateTime");
-        print("The Difference between this two : ${todayConversationDateTime.difference(nextConversationDateTime)}");
-        print("Today message Weekday: ${todayConversationDateTime.weekday}\n Next Message WeekDay: ${nextConversationDateTime.weekday}");
+        print(
+            "The Difference between this two : ${todayConversationDateTime.difference(nextConversationDateTime)}");
+        print(
+            "Today message Weekday: ${todayConversationDateTime.weekday}\n Next Message WeekDay: ${nextConversationDateTime.weekday}");
       }
 
-
-      if(todayConversationDateTime.difference(nextConversationDateTime) < const Duration(minutes: 30) &&
-          todayConversationDateTime.weekday == nextConversationDateTime.weekday){
+      if (todayConversationDateTime.difference(nextConversationDateTime) <
+              const Duration(minutes: 30) &&
+          todayConversationDateTime.weekday ==
+              nextConversationDateTime.weekday) {
         chatTime = '';
-      }else if(currentDate.weekday != todayConversationDateTime.weekday
-          && DateConverter.countDays(todayConversationDateTime) < 6){
-        if( (currentDate.weekday -1 == 0 ? 7 : currentDate.weekday -1) == todayConversationDateTime.weekday){
-          chatTime = DateConverter.convert24HourTimeTo12HourTimeWithDay(todayConversationDateTime, false);
-        }else{
-          chatTime = DateConverter.convertStringTimeToDateTime(todayConversationDateTime);
+      } else if (currentDate.weekday != todayConversationDateTime.weekday &&
+          DateConverter.countDays(todayConversationDateTime) < 6) {
+        if ((currentDate.weekday - 1 == 0 ? 7 : currentDate.weekday - 1) ==
+            todayConversationDateTime.weekday) {
+          chatTime = DateConverter.convert24HourTimeTo12HourTimeWithDay(
+              todayConversationDateTime, false);
+        } else {
+          chatTime = DateConverter.convertStringTimeToDateTime(
+              todayConversationDateTime);
         }
-
-      }else if(currentDate.weekday == todayConversationDateTime.weekday
-          && DateConverter.countDays(todayConversationDateTime) < 6){
-        chatTime = DateConverter.convert24HourTimeTo12HourTimeWithDay(todayConversationDateTime, true);
-      }else{
-        chatTime = DateConverter.isoStringToLocalDateAndTime(todayChatTimeInUtc);
+      } else if (currentDate.weekday == todayConversationDateTime.weekday &&
+          DateConverter.countDays(todayConversationDateTime) < 6) {
+        chatTime = DateConverter.convert24HourTimeTo12HourTimeWithDay(
+            todayConversationDateTime, true);
+      } else {
+        chatTime =
+            DateConverter.isoStringToLocalDateAndTime(todayChatTimeInUtc);
       }
     }
     return chatTime;
   }
 
-  String getChatTimeWithPrevious (Message currentChat, Message? previousChat) {
-    DateTime todayConversationDateTime = DateConverter.isoUtcStringToLocalTimeOnly(currentChat.createdAt ?? "");
+  String getChatTimeWithPrevious(Message currentChat, Message? previousChat) {
+    DateTime todayConversationDateTime =
+        DateConverter.isoUtcStringToLocalTimeOnly(currentChat.createdAt ?? "");
 
     DateTime previousConversationDateTime;
 
-    if(previousChat?.createdAt == null) {
+    if (previousChat?.createdAt == null) {
       return 'Not-Same';
     } else {
-      previousConversationDateTime = DateConverter.isoUtcStringToLocalTimeOnly(previousChat!.createdAt!);
-      if(kDebugMode) {
-        print("The Difference is ${previousConversationDateTime.difference(todayConversationDateTime) < const Duration(minutes: 30)}");
+      previousConversationDateTime =
+          DateConverter.isoUtcStringToLocalTimeOnly(previousChat!.createdAt!);
+      if (kDebugMode) {
+        print(
+            "The Difference is ${previousConversationDateTime.difference(todayConversationDateTime) < const Duration(minutes: 30)}");
       }
-      if(previousConversationDateTime.difference(todayConversationDateTime) < const Duration(minutes: 30) &&
-          todayConversationDateTime.weekday == previousConversationDateTime.weekday && _isSameUserWithPreviousMessage(currentChat, previousChat)) {
+      if (previousConversationDateTime.difference(todayConversationDateTime) <
+              const Duration(minutes: 30) &&
+          todayConversationDateTime.weekday ==
+              previousConversationDateTime.weekday &&
+          _isSameUserWithPreviousMessage(currentChat, previousChat)) {
         return '';
       } else {
         return 'Not-Same';
@@ -299,8 +355,11 @@ class ChatController extends GetxController implements GetxService {
     }
   }
 
-  bool _isSameUserWithPreviousMessage(Message? previousConversation, Message? currentConversation){
-    if(previousConversation?.senderId == currentConversation?.senderId && previousConversation?.message != null && currentConversation?.message !=null){
+  bool _isSameUserWithPreviousMessage(
+      Message? previousConversation, Message? currentConversation) {
+    if (previousConversation?.senderId == currentConversation?.senderId &&
+        previousConversation?.message != null &&
+        currentConversation?.message != null) {
       return true;
     }
     return false;
@@ -309,12 +368,13 @@ class ChatController extends GetxController implements GetxService {
   void toggleOnClickMessage(int onMessageTimeShowID, {bool recall = true}) {
     _onImageOrFileTimeShowID = 0;
     _isClickedOnImageOrFile = false;
-    if(_isClickedOnMessage && _onMessageTimeShowID != onMessageTimeShowID){
+    if (_isClickedOnMessage && _onMessageTimeShowID != onMessageTimeShowID) {
       _onMessageTimeShowID = onMessageTimeShowID;
-    }else if(_isClickedOnMessage && _onMessageTimeShowID == onMessageTimeShowID){
+    } else if (_isClickedOnMessage &&
+        _onMessageTimeShowID == onMessageTimeShowID) {
       _isClickedOnMessage = false;
       _onMessageTimeShowID = 0;
-    }else{
+    } else {
       _isClickedOnMessage = true;
       _onMessageTimeShowID = onMessageTimeShowID;
     }
@@ -322,20 +382,24 @@ class ChatController extends GetxController implements GetxService {
   }
 
   String? getOnPressChatTime(Message currentMessage) {
-
-    if(currentMessage.id == _onMessageTimeShowID || currentMessage.id == _onImageOrFileTimeShowID){
+    if (currentMessage.id == _onMessageTimeShowID ||
+        currentMessage.id == _onImageOrFileTimeShowID) {
       DateTime currentDate = DateTime.now();
-      DateTime todayConversationDateTime = DateConverter.isoUtcStringToLocalTimeOnly(currentMessage.createdAt ?? "");
+      DateTime todayConversationDateTime =
+          DateConverter.isoUtcStringToLocalTimeOnly(
+              currentMessage.createdAt ?? "");
 
-      if(currentDate.weekday != todayConversationDateTime.weekday && DateConverter.countDays(todayConversationDateTime) <= 7){
+      if (currentDate.weekday != todayConversationDateTime.weekday &&
+          DateConverter.countDays(todayConversationDateTime) <= 7) {
         return DateConverter.convertDateTimeToDate(todayConversationDateTime);
-      }else if(currentDate.weekday == todayConversationDateTime.weekday
-          && DateConverter.countDays(todayConversationDateTime) <= 7){
+      } else if (currentDate.weekday == todayConversationDateTime.weekday &&
+          DateConverter.countDays(todayConversationDateTime) <= 7) {
         return DateConverter.convertDateTimeToDate(todayConversationDateTime);
-      }else{
-        return DateConverter.isoStringToLocalDateAndTime(currentMessage.createdAt!);
+      } else {
+        return DateConverter.isoStringToLocalDateAndTime(
+            currentMessage.createdAt!);
       }
-    }else{
+    } else {
       return null;
     }
   }
@@ -343,16 +407,17 @@ class ChatController extends GetxController implements GetxService {
   void toggleOnClickImageAndFile(int onImageOrFileTimeShowID) {
     _onMessageTimeShowID = 0;
     _isClickedOnMessage = false;
-    if(_isClickedOnImageOrFile && _onImageOrFileTimeShowID != onImageOrFileTimeShowID){
+    if (_isClickedOnImageOrFile &&
+        _onImageOrFileTimeShowID != onImageOrFileTimeShowID) {
       _onImageOrFileTimeShowID = onImageOrFileTimeShowID;
-    }else if(_isClickedOnImageOrFile && _onImageOrFileTimeShowID == onImageOrFileTimeShowID){
+    } else if (_isClickedOnImageOrFile &&
+        _onImageOrFileTimeShowID == onImageOrFileTimeShowID) {
       _isClickedOnImageOrFile = false;
       _onImageOrFileTimeShowID = 0;
-    }else{
+    } else {
       _isClickedOnImageOrFile = true;
       _onImageOrFileTimeShowID = onImageOrFileTimeShowID;
     }
     update();
   }
-
 }

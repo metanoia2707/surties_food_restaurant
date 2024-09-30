@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/services.dart';
-import 'package:stackfood_multivendor_restaurant/features/dashboard/widgets/bottom_nav_item_widget.dart';
-import 'package:stackfood_multivendor_restaurant/features/disbursement/helper/disbursement_helper.dart';
-import 'package:stackfood_multivendor_restaurant/features/home/screens/home_screen.dart';
-import 'package:stackfood_multivendor_restaurant/features/menu/screens/menu_screen.dart';
-import 'package:stackfood_multivendor_restaurant/features/order/screens/order_history_screen.dart';
-import 'package:stackfood_multivendor_restaurant/features/payment/screens/wallet_screen.dart';
-import 'package:stackfood_multivendor_restaurant/features/restaurant/screens/restaurant_screen.dart';
-import 'package:stackfood_multivendor_restaurant/util/dimensions.dart';
-import 'package:stackfood_multivendor_restaurant/util/images.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/features/dashboard/widgets/bottom_nav_item_widget.dart';
+import 'package:surties_food_restaurant/features/disbursement/helper/disbursement_helper.dart';
+import 'package:surties_food_restaurant/features/home/screens/home_screen.dart';
+import 'package:surties_food_restaurant/features/menu/screens/menu_screen.dart';
+import 'package:surties_food_restaurant/features/order/screens/order_history_screen.dart';
+import 'package:surties_food_restaurant/features/payment/screens/wallet_screen.dart';
+import 'package:surties_food_restaurant/features/restaurant/screens/restaurant_screen.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
+import 'package:surties_food_restaurant/util/images.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int pageIndex;
@@ -23,7 +24,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class DashboardScreenState extends State<DashboardScreen> {
-
   PageController? _pageController;
   int _pageIndex = 0;
   late List<Widget> _screens;
@@ -63,10 +63,10 @@ class DashboardScreenState extends State<DashboardScreen> {
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
-        if(_pageIndex != 0) {
+        if (_pageIndex != 0) {
           _setPage(0);
-        }else {
-          if(_canExit) {
+        } else {
+          if (_canExit) {
             if (GetPlatform.isAndroid) {
               SystemNavigator.pop();
             } else if (GetPlatform.isIOS) {
@@ -74,7 +74,8 @@ class DashboardScreenState extends State<DashboardScreen> {
             }
           }
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('back_press_again_to_exit'.tr, style: const TextStyle(color: Colors.white)),
+            content: Text('back_press_again_to_exit'.tr,
+                style: const TextStyle(color: Colors.white)),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
@@ -88,41 +89,65 @@ class DashboardScreenState extends State<DashboardScreen> {
         }
       },
       child: Scaffold(
-
-        floatingActionButton: !GetPlatform.isMobile ? null : Material(
-          elevation: 4,
-          shape: const CircleBorder(),
-          child: FloatingActionButton(
-            backgroundColor: _pageIndex == 2 ? Theme.of(context).primaryColor : Theme.of(context).cardColor,
-            onPressed: () => _setPage(2),
-            child: Image.asset(
-              Images.restaurant, height: 20, width: 20,
-              color: _pageIndex == 2 ? Theme.of(context).cardColor : Theme.of(context).disabledColor,
-            ),
-          ),
-        ),
-        floatingActionButtonLocation: !GetPlatform.isMobile ? null : FloatingActionButtonLocation.centerDocked,
-
-        bottomNavigationBar: !GetPlatform.isMobile ? const SizedBox() : BottomAppBar(
-          elevation: 10,
-          notchMargin: 5,
-          surfaceTintColor: Theme.of(context).cardColor,
-          shadowColor: Theme.of(context).disabledColor,
-          shape: const CircularNotchedRectangle(),
-
-          child: Padding(
-            padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-            child: Row(children: [
-              BottomNavItemWidget(iconData: Icons.home, isSelected: _pageIndex == 0, onTap: () => _setPage(0)),
-              BottomNavItemWidget(iconData: Icons.shopping_bag, isSelected: _pageIndex == 1, onTap: () => _setPage(1)),
-              const Expanded(child: SizedBox()),
-              BottomNavItemWidget(iconData: Icons.monetization_on, isSelected: _pageIndex == 3, onTap: () => _setPage(3)),
-              BottomNavItemWidget(iconData: Icons.menu, isSelected: _pageIndex == 4, onTap: () {
-                Get.bottomSheet(const MenuScreen(), backgroundColor: Colors.transparent, isScrollControlled: true);
-              }),
-            ]),
-          ),
-        ),
+        floatingActionButton: !GetPlatform.isMobile
+            ? null
+            : Material(
+                elevation: 4,
+                shape: const CircleBorder(),
+                child: FloatingActionButton(
+                  backgroundColor: _pageIndex == 2
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).cardColor,
+                  onPressed: () => _setPage(2),
+                  child: Image.asset(
+                    Images.restaurant,
+                    height: 20,
+                    width: 20,
+                    color: _pageIndex == 2
+                        ? Theme.of(context).cardColor
+                        : Theme.of(context).disabledColor,
+                  ),
+                ),
+              ),
+        floatingActionButtonLocation: !GetPlatform.isMobile
+            ? null
+            : FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: !GetPlatform.isMobile
+            ? const SizedBox()
+            : BottomAppBar(
+                elevation: 10,
+                notchMargin: 5,
+                surfaceTintColor: Theme.of(context).cardColor,
+                shadowColor: Theme.of(context).disabledColor,
+                shape: const CircularNotchedRectangle(),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                  child: Row(children: [
+                    BottomNavItemWidget(
+                        iconData: Icons.home,
+                        isSelected: _pageIndex == 0,
+                        onTap: () => _setPage(0)),
+                    BottomNavItemWidget(
+                        iconData: Icons.shopping_bag,
+                        isSelected: _pageIndex == 1,
+                        onTap: () => _setPage(1)),
+                    const Expanded(child: SizedBox()),
+                    BottomNavItemWidget(
+                        iconData: Icons.monetization_on,
+                        isSelected: _pageIndex == 3,
+                        onTap: () => _setPage(3)),
+                    BottomNavItemWidget(
+                        iconData: Icons.menu,
+                        isSelected: _pageIndex == 4,
+                        onTap: () {
+                          Get.bottomSheet(const MenuScreen(),
+                              backgroundColor: Colors.transparent,
+                              isScrollControlled: true);
+                        }),
+                  ]),
+                ),
+              ),
         body: PageView.builder(
           controller: _pageController,
           itemCount: _screens.length,

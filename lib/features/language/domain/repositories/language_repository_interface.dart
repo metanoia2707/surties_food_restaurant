@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stackfood_multivendor_restaurant/interface/repository_interface.dart';
+import 'package:surties_food_restaurant/interface/repository_interface.dart';
 
 abstract class LanguageRepositoryInterface implements RepositoryInterface {
   void updateHeader(Locale locale);

@@ -1,5 +1,5 @@
-import 'package:stackfood_multivendor_restaurant/features/reports/controllers/report_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:surties_food_restaurant/features/reports/controllers/report_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class LineChartWidget extends StatefulWidget {
@@ -11,7 +11,6 @@ class LineChartWidget extends StatefulWidget {
 }
 
 class _ChartWidgetState extends State<LineChartWidget> {
-
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
@@ -19,17 +18,17 @@ class _ChartWidgetState extends State<LineChartWidget> {
       primaryXAxis: const CategoryAxis(),
       series: <LineSeries<SalesData, String>>[
         LineSeries<SalesData, String>(
-          /// Bind data source
-          dataSource: widget.reportController.label!.map((e) {
-            int index = widget.reportController.label!.indexOf(e);
-            return SalesData(e, widget.reportController.earning![index]);
-          }).toList(),
-          xValueMapper: (SalesData sales, _) => sales.year,
-          yValueMapper: (SalesData sales, _) => sales.sales,
-          onPointTap: (value){
-            debugPrint('=========$value');
-          }
-        ),
+
+            /// Bind data source
+            dataSource: widget.reportController.label!.map((e) {
+              int index = widget.reportController.label!.indexOf(e);
+              return SalesData(e, widget.reportController.earning![index]);
+            }).toList(),
+            xValueMapper: (SalesData sales, _) => sales.year,
+            yValueMapper: (SalesData sales, _) => sales.sales,
+            onPointTap: (value) {
+              debugPrint('=========$value');
+            }),
       ],
     );
   }
