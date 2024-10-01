@@ -8,90 +8,112 @@ import 'package:surties_food_restaurant/features/order/domain/models/order_detai
 import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/running_order_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/update_status_model.dart';
-import 'package:surties_food_restaurant/features/order/domain/services/order_service_interface.dart';
+import 'package:surties_food_restaurant/features/order/domain/repositories/order_repository.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:surties_food_restaurant/features/subscription/domain/models/subscription_model.dart';
 
 class OrderController extends GetxController implements GetxService {
-  final OrderServiceInterface orderServiceInterface;
-  OrderController({required this.orderServiceInterface});
+  final OrderRepository orderRepository;
+
+  OrderController({required this.orderRepository});
 
   List<OrderModel>? _runningOrderList;
+
   List<OrderModel>? get runningOrderList => _runningOrderList;
 
   List<RunningOrderModel>? _runningOrders;
+
   List<RunningOrderModel>? get runningOrders => _runningOrders;
 
   List<OrderModel>? _historyOrderList;
+
   List<OrderModel>? get historyOrderList => _historyOrderList;
 
   List<OrderDetailsModel>? _orderDetailsModel;
+
   List<OrderDetailsModel>? get orderDetailsModel => _orderDetailsModel;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   int _orderIndex = 0;
+
   int get orderIndex => _orderIndex;
 
   bool _campaignOnly = false;
+
   bool get campaignOnly => _campaignOnly;
 
   bool _subscriptionOnly = false;
+
   bool get subscriptionOnly => _subscriptionOnly;
 
   String _otp = '';
+
   String get otp => _otp;
 
   int _historyIndex = 0;
+
   int get historyIndex => _historyIndex;
 
   final List<String> _statusList = ['all', 'delivered', 'refunded'];
+
   List<String> get statusList => _statusList;
 
   bool _paginate = false;
+
   bool get paginate => _paginate;
 
   int? _pageSize;
+
   int? get pageSize => _pageSize;
 
   List<int> _offsetList = [];
 
   int _offset = 1;
+
   int get offset => _offset;
 
   String _orderType = 'all';
+
   String get orderType => _orderType;
 
   OrderModel? _orderModel;
+
   OrderModel? get orderModel => _orderModel;
 
   List<CancellationData>? _orderCancelReasons;
+
   List<CancellationData>? get orderCancelReasons => _orderCancelReasons;
 
   String? _cancelReason = '';
+
   String? get cancelReason => _cancelReason;
 
   SubscriptionModel? _subscriptionModel;
+
   SubscriptionModel? get subscriptionModel => _subscriptionModel;
 
   bool _isFirstTimeSubOrder = true;
 
   bool _showDeliveryImageField = false;
+
   bool get showDeliveryImageField => _showDeliveryImageField;
 
   List<XFile> _pickedPrescriptions = [];
+
   List<XFile> get pickedPrescriptions => _pickedPrescriptions;
 
   bool _hideNotificationButton = false;
+
   bool get hideNotificationButton => _hideNotificationButton;
 
   Future<bool> sendDeliveredNotification(int? orderID) async {
     _hideNotificationButton = true;
     update();
-    bool success =
-        await orderServiceInterface.sendDeliveredNotification(orderID);
+    bool success = await orderRepository.sendDeliveredNotification(orderID);
     bool isSuccess;
     success ? isSuccess = true : isSuccess = false;
     _hideNotificationButton = false;
@@ -136,7 +158,7 @@ class OrderController extends GetxController implements GetxService {
 
   Future<void> getOrderCancelReasons() async {
     List<CancellationData>? orderCancelReasons =
-        await orderServiceInterface.getCancelReasons();
+        await orderRepository.getCancelReasons();
     if (orderCancelReasons != null) {
       _orderCancelReasons = [];
       _orderCancelReasons!.addAll(orderCancelReasons);
@@ -150,8 +172,7 @@ class OrderController extends GetxController implements GetxService {
         orderModel.deliveryMan != null) {
       _orderModel = orderModel;
     } else {
-      OrderModel? order =
-          await orderServiceInterface.getOrderWithId(orderModel.id);
+      OrderModel? order = await orderRepository.getOrderWithId(orderModel.id);
       if (order != null) {
         _orderModel = order;
       }
@@ -161,7 +182,7 @@ class OrderController extends GetxController implements GetxService {
 
   Future<void> getCurrentOrders() async {
     List<OrderModel>? runningOrderList =
-        await orderServiceInterface.getCurrentOrders();
+        await orderRepository.getCurrentOrders();
     if (runningOrderList != null) {
       _runningOrderList = [];
       _runningOrders = [
@@ -189,7 +210,7 @@ class OrderController extends GetxController implements GetxService {
     }
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
-      PaginatedOrderModel? historyOrderModel = await orderServiceInterface
+      PaginatedOrderModel? historyOrderModel = await orderRepository
           .getPaginatedOrderList(offset, _statusList[_historyIndex]);
       if (historyOrderModel != null) {
         if (offset == 1) {
@@ -237,8 +258,8 @@ class OrderController extends GetxController implements GetxService {
       processingTime: processingTime,
       reason: reason,
     );
-    ResponseModel responseModel = await orderServiceInterface.updateOrderStatus(
-        updateStatusBody, multiParts);
+    ResponseModel responseModel =
+        await orderRepository.updateOrderStatus(updateStatusBody, multiParts);
     Get.back(result: responseModel.isSuccess);
     if (responseModel.isSuccess) {
       if (back) {
@@ -256,7 +277,7 @@ class OrderController extends GetxController implements GetxService {
 
   Future<void> getOrderDetails(int orderID) async {
     _orderDetailsModel = null;
-    Response response = await orderServiceInterface.getOrderDetails(orderID);
+    Response response = await orderRepository.get(orderID);
     if (response.statusCode == 200) {
       _orderDetailsModel = [];
       response.body['order']['details'].forEach((orderDetails) =>
@@ -388,9 +409,8 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  String? getBluetoothMacAddress() =>
-      orderServiceInterface.getBluetoothAddress();
+  String? getBluetoothMacAddress() => orderRepository.getBluetoothAddress();
 
   void setBluetoothMacAddress(String? address) =>
-      orderServiceInterface.setBluetoothAddress(address);
+      orderRepository.setBluetoothAddress(address);
 }

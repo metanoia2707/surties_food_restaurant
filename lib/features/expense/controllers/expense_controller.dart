@@ -1,40 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/features/expense/domain/models/expense_model.dart';
-import 'package:surties_food_restaurant/features/expense/domain/services/expense_service_interface.dart';
+import 'package:surties_food_restaurant/features/expense/domain/repositories/expense_repository.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 
 class ExpenseController extends GetxController implements GetxService {
-  final ExpenseServiceInterface expenseServiceInterface;
-  ExpenseController({required this.expenseServiceInterface});
+  final ExpenseRepository expenseRepository;
+
+  ExpenseController({required this.expenseRepository});
 
   int? _pageSize;
+
   int? get pageSize => _pageSize;
 
   List<String> _offsetList = [];
 
   int _offset = 1;
+
   int get offset => _offset;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   List<Expense>? _expenses;
+
   List<Expense>? get expenses => _expenses;
 
   late DateTimeRange _selectedDateRange;
 
   String? _from;
+
   String? get from => _from;
 
   String? _to;
+
   String? get to => _to;
 
   String? _searchText;
+
   String? get searchText => _searchText;
 
   bool _searchMode = false;
+
   bool get searchMode => _searchMode;
 
   void initSetDate() {
@@ -70,17 +79,14 @@ class ExpenseController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      ExpenseBodyModel expenseModel =
-          await expenseServiceInterface.getExpenseList(
-              offset: int.parse(offset),
-              from: from,
-              to: to,
-              restaurantId: Get.find<ProfileController>()
-                  .profileModel!
-                  .restaurants![0]
-                  .id,
-              searchText: searchText);
-      if (expenseModel.expense != null) {
+      ExpenseBodyModel? expenseModel = await expenseRepository.getExpenseList(
+          offset: int.parse(offset),
+          from: from,
+          to: to,
+          restaurantId:
+              Get.find<ProfileController>().profileModel!.restaurants![0].id,
+          searchText: searchText);
+      if (expenseModel!.expense != null) {
         if (offset == '1') {
           _expenses = [];
         }

@@ -3,25 +3,30 @@ import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/features/business/domain/models/business_plan_model.dart';
 import 'package:surties_food_restaurant/features/business/domain/models/package_model.dart';
-import 'package:surties_food_restaurant/features/business/domain/services/business_service_interface.dart';
+import 'package:surties_food_restaurant/features/business/domain/repositories/business_repository.dart';
 import 'package:surties_food_restaurant/features/business/widgets/show_modal_bottom_sheet_widget.dart';
 import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class BusinessController extends GetxController implements GetxService {
-  final BusinessServiceInterface businessServiceInterface;
-  BusinessController({required this.businessServiceInterface});
+  final BusinessRepository businessRepository;
+
+  BusinessController({required this.businessRepository});
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   PackageModel? _packageModel;
+
   PackageModel? get packageModel => _packageModel;
 
   String _businessPlanStatus = 'business';
+
   String get businessPlanStatus => _businessPlanStatus;
 
   int _activeSubscriptionIndex = 0;
+
   int get activeSubscriptionIndex => _activeSubscriptionIndex;
 
   int _businessIndex = Get.find<SplashController>().configModel!.businessPlan !=
@@ -30,21 +35,23 @@ class BusinessController extends GetxController implements GetxService {
               0
       ? 1
       : 0;
+
   int get businessIndex => _businessIndex;
 
   bool isFirstTime = true;
 
   int _paymentIndex = 0;
+
   int get paymentIndex => _paymentIndex;
 
   String? _digitalPaymentName;
+
   String? get digitalPaymentName => _digitalPaymentName;
 
   String? _subscribedType;
 
   Future<void> getPackageList() async {
-    PackageModel? packageModel =
-        await businessServiceInterface.getPackageList();
+    PackageModel? packageModel = await businessRepository.getList();
     if (packageModel != null) {
       _packageModel = null;
       _packageModel = packageModel;
@@ -161,7 +168,7 @@ class BusinessController extends GetxController implements GetxService {
     _isLoading = true;
     update();
     Response response =
-        await businessServiceInterface.setUpBusinessPlan(businessPlanBody);
+        await businessRepository.setUpBusinessPlan(businessPlanBody);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body['id'] != null) {
@@ -184,8 +191,8 @@ class BusinessController extends GetxController implements GetxService {
   Future<ResponseModel> _subscriptionPayment(String id) async {
     _isLoading = true;
     update();
-    Response response = await businessServiceInterface.subscriptionPayment(
-        id, digitalPaymentName!);
+    Response response =
+        await businessRepository.subscriptionPayment(id, digitalPaymentName!);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       String redirectUrl = response.body['redirect_link'];

@@ -8,14 +8,12 @@ import 'package:surties_food_restaurant/features/profile/domain/models/profile_m
 import 'package:surties_food_restaurant/features/restaurant/domain/models/cuisine_model.dart';
 import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 import 'package:surties_food_restaurant/features/restaurant/domain/models/review_model.dart';
-import 'package:surties_food_restaurant/features/restaurant/domain/repositories/restaurant_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class RestaurantRepository implements RestaurantRepositoryInterface {
+class RestaurantRepository {
   final ApiClient apiClient;
   RestaurantRepository({required this.apiClient});
 
-  @override
   Future<CuisineModel?> getList() async {
     CuisineModel? cuisineModel;
     Response response = await apiClient.getData(AppConstants.cuisineUri);
@@ -25,7 +23,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return cuisineModel;
   }
 
-  @override
   Future<ProductModel?> getProductList(
       String offset, String type, int? categoryId) async {
     ProductModel? productModel;
@@ -37,7 +34,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return productModel;
   }
 
-  @override
   Future<bool> updateRestaurant(
       Restaurant restaurant,
       List<String> cuisines,
@@ -89,7 +85,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future<bool> addProduct(
       Product product,
       XFile? image,
@@ -157,14 +152,12 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future<bool> delete({int? id}) async {
     Response response = await apiClient.postData(
         '${AppConstants.deleteProductUri}?id=$id', {"_method": "delete"});
     return (response.statusCode == 200);
   }
 
-  @override
   Future<List<ReviewModel>?> getRestaurantReviewList(
       int? restaurantID, String? searchText) async {
     List<ReviewModel>? restaurantReviewList;
@@ -178,7 +171,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return restaurantReviewList;
   }
 
-  @override
   Future<List<ReviewModel>?> getProductReviewList(int? productID) async {
     List<ReviewModel>? productReviewList;
     Response response =
@@ -191,14 +183,12 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return productReviewList;
   }
 
-  @override
   Future<bool> updateProductStatus(int? productID, int status) async {
     Response response = await apiClient.getData(
         '${AppConstants.updateProductStatusUri}?id=$productID&status=$status');
     return (response.statusCode == 200);
   }
 
-  @override
   Future<bool> updateRecommendedProductStatus(
       int? productID, int status) async {
     Response response = await apiClient.getData(
@@ -206,7 +196,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future<int?> addSchedule(Schedules schedule) async {
     int? scheduleID;
     Response response =
@@ -217,14 +206,12 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return scheduleID;
   }
 
-  @override
   Future<bool> deleteSchedule(int? scheduleID) async {
     Response response = await apiClient.postData(
         '${AppConstants.deleteSchedule}$scheduleID', {"_method": "delete"});
     return (response.statusCode == 200);
   }
 
-  @override
   Future<Product?> get(int id) async {
     Product? product;
     Response response =
@@ -235,7 +222,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return product;
   }
 
-  @override
   Future<bool> updateAnnouncement(int status, String announcement) async {
     Map<String, String> fields = {
       'announcement_status': status.toString(),
@@ -247,7 +233,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future<bool> updateReply(int reviewID, String reply) async {
     Map<String, String> fields = {
       'id': reviewID.toString(),
@@ -259,7 +244,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future<List<String?>?> getCharacteristicSuggestionList() async {
     List<String?>? characteristicSuggestionList;
     Response response =
@@ -272,7 +256,6 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return characteristicSuggestionList;
   }
 
-  @override
   Future<bool> updateProductStock(String foodId, String itemStock,
       Product product, List<List<String>> variationStock) async {
     Map<int, String> options = {};
@@ -309,12 +292,10 @@ class RestaurantRepository implements RestaurantRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future add(value) {
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     throw UnimplementedError();
   }

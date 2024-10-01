@@ -1,32 +1,40 @@
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/features/category/domain/models/category_model.dart';
-import 'package:surties_food_restaurant/features/category/domain/services/categoty_service_interface.dart';
+import 'package:surties_food_restaurant/features/category/domain/repositories/category_repository.dart';
 import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
 import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 
 class CategoryController extends GetxController implements GetxService {
-  final CategoryServiceInterface categoryServiceInterface;
-  CategoryController({required this.categoryServiceInterface});
+  final CategoryRepository categoryRepository;
+
+  CategoryController({required this.categoryRepository});
 
   List<int?> _categoryIds = [];
+
   List<int?> get categoryIds => _categoryIds;
 
   List<int?> _subCategoryIds = [];
+
   List<int?> get subCategoryIds => _subCategoryIds;
 
   List<CategoryModel>? _categoryList;
+
   List<CategoryModel>? get categoryList => _categoryList;
 
   List<CategoryModel>? _subCategoryList;
+
   List<CategoryModel>? get subCategoryList => _subCategoryList;
 
   int? _categoryIndex = 0;
+
   int? get categoryIndex => _categoryIndex;
 
   int? _subCategoryIndex = 0;
+
   int? get subCategoryIndex => _subCategoryIndex;
 
   bool _isExpanded = false;
+
   bool get isExpanded => _isExpanded;
 
   Future<void> getCategoryList(Product? product) async {
@@ -35,8 +43,7 @@ class CategoryController extends GetxController implements GetxService {
     _categoryIds.add(0);
     _subCategoryIds.add(0);
 
-    List<CategoryModel>? categoryList =
-        await categoryServiceInterface.getCategoryList();
+    List<CategoryModel>? categoryList = await categoryRepository.getList();
 
     if (categoryList != null) {
       _categoryList = [];
@@ -65,7 +72,7 @@ class CategoryController extends GetxController implements GetxService {
 
     if (categoryID != 0) {
       List<CategoryModel>? subCategoryList =
-          await categoryServiceInterface.getSubCategoryList(categoryID);
+          await categoryRepository.getSubCategoryList(categoryID);
       if (subCategoryList != null) {
         _subCategoryList = [];
         _subCategoryList!.addAll(subCategoryList);
@@ -104,9 +111,11 @@ class CategoryController extends GetxController implements GetxService {
   }
 
   int? _categoryIndex0 = 0;
+
   int? get categoryIndex0 => _categoryIndex0;
 
   int? _selectedCategoryIndex = 0;
+
   int? get selectedCategoryIndex => _selectedCategoryIndex;
 
   void setSelectedCategoryIndex(int index) {

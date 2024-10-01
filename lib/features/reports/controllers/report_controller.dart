@@ -1,63 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/features/reports/domain/models/report_model.dart';
-import 'package:surties_food_restaurant/features/reports/domain/services/report_service_interface.dart';
+import 'package:surties_food_restaurant/features/reports/domain/repositories/report_repository.dart';
 import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 
 class ReportController extends GetxController implements GetxService {
-  final ReportServiceInterface reportServiceInterface;
-  ReportController({required this.reportServiceInterface});
+  final ReportRepository reportRepository;
+
+  ReportController({required this.reportRepository});
 
   int? _pageSize;
+
   int? get pageSize => _pageSize;
 
   List<String> _offsetList = [];
 
   int _offset = 1;
+
   int get offset => _offset;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   double? _onHold;
+
   double? get onHold => _onHold;
 
   double? _canceled;
+
   double? get canceled => _canceled;
 
   double? _completedTransactions;
+
   double? get completedTransactions => _completedTransactions;
 
   List<OrderTransactions>? _orderTransactions;
+
   List<OrderTransactions>? get orderTransactions => _orderTransactions;
 
   late DateTimeRange _selectedDateRange;
 
   String? _from;
+
   String? get from => _from;
 
   String? _to;
+
   String? get to => _to;
 
   OtherData? _otherData;
+
   OtherData? get otherData => _otherData;
 
   List<Orders>? _orders;
+
   List<Orders>? get orders => _orders;
 
   List<String>? _label;
+
   List<String>? get label => _label;
 
   List<double>? _earning;
+
   List<double>? get earning => _earning;
 
   double? _earningAvg;
+
   double? get earningAvg => _earningAvg;
 
   List<Foods>? _foods;
+
   List<Foods>? get foods => _foods;
 
   String? _avgType;
+
   String? get avgType => _avgType;
 
   void initSetDate() {
@@ -81,7 +98,7 @@ class ReportController extends GetxController implements GetxService {
       _offsetList.add(offset);
 
       TransactionReportModel? transactionReport =
-          await reportServiceInterface.getTransactionReportList(
+          await reportRepository.getTransactionReportList(
               offset: int.parse(offset), from: from, to: to);
       if (transactionReport != null) {
         TransactionReportModel transactionReportModel = transactionReport;
@@ -118,8 +135,8 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      OrderReportModel? orderReport = await reportServiceInterface
-          .getOrderReportList(offset: int.parse(offset), from: from, to: to);
+      OrderReportModel? orderReport = await reportRepository.getOrderReportList(
+          offset: int.parse(offset), from: from, to: to);
       if (orderReport != null) {
         OrderReportModel orderReportModel = orderReport;
         _otherData = orderReportModel.otherData;
@@ -153,7 +170,7 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      OrderReportModel? campaignReport = await reportServiceInterface
+      OrderReportModel? campaignReport = await reportRepository
           .getCampaignReportList(offset: int.parse(offset), from: from, to: to);
       if (campaignReport != null) {
         OrderReportModel campaignReportModel = campaignReport;
@@ -190,8 +207,8 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      FoodReportModel? foodReport = await reportServiceInterface
-          .getFoodReportList(offset: int.parse(offset), from: from, to: to);
+      FoodReportModel? foodReport = await reportRepository.getFoodReportList(
+          offset: int.parse(offset), from: from, to: to);
       if (foodReport != null) {
         FoodReportModel foodReportModel = foodReport;
         if (offset == '1') {

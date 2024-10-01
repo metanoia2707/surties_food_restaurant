@@ -5,14 +5,13 @@ import 'package:surties_food_restaurant/features/disbursement/domain/models/disb
     as disburse;
 import 'package:surties_food_restaurant/features/disbursement/domain/models/disbursement_report_model.dart'
     as report;
-import 'package:surties_food_restaurant/features/disbursement/domain/repositories/disbursement_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class DisbursementRepository implements DisbursementRepositoryInterface {
+class DisbursementRepository {
   final ApiClient apiClient;
+
   DisbursementRepository({required this.apiClient});
 
-  @override
   Future<ResponseModel?> addWithdraw(Map<String?, String> data) async {
     ResponseModel? responseModel;
     Response response =
@@ -23,7 +22,6 @@ class DisbursementRepository implements DisbursementRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<disburse.DisbursementMethodBody?> getList() async {
     disburse.DisbursementMethodBody? disbursementMethodBody;
     Response response = await apiClient
@@ -35,7 +33,6 @@ class DisbursementRepository implements DisbursementRepositoryInterface {
     return disbursementMethodBody;
   }
 
-  @override
   Future<ResponseModel?> makeDefaultMethod(Map<String?, String> data) async {
     ResponseModel? responseModel;
     Response response = await apiClient.postData(
@@ -46,7 +43,6 @@ class DisbursementRepository implements DisbursementRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<ResponseModel?> delete({int? id}) async {
     ResponseModel? responseModel;
     Response response = await apiClient.postData(
@@ -58,7 +54,6 @@ class DisbursementRepository implements DisbursementRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<report.DisbursementReportModel?> getDisbursementReport(
       int offset) async {
     report.DisbursementReportModel? disbursementReportModel;
@@ -71,19 +66,16 @@ class DisbursementRepository implements DisbursementRepositoryInterface {
     return disbursementReportModel;
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();

@@ -3,14 +3,12 @@ import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/features/coupon/domain/models/coupon_body_model.dart';
-import 'package:surties_food_restaurant/features/coupon/domain/repositories/coupon_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class CouponRepository implements CouponRepositoryInterface {
+class CouponRepository {
   final ApiClient apiClient;
   CouponRepository({required this.apiClient});
 
-  @override
   Future<List<CouponBodyModel>?> getCouponList(int offset) async {
     List<CouponBodyModel>? couponList;
     Response response = await apiClient
@@ -24,7 +22,6 @@ class CouponRepository implements CouponRepositoryInterface {
     return couponList;
   }
 
-  @override
   Future<CouponBodyModel?> get(int id) async {
     CouponBodyModel? couponDetails;
     Response response = await apiClient
@@ -35,7 +32,6 @@ class CouponRepository implements CouponRepositoryInterface {
     return couponDetails;
   }
 
-  @override
   Future<bool> changeStatus(int? couponId, int status) async {
     bool success = false;
     Response response = await apiClient.postData(
@@ -48,7 +44,6 @@ class CouponRepository implements CouponRepositoryInterface {
     return success;
   }
 
-  @override
   Future<ResponseModel?> addCoupon(Map<String, String?> data) async {
     ResponseModel? responseModel;
     Response response =
@@ -59,7 +54,6 @@ class CouponRepository implements CouponRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<ResponseModel?> update(Map<String, dynamic> body) async {
     ResponseModel? responseModel;
     Response response =
@@ -70,7 +64,6 @@ class CouponRepository implements CouponRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<ResponseModel?> delete({int? id}) async {
     ResponseModel? responseModel;
     Response response = await apiClient
@@ -81,13 +74,11 @@ class CouponRepository implements CouponRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();

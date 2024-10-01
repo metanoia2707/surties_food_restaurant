@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
 import 'package:surties_food_restaurant/features/language/domain/models/language_model.dart';
-import 'package:surties_food_restaurant/features/language/domain/services/language_service_interface.dart';
+import 'package:surties_food_restaurant/features/language/domain/repositories/language_repository.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class LocalizationController extends GetxController implements GetxService {
-  final LanguageServiceInterface languageServiceInterface;
+  final LanguageRepository languageRepository;
 
-  LocalizationController({required this.languageServiceInterface}) {
+  LocalizationController({required this.languageRepository}) {
     loadCurrentLanguage();
   }
 
@@ -31,7 +31,7 @@ class LocalizationController extends GetxController implements GetxService {
     Get.updateLocale(locale);
     _locale = locale;
     _locale.languageCode == 'ar' ? _isLtr = false : _isLtr = true;
-    languageServiceInterface.updateHeader(_locale);
+    languageRepository.updateHeader(_locale);
 
     if (!fromBottomSheet) {
       saveLanguage(_locale);
@@ -50,7 +50,7 @@ class LocalizationController extends GetxController implements GetxService {
   }
 
   void loadCurrentLanguage() async {
-    _locale = languageServiceInterface.getLocaleFromSharedPref();
+    _locale = languageRepository.getLocaleFromSharedPref();
     _isLtr = _locale.languageCode != 'ar';
     for (int index = 0; index < AppConstants.languages.length; index++) {
       if (_locale.languageCode == AppConstants.languages[index].languageCode) {
@@ -64,16 +64,16 @@ class LocalizationController extends GetxController implements GetxService {
   }
 
   void saveLanguage(Locale locale) async {
-    languageServiceInterface.saveLanguage(locale);
+    languageRepository.saveLanguage(locale);
   }
 
   void saveCacheLanguage(Locale? locale) {
-    languageServiceInterface.saveCacheLanguage(
-        locale ?? languageServiceInterface.getLocaleFromSharedPref());
+    languageRepository.saveCacheLanguage(
+        locale ?? languageRepository.getLocaleFromSharedPref());
   }
 
   Locale getCacheLocaleFromSharedPref() {
-    return languageServiceInterface.getCacheLocaleFromSharedPref();
+    return languageRepository.getCacheLocaleFromSharedPref();
   }
 
   void searchSelectedLanguage() {

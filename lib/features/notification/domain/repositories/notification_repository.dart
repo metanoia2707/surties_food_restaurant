@@ -2,16 +2,15 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/features/notification/domain/models/notification_model.dart';
-import 'package:surties_food_restaurant/features/notification/domain/repositories/notification_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class NotificationRepository implements NotificationRepositoryInterface {
+class NotificationRepository {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
+
   NotificationRepository(
       {required this.apiClient, required this.sharedPreferences});
 
-  @override
   Future<List<NotificationModel>?> getList() async {
     List<NotificationModel>? notificationList;
     Response response = await apiClient.getData(AppConstants.notificationUri);
@@ -28,32 +27,26 @@ class NotificationRepository implements NotificationRepositoryInterface {
     return notificationList;
   }
 
-  @override
   void saveSeenNotificationCount(int count) {
     sharedPreferences.setInt(AppConstants.notificationCount, count);
   }
 
-  @override
   int? getSeenNotificationCount() {
     return sharedPreferences.getInt(AppConstants.notificationCount);
   }
 
-  @override
   Future add(value) {
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     throw UnimplementedError();
   }

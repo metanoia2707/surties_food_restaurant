@@ -5,40 +5,50 @@ import 'package:surties_food_restaurant/features/business/controllers/business_c
 import 'package:surties_food_restaurant/features/business/domain/models/package_model.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:surties_food_restaurant/features/subscription/domain/services/subscription_service_interface.dart';
+import 'package:surties_food_restaurant/features/subscription/domain/repositories/subscription_repository.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class SubscriptionController extends GetxController implements GetxService {
-  final SubscriptionServiceInterface subscriptionServiceInterface;
-  SubscriptionController({required this.subscriptionServiceInterface});
+  final SubscriptionRepository subscriptionRepository;
+
+  SubscriptionController({required this.subscriptionRepository});
 
   int _activeSubscriptionIndex = 0;
+
   int get activeSubscriptionIndex => _activeSubscriptionIndex;
 
   String _renewStatus = 'packages';
+
   String get renewStatus => _renewStatus;
 
   bool? _isActivePackage;
+
   bool? get isActivePackage => _isActivePackage;
 
   String? _expiredToken;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   PackageModel? _packageModel;
+
   PackageModel? get packageModel => _packageModel;
 
   bool _showSubscriptionAlertDialog = true;
+
   bool get showSubscriptionAlertDialog => _showSubscriptionAlertDialog;
 
   int _paymentIndex = 0;
+
   int get paymentIndex => _paymentIndex;
 
   ProfileModel? _profileModel;
+
   ProfileModel? get profileModel => _profileModel;
 
   String? _digitalPaymentName;
+
   String? get digitalPaymentName => _digitalPaymentName;
 
   void changeDigitalPaymentName(String? name, {bool canUpdate = true}) {
@@ -109,7 +119,7 @@ class SubscriptionController extends GetxController implements GetxService {
       };
     }
     Response response =
-        await subscriptionServiceInterface.renewBusinessPlan(body, header);
+        await subscriptionRepository.renewBusinessPlan(body, header);
     ResponseModel? responseModel;
     if (response.statusCode == 200) {
       if (response.body['redirect_link'] != null) {

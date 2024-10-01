@@ -6,44 +6,55 @@ import 'package:surties_food_restaurant/features/payment/domain/models/bank_info
 import 'package:surties_food_restaurant/features/payment/domain/models/wallet_payment_model.dart';
 import 'package:surties_food_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
 import 'package:surties_food_restaurant/features/payment/domain/models/withdraw_model.dart';
-import 'package:surties_food_restaurant/features/payment/domain/services/payment_service_interface.dart';
+import 'package:surties_food_restaurant/features/payment/domain/repositories/payment_repository.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/util/styles.dart';
 
 class PaymentController extends GetxController implements GetxService {
-  final PaymentServiceInterface paymentServiceInterface;
-  PaymentController({required this.paymentServiceInterface});
+  final PaymentRepository paymentRepository;
+
+  PaymentController({required this.paymentRepository});
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   List<WithdrawModel>? _withdrawList;
+
   List<WithdrawModel>? get withdrawList => _withdrawList;
 
   late List<WithdrawModel> _allWithdrawList;
 
   final List<String> _statusList = ['All', 'Pending', 'Approved', 'Denied'];
+
   List<String> get statusList => _statusList;
 
   int _filterIndex = 0;
+
   int get filterIndex => _filterIndex;
 
   List<WidthDrawMethodModel>? _widthDrawMethods;
+
   List<WidthDrawMethodModel>? get widthDrawMethods => _widthDrawMethods;
 
   int? _methodIndex = 0;
+
   int? get methodIndex => _methodIndex;
 
   List<DropdownMenuItem<int>> _methodList = [];
+
   List<DropdownMenuItem<int>> get methodList => _methodList;
 
   List<TextEditingController> _textControllerList = [];
+
   List<TextEditingController> get textControllerList => _textControllerList;
 
   List<MethodFields> _methodFields = [];
+
   List<MethodFields> get methodFields => _methodFields;
 
   List<FocusNode> _focusList = [];
+
   List<FocusNode> get focusList => _focusList;
 
   int _selectedIndex = 0;
@@ -51,9 +62,11 @@ class PaymentController extends GetxController implements GetxService {
   int get selectedIndex => _selectedIndex;
 
   List<Transactions>? _transactions;
+
   List<Transactions>? get transactions => _transactions;
 
   bool _adjustmentLoading = false;
+
   bool get adjustmentLoading => _adjustmentLoading;
 
   void setMethod({bool willUpdate = true}) {
@@ -86,7 +99,7 @@ class PaymentController extends GetxController implements GetxService {
   Future<void> updateBankInfo(BankInfoBodyModel bankInfoBody) async {
     _isLoading = true;
     update();
-    bool isSuccess = await paymentServiceInterface.updateBankInfo(bankInfoBody);
+    bool isSuccess = await paymentRepository.updateBankInfo(bankInfoBody);
     if (isSuccess) {
       Get.find<ProfileController>().getProfile();
       Get.back();
@@ -97,8 +110,7 @@ class PaymentController extends GetxController implements GetxService {
   }
 
   Future<void> getWithdrawList() async {
-    List<WithdrawModel>? withdrawList =
-        await paymentServiceInterface.getWithdrawList();
+    List<WithdrawModel>? withdrawList = await paymentRepository.getList();
     if (withdrawList != null) {
       _withdrawList = [];
       _allWithdrawList = [];
@@ -111,7 +123,7 @@ class PaymentController extends GetxController implements GetxService {
 
   Future<List<WidthDrawMethodModel>?> getWithdrawMethodList() async {
     List<WidthDrawMethodModel>? widthDrawMethodList =
-        await paymentServiceInterface.getWithdrawMethodList();
+        await paymentRepository.getWithdrawMethodList();
     if (widthDrawMethodList != null) {
       _widthDrawMethods = [];
       _widthDrawMethods!.addAll(widthDrawMethodList);
@@ -142,7 +154,7 @@ class PaymentController extends GetxController implements GetxService {
   Future<void> requestWithdraw(Map<String?, String> data) async {
     _isLoading = true;
     update();
-    bool isSuccess = await paymentServiceInterface.requestWithdraw(data);
+    bool isSuccess = await paymentRepository.requestWithdraw(data);
     if (isSuccess) {
       Get.back();
       getWithdrawList();
@@ -157,7 +169,7 @@ class PaymentController extends GetxController implements GetxService {
       double amount, String paymentGatewayName) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await paymentServiceInterface
+    ResponseModel responseModel = await paymentRepository
         .makeCollectCashPayment(amount, paymentGatewayName);
     _isLoading = false;
     update();
@@ -167,7 +179,7 @@ class PaymentController extends GetxController implements GetxService {
   Future<void> makeWalletAdjustment() async {
     _adjustmentLoading = true;
     update();
-    bool isSuccess = await paymentServiceInterface.makeWalletAdjustment();
+    bool isSuccess = await paymentRepository.makeWalletAdjustment();
     if (isSuccess) {
       Get.back();
       Get.find<ProfileController>().getProfile();
@@ -187,7 +199,7 @@ class PaymentController extends GetxController implements GetxService {
   Future<void> getWalletPaymentList() async {
     _transactions = null;
     List<Transactions>? transactions =
-        await paymentServiceInterface.getWalletPaymentList();
+        await paymentRepository.getWalletPaymentList();
     if (transactions != null) {
       _transactions = [];
       _transactions!.addAll(transactions);

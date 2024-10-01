@@ -5,24 +5,22 @@ import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/order_cancellation_body_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/update_status_model.dart';
-import 'package:surties_food_restaurant/features/order/domain/repositories/order_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class OrderRepository implements OrderRepositoryInterface {
+class OrderRepository {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
+
   OrderRepository({required this.apiClient, required this.sharedPreferences});
 
   String _getUserToken() {
     return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
-  @override
   Future<Response> get(int id) {
     return apiClient.getData('${AppConstants.orderDetailsUri}$id');
   }
 
-  @override
   Future<List<OrderModel>?> getCurrentOrders() async {
     List<OrderModel>? runningOrderList = [];
     Response response = await apiClient.getData(AppConstants.currentOrdersUri);
@@ -35,7 +33,6 @@ class OrderRepository implements OrderRepositoryInterface {
     return runningOrderList;
   }
 
-  @override
   Future<PaginatedOrderModel?> getPaginatedOrderList(
       int offset, String status) async {
     PaginatedOrderModel? historyOrderModel;
@@ -47,7 +44,6 @@ class OrderRepository implements OrderRepositoryInterface {
     return historyOrderModel;
   }
 
-  @override
   Future<ResponseModel> updateOrderStatus(UpdateStatusModel updateStatusBody,
       List<MultipartBody> proofAttachment) async {
     ResponseModel responseModel;
@@ -65,7 +61,6 @@ class OrderRepository implements OrderRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<OrderModel?> getOrderWithId(int? orderId) async {
     OrderModel? orderModel;
     Response response = await apiClient
@@ -76,7 +71,6 @@ class OrderRepository implements OrderRepositoryInterface {
     return orderModel;
   }
 
-  @override
   Future<List<CancellationData>?> getCancelReasons() async {
     List<CancellationData>? orderCancelReasons;
     Response response = await apiClient.getData(
@@ -92,7 +86,6 @@ class OrderRepository implements OrderRepositoryInterface {
     return orderCancelReasons;
   }
 
-  @override
   Future<bool> sendDeliveredNotification(int? orderID) async {
     Response response = await apiClient.postData(
         AppConstants.deliveredOrderNotificationUri,
@@ -100,37 +93,31 @@ class OrderRepository implements OrderRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();
   }
 
-  @override
   Future<void> setBluetoothAddress(String? address) async {
     await sharedPreferences.setString(
         AppConstants.bluetoothMacAddress, address ?? '');
   }
 
-  @override
   String? getBluetoothAddress() =>
       sharedPreferences.getString(AppConstants.bluetoothMacAddress);
 }

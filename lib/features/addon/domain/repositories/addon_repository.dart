@@ -1,36 +1,32 @@
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
-import 'package:surties_food_restaurant/features/addon/domain/repositories/addon_repository_interface.dart';
 import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class AddonRepository implements AddonRepositoryInterface<AddOns> {
+class AddonRepository {
   final ApiClient apiClient;
+
   AddonRepository({required this.apiClient});
 
-  @override
-  Future<bool> add(AddOns addonModel) async {
+  Future<bool> addAddon(AddOns addonModel) async {
     Response response =
         await apiClient.postData(AppConstants.addAddonUri, addonModel.toJson());
     return (response.statusCode == 200);
   }
 
-  @override
-  Future update(Map<String, dynamic> body) async {
+  Future updateAddon(Map<String, dynamic> body) async {
     Response response =
         await apiClient.putData(AppConstants.updateAddonUri, body);
     return (response.statusCode == 200);
   }
 
-  @override
-  Future<bool> delete({int? id}) async {
+  Future<bool> deleteAddon({int? id}) async {
     Response response = await apiClient.postData(
         '${AppConstants.deleteAddonUri}?id=$id', {"_method": "delete"});
     return (response.statusCode == 200);
   }
 
-  @override
-  Future<List<AddOns>?> getList() async {
+  Future<List<AddOns>?> getAddonList() async {
     List<AddOns>? addonList;
 
     Response response = await apiClient.getData(AppConstants.addonListUri);
@@ -45,8 +41,15 @@ class AddonRepository implements AddonRepositoryInterface<AddOns> {
     return addonList;
   }
 
-  @override
   Future get(int id) {
     throw UnimplementedError();
+  }
+
+  List<int?> prepareAddonIds(List<AddOns> addonList) {
+    List<int?> addonsIds = [];
+    for (var addon in addonList) {
+      addonsIds.add(addon.id);
+    }
+    return addonsIds;
   }
 }

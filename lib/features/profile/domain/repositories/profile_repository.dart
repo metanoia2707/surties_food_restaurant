@@ -7,15 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:surties_food_restaurant/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class ProfileRepository implements ProfileRepositoryInterface {
+class ProfileRepository {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
   ProfileRepository({required this.apiClient, required this.sharedPreferences});
 
-  @override
   Future<ProfileModel?> getProfileInfo() async {
     ProfileModel? profileModel;
     Response response = await apiClient.getData(AppConstants.profileUri);
@@ -25,12 +23,10 @@ class ProfileRepository implements ProfileRepositoryInterface {
     return profileModel;
   }
 
-  @override
   bool isNotificationActive() {
     return sharedPreferences.getBool(AppConstants.notification) ?? true;
   }
 
-  @override
   void setNotificationActive(bool isActive) {
     if (isActive) {
       _updateToken();
@@ -85,7 +81,6 @@ class ProfileRepository implements ProfileRepositoryInterface {
         handleError: false);
   }
 
-  @override
   String getUserToken() {
     return sharedPreferences.getString(AppConstants.token) ?? "";
   }
@@ -98,7 +93,6 @@ class ProfileRepository implements ProfileRepositoryInterface {
     return deviceToken;
   }
 
-  @override
   Future<bool> updateProfile(
       ProfileModel userInfoModel, XFile? data, String token) async {
     Map<String, String> fields = {};
@@ -117,7 +111,6 @@ class ProfileRepository implements ProfileRepositoryInterface {
     return (response.statusCode == 200);
   }
 
-  @override
   Future<ResponseModel> delete({int? id}) async {
     ResponseModel responseModel;
     Response response = await apiClient.postData(
@@ -131,25 +124,21 @@ class ProfileRepository implements ProfileRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();

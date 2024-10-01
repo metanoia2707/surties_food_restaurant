@@ -10,46 +10,59 @@ import 'package:surties_food_restaurant/features/auth/domain/models/place_detail
 import 'package:surties_food_restaurant/features/auth/domain/models/prediction_model.dart';
 import 'package:surties_food_restaurant/features/auth/domain/models/zone_model.dart';
 import 'package:surties_food_restaurant/features/auth/domain/models/zone_response_model.dart';
-import 'package:surties_food_restaurant/features/auth/domain/services/location_service_interface.dart';
+import 'package:surties_food_restaurant/features/auth/domain/repositories/location_repository.dart';
 
 class LocationController extends GetxController implements GetxService {
-  final LocationServiceInterface locationServiceInterface;
-  LocationController({required this.locationServiceInterface});
+  final LocationRepository locationRepository;
+
+  LocationController({required this.locationRepository});
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   XFile? _pickedFile;
+
   XFile? get pickedFile => _pickedFile;
 
   XFile? _pickedLogo;
+
   XFile? get pickedLogo => _pickedLogo;
 
   XFile? _pickedCover;
+
   XFile? get pickedCover => _pickedCover;
 
   LatLng? _restaurantLocation;
+
   LatLng? get restaurantLocation => _restaurantLocation;
 
   int? _selectedZoneIndex = 0;
+
   int? get selectedZoneIndex => _selectedZoneIndex;
 
   List<ZoneModel>? _zoneList;
+
   List<ZoneModel>? get zoneList => _zoneList;
 
   List<int>? _zoneIds;
+
   List<int>? get zoneIds => _zoneIds;
 
   String? _storeAddress;
+
   String? get storeAddress => _storeAddress;
 
   bool _loading = false;
+
   bool get loading => _loading;
 
   bool _inZone = false;
+
   bool get inZone => _inZone;
 
   int _zoneID = 0;
+
   int get zoneID => _zoneID;
 
   Position _pickPosition = Position(
@@ -63,12 +76,15 @@ class LocationController extends GetxController implements GetxService {
       speedAccuracy: 1,
       altitudeAccuracy: 1,
       headingAccuracy: 1);
+
   Position get pickPosition => _pickPosition;
 
   String? _pickAddress = '';
+
   String? get pickAddress => _pickAddress;
 
   List<PredictionModel> _predictionList = [];
+
   List<PredictionModel> get predictionList => _predictionList;
 
   Future<void> getZoneList() async {
@@ -77,7 +93,7 @@ class LocationController extends GetxController implements GetxService {
     _selectedZoneIndex = 0;
     _restaurantLocation = null;
     _zoneIds = null;
-    List<ZoneModel>? zoneList = await locationServiceInterface.getZoneList();
+    List<ZoneModel>? zoneList = await locationRepository.getList();
     if (zoneList != null) {
       _zoneList = [];
       _zoneList!.addAll(zoneList);
@@ -99,16 +115,15 @@ class LocationController extends GetxController implements GetxService {
     _storeAddress = await _getAddressFromGeocode(
         LatLng(location.latitude, location.longitude));
     _restaurantLocation =
-        locationServiceInterface.setRestaurantLocation(response, location);
-    _zoneIds = locationServiceInterface.setZoneIds(response);
-    _selectedZoneIndex = locationServiceInterface.setSelectedZoneIndex(
+        locationRepository.setRestaurantLocation(response, location);
+    _zoneIds = locationRepository.setZoneIds(response);
+    _selectedZoneIndex = locationRepository.setSelectedZoneIndex(
         response, _zoneIds, _selectedZoneIndex, _zoneList);
     update();
   }
 
   Future<String> _getAddressFromGeocode(LatLng latLng) async {
-    String address =
-        await locationServiceInterface.getAddressFromGeocode(latLng);
+    String address = await locationRepository.getAddressFromGeocode(latLng);
     return address;
   }
 
@@ -123,7 +138,7 @@ class LocationController extends GetxController implements GetxService {
       update();
     }
     ZoneResponseModel responseModel;
-    Response response = await locationServiceInterface.getZone(lat, long);
+    Response response = await locationRepository.getZone(lat, long);
     if (response.statusCode == 200) {
       _inZone = true;
       _zoneID = int.parse(jsonDecode(response.body['zone_id'])[0].toString());
@@ -155,14 +170,14 @@ class LocationController extends GetxController implements GetxService {
 
   Future<bool> saveUserAddress(AddressModel address) async {
     String userAddress = jsonEncode(address.toJson());
-    return await locationServiceInterface.saveUserAddress(userAddress);
+    return await locationRepository.saveUserAddress(userAddress);
   }
 
   AddressModel? getUserAddress() {
     AddressModel? addressModel;
     try {
       addressModel = AddressModel.fromJson(
-          jsonDecode(locationServiceInterface.getUserAddress()!));
+          jsonDecode(locationRepository.getUserAddress()!));
     } catch (e) {
       debugPrint('Address Not Found In SharedPreference:$e');
     }
@@ -172,7 +187,7 @@ class LocationController extends GetxController implements GetxService {
   Future<void> zoomToFit(
       GoogleMapController googleMapController, List<LatLng> list,
       {double padding = 0.5}) async {
-    LatLngBounds bounds = locationServiceInterface.computeBounds(list);
+    LatLngBounds bounds = locationRepository.computeBounds(list);
     LatLng centerBounds = LatLng(
       (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
       (bounds.northeast.longitude + bounds.southwest.longitude) / 2,
@@ -180,7 +195,7 @@ class LocationController extends GetxController implements GetxService {
     googleMapController.moveCamera(CameraUpdate.newCameraPosition(
         CameraPosition(
             target: centerBounds, zoom: GetPlatform.isWeb ? 10 : 16)));
-    locationServiceInterface.prepareZoomToFit(
+    locationRepository.prepareZoomToFit(
         googleMapController, bounds, centerBounds, padding);
   }
 
@@ -188,7 +203,7 @@ class LocationController extends GetxController implements GetxService {
       BuildContext context, String text) async {
     if (text.isNotEmpty) {
       List<PredictionModel> predictionList =
-          await locationServiceInterface.searchLocation(text);
+          await locationRepository.searchLocation(text);
       if (predictionList.isNotEmpty) {
         _predictionList = [];
         _predictionList.addAll(predictionList);
@@ -204,7 +219,7 @@ class LocationController extends GetxController implements GetxService {
 
     LatLng latLng = const LatLng(0, 0);
     PlaceDetailsModel? placeDetails =
-        await locationServiceInterface.getPlaceDetails(placeID);
+        await locationRepository.getPlaceDetails(placeID);
     if (placeDetails != null && placeDetails.status == 'OK') {
       latLng = LatLng(placeDetails.result!.geometry!.location!.lat!,
           placeDetails.result!.geometry!.location!.lng!);

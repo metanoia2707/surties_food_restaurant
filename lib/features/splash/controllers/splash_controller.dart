@@ -2,11 +2,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:surties_food_restaurant/common/models/config_model.dart';
 import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
-import 'package:surties_food_restaurant/features/splash/domain/services/splash_service_interface.dart';
+import 'package:surties_food_restaurant/features/splash/domain/repositories/splash_repository.dart';
 
 class SplashController extends GetxController implements GetxService {
-  final SplashServiceInterface splashServiceInterface;
-  SplashController({required this.splashServiceInterface});
+  final SplashRepository splashRepository;
+  SplashController({required this.splashRepository});
 
   ConfigModel? _configModel;
   ConfigModel? get configModel => _configModel;
@@ -18,7 +18,7 @@ class SplashController extends GetxController implements GetxService {
   bool get firstTimeConnectionCheck => _firstTimeConnectionCheck;
 
   Future<bool> getConfigData() async {
-    ConfigModel? configModel = await splashServiceInterface.getConfigData();
+    ConfigModel? configModel = await splashRepository.getConfigData();
     bool isSuccess = false;
     if (configModel != null) {
       _configModel = configModel;
@@ -31,19 +31,19 @@ class SplashController extends GetxController implements GetxService {
   }
 
   Future<bool> initSharedData() {
-    return splashServiceInterface.initSharedData();
+    return splashRepository.initSharedData();
   }
 
   Future<bool> removeSharedData() {
-    return splashServiceInterface.removeSharedData();
+    return splashRepository.removeSharedData();
   }
 
   bool showIntro() {
-    return splashServiceInterface.showIntro();
+    return splashRepository.showIntro();
   }
 
   void setIntro(bool intro) {
-    splashServiceInterface.setIntro(intro);
+    splashRepository.setIntro(intro);
   }
 
   void initialConnectionCheck(bool isChecked) {

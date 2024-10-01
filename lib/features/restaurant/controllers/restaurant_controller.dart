@@ -12,126 +12,163 @@ import 'package:surties_food_restaurant/features/restaurant/domain/models/produc
 import 'package:surties_food_restaurant/features/restaurant/domain/models/review_model.dart';
 import 'package:surties_food_restaurant/features/restaurant/domain/models/variant_type_model.dart';
 import 'package:surties_food_restaurant/features/restaurant/domain/models/variation_model.dart';
-import 'package:surties_food_restaurant/features/restaurant/domain/services/restaurant_service_interface.dart';
+import 'package:surties_food_restaurant/features/restaurant/domain/repositories/restaurant_repository.dart';
 import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class RestaurantController extends GetxController implements GetxService {
-  final RestaurantServiceInterface restaurantServiceInterface;
-  RestaurantController({required this.restaurantServiceInterface});
+  final RestaurantRepository restaurantRepository;
+
+  RestaurantController({required this.restaurantRepository});
 
   List<Product>? _productList;
+
   List<Product>? get productList => _productList;
 
   List<ReviewModel>? _restaurantReviewList;
+
   List<ReviewModel>? get restaurantReviewList => _restaurantReviewList;
 
   List<ReviewModel>? _searchReviewList;
+
   List<ReviewModel>? get searchReviewList => _searchReviewList;
 
   List<ReviewModel>? _productReviewList;
+
   List<ReviewModel>? get productReviewList => _productReviewList;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   int? _pageSize;
+
   int? get pageSize => _pageSize;
 
   List<String> _offsetList = [];
 
   int _offset = 1;
+
   int get offset => _offset;
 
   int _discountTypeIndex = 0;
+
   int get discountTypeIndex => _discountTypeIndex;
 
   XFile? _pickedLogo;
+
   XFile? get pickedLogo => _pickedLogo;
 
   XFile? _pickedCover;
+
   XFile? get pickedCover => _pickedCover;
 
   int? _categoryIndex = 0;
+
   int? get categoryIndex => _categoryIndex;
 
   int? _subCategoryIndex = 0;
+
   int? get subCategoryIndex => _subCategoryIndex;
 
   List<int>? _selectedAddons;
+
   List<int>? get selectedAddons => _selectedAddons;
 
   List<VariantTypeModel>? _variantTypeList;
+
   List<VariantTypeModel>? get variantTypeList => _variantTypeList;
 
   bool _isAvailable = true;
+
   bool get isAvailable => _isAvailable;
 
   bool _isRecommended = true;
+
   bool get isRecommended => _isRecommended;
 
   List<Schedules>? _scheduleList;
+
   List<Schedules>? get scheduleList => _scheduleList;
 
   bool _scheduleLoading = false;
+
   bool get scheduleLoading => _scheduleLoading;
 
   bool? _isGstEnabled;
+
   bool? get isGstEnabled => _isGstEnabled;
 
   int _tabIndex = 0;
+
   int get tabIndex => _tabIndex;
 
   bool _isVeg = false;
+
   bool get isVeg => _isVeg;
 
   bool? _isRestVeg = true;
+
   bool? get isRestVeg => _isRestVeg;
 
   bool? _isRestNonVeg = true;
+
   bool? get isRestNonVeg => _isRestNonVeg;
 
   String _type = 'all';
+
   String get type => _type;
 
   static final List<String> _productTypeList = ['all', 'veg', 'non_veg'];
+
   List<String> get productTypeList => _productTypeList;
 
   List<VariationModel>? _variationList;
+
   List<VariationModel>? get variationList => _variationList;
 
   List<String?> _tagList = [];
+
   List<String?> get tagList => _tagList;
 
   CuisineModel? _cuisineModel;
+
   CuisineModel? get cuisineModel => _cuisineModel;
 
   List<int>? _selectedCuisines;
+
   List<int>? get selectedCuisines => _selectedCuisines;
 
   List<int?>? _cuisineIds;
+
   List<int?>? get cuisineIds => _cuisineIds;
 
   Product? _product;
+
   Product? get product => _product;
 
   int _announcementStatus = 0;
+
   int get announcementStatus => _announcementStatus;
 
   bool instantOrder = false;
   bool scheduleOrder = false;
 
   int? _extraPackagingSelectedValue = 0;
+
   int? get extraPackagingSelectedValue => _extraPackagingSelectedValue;
 
   List<String?>? _characteristicSuggestionList;
+
   List<String?>? get characteristicSuggestionList =>
       _characteristicSuggestionList;
 
   List<int>? _selectedCharacteristics;
+
   List<int>? get selectedCharacteristics => _selectedCharacteristics;
 
   List<String?>? _selectedCharacteristicsList;
+
   List<String?>? get selectedCharacteristicsList =>
       _selectedCharacteristicsList;
 
@@ -140,27 +177,35 @@ class RestaurantController extends GetxController implements GetxService {
     'limited_stock',
     'daily_stock'
   ];
+
   List<String?> get stockTypeList => _stockTypeList;
 
   int? _stockTypeIndex = 0;
+
   int? get stockTypeIndex => _stockTypeIndex;
 
   bool _stockTextFieldDisable = false;
+
   bool get stockTextFieldDisable => _stockTextFieldDisable;
 
   bool _isHalal = false;
+
   bool get isHalal => _isHalal;
 
   bool _isSearching = false;
+
   bool get isSearching => _isSearching;
 
   bool? _isExtraPackagingEnabled;
+
   bool? get isExtraPackagingEnabled => _isExtraPackagingEnabled;
 
   bool _isFabVisible = true;
+
   bool get isFabVisible => _isFabVisible;
 
   List<String>? _categoryNameList;
+
   List<String>? get categoryNameList => _categoryNameList;
 
   List<int>? _categoryIdList;
@@ -187,8 +232,7 @@ class RestaurantController extends GetxController implements GetxService {
 
   Future<void> _getCuisineList(List<Cuisine>? cuisines) async {
     _selectedCuisines = [];
-    CuisineModel? cuisineModel =
-        await restaurantServiceInterface.getCuisineList();
+    CuisineModel? cuisineModel = await restaurantRepository.getList();
     if (cuisineModel != null) {
       _cuisineModel = cuisineModel;
       for (var modelCuisine in _cuisineModel!.cuisines!) {
@@ -212,7 +256,7 @@ class RestaurantController extends GetxController implements GetxService {
     _characteristicSuggestionList = [];
     _selectedCharacteristics = [];
     List<String?>? suggestionList =
-        await restaurantServiceInterface.getCharacteristicSuggestionList();
+        await restaurantRepository.getCharacteristicSuggestionList();
     if (suggestionList != null) {
       _characteristicSuggestionList!.addAll(suggestionList);
       for (int index = 0;
@@ -369,8 +413,8 @@ class RestaurantController extends GetxController implements GetxService {
     }
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
-      ProductModel? productModel = await restaurantServiceInterface
-          .getProductList(offset, type, categoryId);
+      ProductModel? productModel =
+          await restaurantRepository.getProductList(offset, type, categoryId);
       if (productModel != null) {
         if (offset == '1') {
           _productList = [];
@@ -415,6 +459,7 @@ class RestaurantController extends GetxController implements GetxService {
   }
 
   String? _selectedDiscountType;
+
   String? get selectedDiscountType => _selectedDiscountType;
 
   void setSelectedDiscountType(String? type) {
@@ -441,7 +486,7 @@ class RestaurantController extends GetxController implements GetxService {
           element!.replaceAll(' ', '');
     }
 
-    bool isSuccess = await restaurantServiceInterface.updateRestaurant(
+    bool isSuccess = await restaurantRepository.updateRestaurant(
         restaurant,
         cuisines,
         _pickedLogo,
@@ -502,13 +547,8 @@ class RestaurantController extends GetxController implements GetxService {
       tags = tags + (tags.isEmpty ? '' : ',') + element!.replaceAll(' ', '');
     }
 
-    bool isSuccess = await restaurantServiceInterface.addProduct(
-        product,
-        _pickedLogo,
-        isAdd,
-        tags,
-        deletedVariationIds,
-        deletedVariationOptionIds);
+    bool isSuccess = await restaurantRepository.addProduct(product, _pickedLogo,
+        isAdd, tags, deletedVariationIds, deletedVariationOptionIds);
     if (isSuccess) {
       Get.offAllNamed(RouteHelper.getInitialRoute());
       showCustomSnackBar(
@@ -525,7 +565,7 @@ class RestaurantController extends GetxController implements GetxService {
   Future<void> deleteProduct(int productID) async {
     _isLoading = true;
     update();
-    bool isSuccess = await restaurantServiceInterface.deleteProduct(productID);
+    bool isSuccess = await restaurantRepository.delete(id: productID);
     if (isSuccess) {
       Get.back();
       showCustomSnackBar('product_deleted_successfully'.tr, isError: false);
@@ -548,7 +588,7 @@ class RestaurantController extends GetxController implements GetxService {
       update();
     }
     _tabIndex = 0;
-    List<ReviewModel>? restaurantReviewList = await restaurantServiceInterface
+    List<ReviewModel>? restaurantReviewList = await restaurantRepository
         .getRestaurantReviewList(restaurantID, searchText);
 
     if (restaurantReviewList != null) {
@@ -566,7 +606,7 @@ class RestaurantController extends GetxController implements GetxService {
   Future<void> getProductReviewList(int? productID) async {
     _productReviewList = null;
     List<ReviewModel>? productReviewList =
-        await restaurantServiceInterface.getProductReviewList(productID);
+        await restaurantRepository.getProductReviewList(productID);
     if (productReviewList != null) {
       _productReviewList = [];
       _productReviewList!.addAll(productReviewList);
@@ -579,7 +619,7 @@ class RestaurantController extends GetxController implements GetxService {
   }
 
   void toggleAvailable(int? productID) async {
-    bool isSuccess = await restaurantServiceInterface.updateProductStatus(
+    bool isSuccess = await restaurantRepository.updateProductStatus(
         productID, _isAvailable ? 0 : 1);
     if (isSuccess) {
       getProductList('1', 'all');
@@ -594,8 +634,8 @@ class RestaurantController extends GetxController implements GetxService {
   }
 
   void toggleRecommendedProduct(int? productID) async {
-    bool isSuccess = await restaurantServiceInterface
-        .updateRecommendedProductStatus(productID, _isRecommended ? 0 : 1);
+    bool isSuccess = await restaurantRepository.updateRecommendedProductStatus(
+        productID, _isRecommended ? 0 : 1);
     if (isSuccess) {
       getProductList('1', 'all');
       _isRecommended = !_isRecommended;
@@ -614,7 +654,7 @@ class RestaurantController extends GetxController implements GetxService {
     schedule.closingTime = '${schedule.closingTime!}:00';
     _scheduleLoading = true;
     update();
-    int? scheduleID = await restaurantServiceInterface.addSchedule(schedule);
+    int? scheduleID = await restaurantRepository.addSchedule(schedule);
     if (scheduleID != null) {
       schedule.id = scheduleID;
       _scheduleList!.add(schedule);
@@ -628,8 +668,7 @@ class RestaurantController extends GetxController implements GetxService {
   Future<void> deleteSchedule(int? scheduleID) async {
     _scheduleLoading = true;
     update();
-    bool isSuccess =
-        await restaurantServiceInterface.deleteSchedule(scheduleID);
+    bool isSuccess = await restaurantRepository.deleteSchedule(scheduleID);
     if (isSuccess) {
       _scheduleList!.removeWhere((schedule) => schedule.id == scheduleID);
       Get.back();
@@ -674,8 +713,7 @@ class RestaurantController extends GetxController implements GetxService {
   Future<Product?> getProductDetails(int productId) async {
     _isLoading = true;
     update();
-    Product? product =
-        await restaurantServiceInterface.getProductDetails(productId);
+    Product? product = await restaurantRepository.get(productId);
     if (product != null) {
       _product = product;
       if (_product?.translations == null || _product!.translations!.isEmpty) {
@@ -701,8 +739,7 @@ class RestaurantController extends GetxController implements GetxService {
 
   Future<void> getCuisineList() async {
     _selectedCuisines = [];
-    CuisineModel? cuisineModel =
-        await restaurantServiceInterface.getCuisineList();
+    CuisineModel? cuisineModel = await restaurantRepository.getList();
     if (cuisineModel != null) {
       _cuisineIds = [];
       _cuisineIds!.add(0);
@@ -745,8 +782,8 @@ class RestaurantController extends GetxController implements GetxService {
   Future<void> updateAnnouncement(int status, String announcement) async {
     _isLoading = true;
     update();
-    bool isSuccess = await restaurantServiceInterface.updateAnnouncement(
-        status, announcement);
+    bool isSuccess =
+        await restaurantRepository.updateAnnouncement(status, announcement);
     if (isSuccess) {
       Get.back();
       showCustomSnackBar('announcement_updated_successfully'.tr,
@@ -765,8 +802,7 @@ class RestaurantController extends GetxController implements GetxService {
   Future<void> updateReply(int reviewID, String reply) async {
     _isLoading = true;
     update();
-    bool isSuccess =
-        await restaurantServiceInterface.updateReply(reviewID, reply);
+    bool isSuccess = await restaurantRepository.updateReply(reviewID, reply);
     if (isSuccess) {
       Get.back();
       showCustomSnackBar('reply_updated_successfully'.tr, isError: false);
@@ -839,7 +875,7 @@ class RestaurantController extends GetxController implements GetxService {
       required List<List<String>> variationStock}) async {
     _isLoading = true;
     update();
-    bool isSuccess = await restaurantServiceInterface.updateProductStock(
+    bool isSuccess = await restaurantRepository.updateProductStock(
         foodId, itemStock, product, variationStock);
     if (isSuccess) {
       await getProductList('1', 'all');

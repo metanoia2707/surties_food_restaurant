@@ -5,73 +5,94 @@ import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/features/chat/domain/models/conversation_model.dart';
 import 'package:surties_food_restaurant/features/chat/domain/models/message_model.dart';
 import 'package:surties_food_restaurant/features/chat/domain/models/notification_body_model.dart';
-import 'package:surties_food_restaurant/features/chat/domain/services/chat_service_interface.dart';
+import 'package:surties_food_restaurant/features/chat/domain/repositories/chat_repository.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 import 'package:surties_food_restaurant/helper/user_type.dart';
 
 class ChatController extends GetxController implements GetxService {
-  final ChatServiceInterface chatServiceInterface;
-  ChatController({required this.chatServiceInterface});
+  final ChatRepository chatRepository;
+
+  ChatController({required this.chatRepository});
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   bool _tabLoading = false;
+
   bool get tabLoading => _tabLoading;
 
   List<bool>? _showDate;
+
   List<bool>? get showDate => _showDate;
 
   List<XFile>? _imageFiles;
+
   List<XFile>? get imageFiles => _imageFiles;
 
   bool _isSendButtonActive = false;
+
   bool get isSendButtonActive => _isSendButtonActive;
 
   final bool _isSeen = false;
+
   bool get isSeen => _isSeen;
 
   final bool _isSend = true;
+
   bool get isSend => _isSend;
 
   bool _isMe = false;
+
   bool get isMe => _isMe;
 
   List<XFile>? _chatImage = [];
+
   List<XFile>? get chatImage => _chatImage;
 
   int? _pageSize;
+
   int? get pageSize => _pageSize;
 
   int? _offset;
+
   int? get offset => _offset;
 
   String _type = 'customer';
+
   String get type => _type;
 
   bool _clickTab = false;
+
   bool get clickTab => _clickTab;
 
   ConversationsModel? _conversationModel;
+
   ConversationsModel? get conversationModel => _conversationModel;
 
   ConversationsModel? _searchConversationModel;
+
   ConversationsModel? get searchConversationModel => _searchConversationModel;
 
   MessageModel? _messageModel;
+
   MessageModel? get messageModel => _messageModel;
 
   int _onMessageTimeShowID = 0;
+
   int get onMessageTimeShowID => _onMessageTimeShowID;
 
   int _onImageOrFileTimeShowID = 0;
+
   int get onImageOrFileTimeShowID => _onImageOrFileTimeShowID;
 
   bool _isClickedOnMessage = false;
+
   bool get isClickedOnMessage => _isClickedOnMessage;
 
   bool _isClickedOnImageOrFile = false;
+
   bool get isClickedOnImageOrFile => _isClickedOnImageOrFile;
 
   Future<void> getConversationList(int offset,
@@ -84,7 +105,7 @@ class ChatController extends GetxController implements GetxService {
     }
     _searchConversationModel = null;
     ConversationsModel? conversationModel =
-        await chatServiceInterface.getConversationList(offset, type);
+        await chatRepository.getConversationList(offset, type);
     if (conversationModel != null) {
       if (offset == 1) {
         _conversationModel = conversationModel;
@@ -103,7 +124,7 @@ class ChatController extends GetxController implements GetxService {
     _searchConversationModel = ConversationsModel();
     update();
     ConversationsModel? searchConversationModel =
-        await chatServiceInterface.searchConversationList(name);
+        await chatRepository.searchConversationList(name);
     if (searchConversationModel != null) {
       _searchConversationModel = searchConversationModel;
     }
@@ -126,11 +147,11 @@ class ChatController extends GetxController implements GetxService {
     if (notificationBody.customerId != null ||
         notificationBody.type == UserType.customer.name ||
         notificationBody.type == UserType.user.name) {
-      response = await chatServiceInterface.getMessages(
+      response = await chatRepository.getMessages(
           offset, notificationBody.customerId, UserType.user, conversationID);
     } else if (notificationBody.deliveryManId != null ||
         notificationBody.type == UserType.delivery_man.name) {
-      response = await chatServiceInterface.getMessages(
+      response = await chatRepository.getMessages(
           offset,
           notificationBody.deliveryManId,
           UserType.delivery_man,
@@ -209,12 +230,12 @@ class ChatController extends GetxController implements GetxService {
     if (notificationBody != null &&
         (notificationBody.customerId != null ||
             notificationBody.type == UserType.customer.name)) {
-      response = await chatServiceInterface.sendMessage(message, myImages,
+      response = await chatRepository.sendMessage(message, myImages,
           conversationId, notificationBody.customerId, UserType.customer);
     } else if (notificationBody != null &&
         (notificationBody.deliveryManId != null ||
             notificationBody.type == UserType.delivery_man.name)) {
-      response = await chatServiceInterface.sendMessage(
+      response = await chatRepository.sendMessage(
           message,
           myImages,
           conversationId,

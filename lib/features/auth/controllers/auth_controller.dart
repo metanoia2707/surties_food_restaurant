@@ -6,77 +6,99 @@ import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/models/config_model.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:surties_food_restaurant/features/auth/domain/services/auth_service_interface.dart';
+import 'package:surties_food_restaurant/features/auth/domain/repositories/auth_repository.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
 import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class AuthController extends GetxController implements GetxService {
-  final AuthServiceInterface authServiceInterface;
-  AuthController({required this.authServiceInterface});
+  final AuthRepository authRepository;
+
+  AuthController({required this.authRepository});
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   bool _notification = true;
+
   bool get notification => _notification;
 
   ProfileModel? _profileModel;
+
   ProfileModel? get profileModel => _profileModel;
 
   XFile? _pickedFile;
+
   XFile? get pickedFile => _pickedFile;
 
   XFile? _pickedLogo;
+
   XFile? get pickedLogo => _pickedLogo;
 
   XFile? _pickedCover;
+
   XFile? get pickedCover => _pickedCover;
 
   String? _subscriptionType;
+
   String? get subscriptionType => _subscriptionType;
 
   String? _expiredToken;
+
   String? get expiredToken => _expiredToken;
 
   double _storeStatus = 0.4;
+
   double get storeStatus => _storeStatus;
 
   String _storeMinTime = '--';
+
   String get storeMinTime => _storeMinTime;
 
   String _storeMaxTime = '--';
+
   String get storeMaxTime => _storeMaxTime;
 
   String _storeTimeUnit = 'minute';
+
   String get storeTimeUnit => _storeTimeUnit;
 
   bool _showPassView = false;
+
   bool get showPassView => _showPassView;
 
   bool _lengthCheck = false;
+
   bool get lengthCheck => _lengthCheck;
 
   bool _numberCheck = false;
+
   bool get numberCheck => _numberCheck;
 
   bool _uppercaseCheck = false;
+
   bool get uppercaseCheck => _uppercaseCheck;
 
   bool _lowercaseCheck = false;
+
   bool get lowercaseCheck => _lowercaseCheck;
 
   bool _spatialCheck = false;
+
   bool get spatialCheck => _spatialCheck;
 
   bool _isActiveRememberMe = false;
+
   bool get isActiveRememberMe => _isActiveRememberMe;
 
   List<Data>? _dataList;
+
   List<Data>? get dataList => _dataList;
 
   List<dynamic>? _additionalList;
+
   List<dynamic>? get additionalList => _additionalList;
 
   void setJoinUsPageData({bool willUpdate = true}) {
@@ -140,7 +162,7 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<void> pickFile(int index, MediaData mediaData) async {
-    FilePickerResult? result = await authServiceInterface.picFile(mediaData);
+    FilePickerResult? result = await authRepository.picFile(mediaData);
     if (result != null) {
       _additionalList![index].add(result);
     }
@@ -150,14 +172,13 @@ class AuthController extends GetxController implements GetxService {
   Future<ResponseModel?> login(String? email, String password) async {
     _isLoading = true;
     update();
-    Response response = await authServiceInterface.login(email, password);
-    _profileModel = authServiceInterface.getProfileModel(response,
+    Response response = await authRepository.login(email, password);
+    _profileModel = authRepository.getProfileModel(response,
         Get.find<SplashController>().configModel!.businessPlan!.subscription);
-    _subscriptionType = authServiceInterface.getSubscriptionType(response);
-    _expiredToken = authServiceInterface.getExpiredToken(response,
+    _subscriptionType = authRepository.getSubscriptionType(response);
+    _expiredToken = authRepository.getExpiredToken(response,
         Get.find<SplashController>().configModel!.businessPlan!.subscription);
-    ResponseModel? responseModel = await authServiceInterface.manageLogin(
-        response,
+    ResponseModel? responseModel = await authRepository.manageLogin(response,
         Get.find<SplashController>().configModel!.businessPlan!.subscription);
     _isLoading = false;
     update();
@@ -170,16 +191,16 @@ class AuthController extends GetxController implements GetxService {
       _pickedCover = null;
     } else {
       if (isLogo) {
-        _pickedLogo = await authServiceInterface.pickImageFromGallery();
+        _pickedLogo = await authRepository.pickImageFromGallery();
       } else {
-        _pickedCover = await authServiceInterface.pickImageFromGallery();
+        _pickedCover = await authRepository.pickImageFromGallery();
       }
       update();
     }
   }
 
   Future<void> updateToken() async {
-    await authServiceInterface.updateToken();
+    await authRepository.updateToken();
   }
 
   void toggleRememberMe() {
@@ -188,36 +209,36 @@ class AuthController extends GetxController implements GetxService {
   }
 
   bool isLoggedIn() {
-    return authServiceInterface.isLoggedIn();
+    return authRepository.isLoggedIn();
   }
 
   Future<bool> clearSharedData() async {
-    return await authServiceInterface.clearSharedData();
+    return await authRepository.clearSharedData();
   }
 
   void saveUserCredentials(String number, String password) {
-    authServiceInterface.saveUserCredentials(number, password);
+    authRepository.saveUserCredentials(number, password);
   }
 
   String getUserNumber() {
-    return authServiceInterface.getUserNumber();
+    return authRepository.getUserNumber();
   }
 
   String getUserPassword() {
-    return authServiceInterface.getUserPassword();
+    return authRepository.getUserPassword();
   }
 
   Future<bool> clearUserCredentials() async {
-    return authServiceInterface.clearUserCredentials();
+    return authRepository.clearUserCredentials();
   }
 
   String getUserToken() {
-    return authServiceInterface.getUserToken();
+    return authRepository.getUserToken();
   }
 
   bool setNotificationActive(bool isActive) {
     _notification = isActive;
-    authServiceInterface.setNotificationActive(isActive);
+    authRepository.setNotificationActive(isActive);
     update();
     return _notification;
   }
@@ -233,7 +254,7 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<void> toggleRestaurantClosedStatus() async {
-    bool isSuccess = await authServiceInterface.toggleRestaurantClosedStatus();
+    bool isSuccess = await authRepository.toggleRestaurantClosedStatus();
     if (isSuccess) {
       Get.find<ProfileController>().getProfile();
     }
@@ -243,7 +264,7 @@ class AuthController extends GetxController implements GetxService {
   Future deleteVendor() async {
     _isLoading = true;
     update();
-    bool isSuccess = await authServiceInterface.deleteVendor();
+    bool isSuccess = await authRepository.delete();
     _isLoading = false;
     if (isSuccess) {
       showCustomSnackBar('your_account_remove_successfully'.tr, isError: false);
@@ -260,9 +281,9 @@ class AuthController extends GetxController implements GetxService {
       List<String> inputTypeList) async {
     _isLoading = true;
     update();
-    List<MultipartDocument> multiPartsDocuments = authServiceInterface
+    List<MultipartDocument> multiPartsDocuments = authRepository
         .prepareMultipartDocuments(inputTypeList, additionalDocuments);
-    await authServiceInterface.registerRestaurant(
+    await authRepository.registerRestaurant(
         data, _pickedLogo, _pickedCover, multiPartsDocuments);
     _isLoading = false;
     update();

@@ -2,16 +2,15 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/features/chat/domain/models/conversation_model.dart';
-import 'package:surties_food_restaurant/features/chat/domain/repositories/chat_repository_interface.dart';
 import 'package:surties_food_restaurant/helper/user_type.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class ChatRepository implements ChatRepositoryInterface {
+class ChatRepository {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
+
   ChatRepository({required this.apiClient, required this.sharedPreferences});
 
-  @override
   Future<ConversationsModel?> getConversationList(
       int offset, String type) async {
     ConversationsModel? conversationModel;
@@ -23,7 +22,6 @@ class ChatRepository implements ChatRepositoryInterface {
     return conversationModel;
   }
 
-  @override
   Future<ConversationsModel?> searchConversationList(String name) async {
     ConversationsModel? searchConversationModel;
     Response response = await apiClient.getData(
@@ -34,14 +32,12 @@ class ChatRepository implements ChatRepositoryInterface {
     return searchConversationModel;
   }
 
-  @override
   Future<Response> getMessages(
       int offset, int? userId, UserType userType, int? conversationID) async {
     return await apiClient.getData(
         '${AppConstants.getMessageListUri}?offset=$offset&limit=10&${conversationID != null ? 'conversation_id' : userType == UserType.delivery_man ? 'delivery_man_id' : 'user_id'}=${conversationID ?? userId}');
   }
 
-  @override
   Future<Response> sendMessage(String message, List<MultipartBody> images,
       int? conversationId, int? userId, UserType userType) async {
     return await apiClient.postMultipartData(
@@ -59,31 +55,26 @@ class ChatRepository implements ChatRepositoryInterface {
     );
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();

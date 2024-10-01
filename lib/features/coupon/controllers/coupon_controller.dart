@@ -2,30 +2,35 @@ import 'package:get/get.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/features/coupon/domain/models/coupon_body_model.dart';
-import 'package:surties_food_restaurant/features/coupon/domain/services/coupon_service_interface.dart';
+import 'package:surties_food_restaurant/features/coupon/domain/repositories/coupon_repository.dart';
 
 class CouponController extends GetxController implements GetxService {
-  final CouponServiceInterface couponServiceInterface;
-  CouponController({required this.couponServiceInterface});
+  final CouponRepository couponRepository;
+
+  CouponController({required this.couponRepository});
 
   int _couponTypeIndex = -1;
+
   int get couponTypeIndex => _couponTypeIndex;
 
   int _discountTypeIndex = -1;
+
   int get discountTypeIndex => _discountTypeIndex;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   List<CouponBodyModel>? _couponList;
+
   List<CouponBodyModel>? get couponList => _couponList;
 
   CouponBodyModel? _couponDetails;
+
   CouponBodyModel? get couponDetails => _couponDetails;
 
   Future<void> getCouponList() async {
-    List<CouponBodyModel>? couponList =
-        await couponServiceInterface.getCouponList(1);
+    List<CouponBodyModel>? couponList = await couponRepository.getCouponList(1);
     if (couponList != null) {
       _couponList = [];
       _couponList!.addAll(couponList);
@@ -35,8 +40,7 @@ class CouponController extends GetxController implements GetxService {
 
   Future<CouponBodyModel?> getCouponDetails(int id) async {
     _couponDetails = null;
-    CouponBodyModel? couponDetails =
-        await couponServiceInterface.getCouponDetails(id);
+    CouponBodyModel? couponDetails = await couponRepository.get(id);
     if (couponDetails != null) {
       _couponDetails = couponDetails;
     }
@@ -46,7 +50,7 @@ class CouponController extends GetxController implements GetxService {
 
   Future<bool> changeStatus(int? couponId, bool status) async {
     bool isSuccess =
-        await couponServiceInterface.changeStatus(couponId, status ? 1 : 0);
+        await couponRepository.changeStatus(couponId, status ? 1 : 0);
     return isSuccess;
   }
 
@@ -54,9 +58,8 @@ class CouponController extends GetxController implements GetxService {
     _isLoading = true;
     update();
     bool success = false;
-    ResponseModel responseModel =
-        await couponServiceInterface.deleteCoupon(couponId);
-    if (responseModel.isSuccess) {
+    ResponseModel? responseModel = await couponRepository.delete(id: couponId);
+    if (responseModel!.isSuccess) {
       success = true;
       await getCouponList();
       Get.back();
@@ -94,7 +97,7 @@ class CouponController extends GetxController implements GetxService {
       "min_purchase": minPurchase,
     };
 
-    ResponseModel responseModel = await couponServiceInterface.addCoupon(data);
+    ResponseModel responseModel = await couponRepository.add(data);
     if (responseModel.isSuccess) {
       getCouponList();
       Get.back();
@@ -133,9 +136,8 @@ class CouponController extends GetxController implements GetxService {
       "min_purchase": minPurchase,
     };
 
-    ResponseModel responseModel =
-        await couponServiceInterface.updateCoupon(data);
-    if (responseModel.isSuccess) {
+    ResponseModel? responseModel = await couponRepository.update(data);
+    if (responseModel!.isSuccess) {
       Get.back();
       showCustomSnackBar(responseModel.message, isError: false);
       getCouponList();

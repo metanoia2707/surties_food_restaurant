@@ -1,42 +1,51 @@
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/features/pos/domain/models/cart_model.dart';
-import 'package:surties_food_restaurant/features/pos/domain/services/pos_service_interface.dart';
+import 'package:surties_food_restaurant/features/pos/domain/repositories/pos_repository.dart';
 import 'package:surties_food_restaurant/features/restaurant/domain/models/product_model.dart';
 import 'package:surties_food_restaurant/helper/custom_print_helper.dart';
 
 class PosController extends GetxController implements GetxService {
-  final PosServiceInterface posServiceInterface;
-  PosController({required this.posServiceInterface});
+  final PosRepository posRepository;
+
+  PosController({required this.posRepository});
 
   List<CartModel> _cartList = [];
+
   List<CartModel> get cartList => _cartList;
 
   double _amount = 0.0;
+
   double get amount => _amount;
 
   List<int>? _variationIndex;
+
   List<int>? get variationIndex => _variationIndex;
 
   int? _quantity = 1;
+
   int? get quantity => _quantity;
 
   List<bool> _addOnActiveList = [];
+
   List<bool> get addOnActiveList => _addOnActiveList;
 
   List<int?> _addOnQtyList = [];
+
   List<int?> get addOnQtyList => _addOnQtyList;
 
   double _discount = -1;
+
   double get discount => _discount;
 
   double _tax = -1;
+
   double get tax => _tax;
 
   Future<List<Product>> searchProduct(String searchText) async {
     List<Product> searchProductList = [];
     if (searchText.isNotEmpty) {
       List<Product>? searchProduct =
-          await posServiceInterface.searchProductList(searchText);
+          await posRepository.searchProductList(searchText);
       if (searchProduct != null) {
         searchProductList = [];
         searchProductList.addAll(searchProduct);

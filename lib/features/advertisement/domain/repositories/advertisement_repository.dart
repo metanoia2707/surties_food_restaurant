@@ -1,21 +1,18 @@
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:surties_food_restaurant/features/advertisement/domain/repositories/advertisement_repository_interface.dart';
 import 'package:surties_food_restaurant/features/advertisement/models/ads_details_model.dart';
 import 'package:surties_food_restaurant/features/advertisement/models/advertisement_model.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class AdvertisementRepository implements AdvertisementRepositoryInterface {
+class AdvertisementRepository {
   final ApiClient apiClient;
   AdvertisementRepository({required this.apiClient});
 
-  @override
   Future add(value) {
     throw UnimplementedError();
   }
 
-  @override
   Future<Response> submitNewAdvertisement(
       Map<String, String> body, List<MultipartBody> selectedFile) async {
     return await apiClient.postMultipartData(
@@ -26,7 +23,6 @@ class AdvertisementRepository implements AdvertisementRepositoryInterface {
     );
   }
 
-  @override
   Future<Response> copyAddAdvertisement(
       Map<String, String> body, List<MultipartBody> selectedFile) async {
     return await apiClient.postMultipartData(
@@ -37,7 +33,6 @@ class AdvertisementRepository implements AdvertisementRepositoryInterface {
     );
   }
 
-  @override
   Future delete({int? id}) async {
     return await _deleteAdvertisement(id: id!);
   }
@@ -48,7 +43,6 @@ class AdvertisementRepository implements AdvertisementRepositoryInterface {
     return response.statusCode == 200;
   }
 
-  @override
   Future<AdsDetailsModel?> get(int id) async {
     return await _getAdvertisementDetails(id: id);
   }
@@ -63,12 +57,10 @@ class AdvertisementRepository implements AdvertisementRepositoryInterface {
     return adsDetailsModel;
   }
 
-  @override
   Future getList() {
     throw UnimplementedError();
   }
 
-  @override
   Future<AdvertisementModel?> getAdvertisementList(
       String offset, String type) async {
     AdvertisementModel? advertisementModel;
@@ -80,12 +72,10 @@ class AdvertisementRepository implements AdvertisementRepositoryInterface {
     return advertisementModel;
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     throw UnimplementedError();
   }
 
-  @override
   Future<Response> editAdvertisement(
       {required String id,
       required Map<String, String> body,
@@ -98,7 +88,6 @@ class AdvertisementRepository implements AdvertisementRepositoryInterface {
     );
   }
 
-  @override
   Future<bool> changeAdvertisementStatus(
       {required String note, required String status, required int id}) async {
     Response response =

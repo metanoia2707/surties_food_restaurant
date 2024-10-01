@@ -7,46 +7,58 @@ import 'package:surties_food_restaurant/features/disbursement/domain/models/disb
     as disburse;
 import 'package:surties_food_restaurant/features/disbursement/domain/models/disbursement_report_model.dart'
     as report;
-import 'package:surties_food_restaurant/features/disbursement/domain/services/disbursement_service_interface.dart';
+import 'package:surties_food_restaurant/features/disbursement/domain/repositories/disbursement_repository.dart';
 import 'package:surties_food_restaurant/features/payment/controllers/payment_controller.dart';
 import 'package:surties_food_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
 
 class DisbursementController extends GetxController implements GetxService {
-  final DisbursementServiceInterface disbursementServiceInterface;
-  DisbursementController({required this.disbursementServiceInterface});
+  final DisbursementRepository disbursementRepository;
+
+  DisbursementController({required this.disbursementRepository});
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   bool _isDeleteLoading = false;
+
   bool get isDeleteLoading => _isDeleteLoading;
 
   int? _selectedMethodIndex = 0;
+
   int? get selectedMethodIndex => _selectedMethodIndex;
 
   List<DropdownItem<int>> _methodList = [];
+
   List<DropdownItem<int>> get methodList => _methodList;
 
   List<TextEditingController> _textControllerList = [];
+
   List<TextEditingController> get textControllerList => _textControllerList;
 
   List<MethodFields> _methodFields = [];
+
   List<MethodFields> get methodFields => _methodFields;
 
   List<FocusNode> _focusList = [];
+
   List<FocusNode> get focusList => _focusList;
 
   List<WidthDrawMethodModel>? _widthDrawMethods;
+
   List<WidthDrawMethodModel>? get widthDrawMethods => _widthDrawMethods;
 
   disburse.DisbursementMethodBody? _disbursementMethodBody;
+
   disburse.DisbursementMethodBody? get disbursementMethodBody =>
       _disbursementMethodBody;
 
   int? _index = -1;
+
   int? get index => _index;
 
   report.DisbursementReportModel? _disbursementReportModel;
+
   report.DisbursementReportModel? get disbursementReportModel =>
       _disbursementReportModel;
 
@@ -101,8 +113,7 @@ class DisbursementController extends GetxController implements GetxService {
   Future<void> addWithdrawMethod(Map<String?, String> data) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel =
-        await disbursementServiceInterface.addWithdraw(data);
+    ResponseModel responseModel = await disbursementRepository.add(data);
     if (responseModel.isSuccess) {
       Get.back();
       getDisbursementMethodList();
@@ -115,7 +126,7 @@ class DisbursementController extends GetxController implements GetxService {
   Future<bool> getDisbursementMethodList() async {
     bool success = false;
     disburse.DisbursementMethodBody? disbursementMethodBody =
-        await disbursementServiceInterface.getDisbursementMethodList();
+        await disbursementRepository.getList();
     if (disbursementMethodBody != null) {
       success = true;
       _disbursementMethodBody = disbursementMethodBody;
@@ -128,9 +139,9 @@ class DisbursementController extends GetxController implements GetxService {
     _index = index;
     _isLoading = true;
     update();
-    ResponseModel responseModel =
-        await disbursementServiceInterface.makeDefaultMethod(data);
-    if (responseModel.isSuccess) {
+    ResponseModel? responseModel =
+        await disbursementRepository.makeDefaultMethod(data);
+    if (responseModel!.isSuccess) {
       _index = -1;
       getDisbursementMethodList();
       showCustomSnackBar(responseModel.message, isError: false);
@@ -142,9 +153,8 @@ class DisbursementController extends GetxController implements GetxService {
   Future<void> deleteMethod(int id) async {
     _isDeleteLoading = true;
     update();
-    ResponseModel responseModel =
-        await disbursementServiceInterface.deleteMethod(id);
-    if (responseModel.isSuccess) {
+    ResponseModel? responseModel = await disbursementRepository.delete(id: id);
+    if (responseModel!.isSuccess) {
       getDisbursementMethodList();
       Get.back();
       showCustomSnackBar(responseModel.message, isError: false);
@@ -155,7 +165,7 @@ class DisbursementController extends GetxController implements GetxService {
 
   Future<void> getDisbursementReport(int offset) async {
     report.DisbursementReportModel? disbursementReportModel =
-        await disbursementServiceInterface.getDisbursementReport(offset);
+        await disbursementRepository.getDisbursementReport(offset);
     if (disbursementReportModel != null) {
       _disbursementReportModel = disbursementReportModel;
     }

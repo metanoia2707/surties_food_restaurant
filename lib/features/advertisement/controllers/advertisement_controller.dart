@@ -9,7 +9,7 @@ import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/models/config_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_bottom_sheet_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
-import 'package:surties_food_restaurant/features/advertisement/domain/services/advertisement_service_interface.dart';
+import 'package:surties_food_restaurant/features/advertisement/domain/repositories/advertisement_repository.dart';
 import 'package:surties_food_restaurant/features/advertisement/enums/ads_type.dart';
 import 'package:surties_food_restaurant/features/advertisement/models/ads_details_model.dart';
 import 'package:surties_food_restaurant/features/advertisement/models/advertisement_model.dart';
@@ -22,32 +22,40 @@ import 'package:surties_food_restaurant/util/app_constants.dart';
 import 'package:video_player/video_player.dart';
 
 class AdvertisementController extends GetxController implements GetxService {
-  final AdvertisementServiceInterface advertisementServiceInterface;
-  AdvertisementController({required this.advertisementServiceInterface});
+  final AdvertisementRepository advertisementRepository;
+
+  AdvertisementController({required this.advertisementRepository});
 
   final List<String> _adsTypes = ['video_promotion', "restaurant_promotion"];
+
   List<String> get adsTypes => _adsTypes;
 
   String _selectedAdsType = AdsType.video_promotion.name;
+
   String get selectedAdsType => _selectedAdsType;
 
   XFile? _pickedVideoFile;
+
   XFile? get pickedVideoFile => _pickedVideoFile;
 
   List<String> _offsetList = [];
 
   int _offset = 1;
+
   int get offset => _offset;
 
   String _type = 'all';
+
   String get type => _type;
 
   int? _pageSize;
+
   int? get pageSize => _pageSize;
 
   AdvertisementModel? advertisementModel;
 
   List<Adds>? _advertisementList;
+
   List<Adds>? get advertisementList => _advertisementList;
 
   final List<String> _statusList = [
@@ -59,49 +67,63 @@ class AdvertisementController extends GetxController implements GetxService {
     'denied',
     'paused'
   ];
+
   List<String> get statusList => _statusList;
 
   AdsDetailsModel? _adsDetailsModel;
+
   AdsDetailsModel? get advertisementDetailsModel => _adsDetailsModel;
 
   VideoPlayerController? videoPlayerController;
 
   bool _isVideoValid = true;
+
   bool get isVideoValid => _isVideoValid;
 
   String? _networkVideoFile;
+
   String? get networkVideoFile => _networkVideoFile;
 
   DateTimeRange? dateTimeRange;
 
   bool _isProfileImageValid = true;
+
   bool get isProfileImageValid => _isProfileImageValid;
 
   bool _isCoverImageValid = true;
+
   bool get isCoverImageValid => _isCoverImageValid;
 
   bool _isRatingsChecked = false;
+
   bool get isRatingsChecked => _isRatingsChecked;
 
   bool _isReviewChecked = false;
+
   bool get isReviewChecked => _isReviewChecked;
 
   XFile? _pickedProfileImage;
+
   XFile? get pickedProfileImage => _pickedProfileImage;
 
   String? _networkProfileImage;
+
   String? get networkProfileImage => _networkProfileImage;
 
   XFile? _pickedCoverImage;
+
   XFile? get pickedCoverImage => _pickedCoverImage;
 
   String? _networkCoverImage;
+
   String? get networkCoverImage => _networkCoverImage;
 
   int _statusIndex = 0;
+
   int get statusIndex => _statusIndex;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   TextEditingController? noteController = TextEditingController();
@@ -376,8 +398,8 @@ class AdvertisementController extends GetxController implements GetxService {
     body['translations'] =
         jsonEncode(translations.map((v) => v.toJson()).toList());
 
-    Response response = await advertisementServiceInterface
-        .submitNewAdvertisement(body, selectedFiles);
+    Response response = await advertisementRepository.submitNewAdvertisement(
+        body, selectedFiles);
     if (response.statusCode == 200) {
       getAdvertisementList('1', _type);
       Get.back();
@@ -436,8 +458,8 @@ class AdvertisementController extends GetxController implements GetxService {
     body['translations'] =
         jsonEncode(translations.map((v) => v.toJson()).toList());
 
-    Response response = await advertisementServiceInterface
-        .copyAddAdvertisement(body, selectedFiles);
+    Response response =
+        await advertisementRepository.copyAddAdvertisement(body, selectedFiles);
     if (response.statusCode == 200) {
       getAdvertisementList('1', _type);
       Get.back();
@@ -502,7 +524,7 @@ class AdvertisementController extends GetxController implements GetxService {
     body['translations'] =
         jsonEncode(translations.map((v) => v.toJson()).toList());
 
-    Response response = await advertisementServiceInterface.editAdvertisement(
+    Response response = await advertisementRepository.editAdvertisement(
         id: advertisementData.id.toString(),
         body: body,
         selectedFile: selectedFiles);
@@ -521,8 +543,7 @@ class AdvertisementController extends GetxController implements GetxService {
   Future<bool> deleteAdvertisement(int id) async {
     _isLoading = true;
     update();
-    bool? success =
-        await advertisementServiceInterface.deleteAdvertisement(id: id);
+    bool success = await advertisementRepository.delete(id: id);
     if (success) {
       showCustomSnackBar('advertisement_deleted_successfully'.tr,
           isError: false);
@@ -546,8 +567,8 @@ class AdvertisementController extends GetxController implements GetxService {
     }
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
-      advertisementModel = await advertisementServiceInterface
-          .getAdvertisementList(offset, _type);
+      advertisementModel =
+          await advertisementRepository.getAdvertisementList(offset, _type);
       if (advertisementModel != null) {
         if (offset == '1') {
           _advertisementList = [];
@@ -567,8 +588,7 @@ class AdvertisementController extends GetxController implements GetxService {
 
   Future<AdsDetailsModel?> getAdvertisementDetails({required int id}) async {
     _adsDetailsModel = null;
-    AdsDetailsModel? adsDetailsModel =
-        await advertisementServiceInterface.getAdvertisementDetails(id: id);
+    AdsDetailsModel? adsDetailsModel = await advertisementRepository.get(id);
     if (adsDetailsModel != null) {
       _adsDetailsModel = adsDetailsModel;
     }
@@ -640,9 +660,8 @@ class AdvertisementController extends GetxController implements GetxService {
       {required String status, required int id}) async {
     _isLoading = true;
     update();
-    bool success =
-        await advertisementServiceInterface.changeAdvertisementStatus(
-            note: noteController!.text.trim(), status: status, id: id);
+    bool success = await advertisementRepository.changeAdvertisementStatus(
+        note: noteController!.text.trim(), status: status, id: id);
     if (success) {
       getAdvertisementList('1', _type);
     }

@@ -1,14 +1,13 @@
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/features/expense/domain/models/expense_model.dart';
-import 'package:surties_food_restaurant/features/expense/domain/repositories/expense_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class ExpenseRepository implements ExpenseRepositoryInterface {
+class ExpenseRepository {
   final ApiClient apiClient;
+
   ExpenseRepository({required this.apiClient});
 
-  @override
   Future<ExpenseBodyModel?> getExpenseList(
       {required int offset,
       required int? restaurantId,
@@ -24,31 +23,26 @@ class ExpenseRepository implements ExpenseRepositoryInterface {
     return expenseModel;
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();

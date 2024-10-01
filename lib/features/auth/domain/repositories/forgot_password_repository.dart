@@ -2,17 +2,16 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
-import 'package:surties_food_restaurant/features/auth/domain/repositories/forgot_password_repository_interface.dart';
 import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
+class ForgotPasswordRepository {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
+
   ForgotPasswordRepository(
       {required this.apiClient, required this.sharedPreferences});
 
-  @override
   Future<ResponseModel> forgotPassword(String? email) async {
     ResponseModel responseModel;
     Response response = await apiClient
@@ -25,7 +24,6 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<ResponseModel> verifyToken(String? email, String token) async {
     ResponseModel responseModel;
     Response response = await apiClient.postData(
@@ -38,7 +36,6 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<bool> changePassword(
       ProfileModel userInfoModel, String password) async {
     Response response =
@@ -57,7 +54,6 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
-  @override
   Future<ResponseModel> resetPassword(String? resetToken, String? email,
       String password, String confirmPassword) async {
     ResponseModel responseModel;
@@ -77,31 +73,26 @@ class ForgotPasswordRepository implements ForgotPasswordRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();

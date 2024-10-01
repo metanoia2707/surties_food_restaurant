@@ -6,16 +6,14 @@ import 'package:surties_food_restaurant/features/payment/domain/models/bank_info
 import 'package:surties_food_restaurant/features/payment/domain/models/wallet_payment_model.dart';
 import 'package:surties_food_restaurant/features/payment/domain/models/widthdrow_method_model.dart';
 import 'package:surties_food_restaurant/features/payment/domain/models/withdraw_model.dart';
-import 'package:surties_food_restaurant/features/payment/domain/repositories/payment_repository_interface.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class PaymentRepository implements PaymentRepositoryInterface {
+class PaymentRepository {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
   PaymentRepository({required this.apiClient, required this.sharedPreferences});
 
-  @override
   Future<List<WithdrawModel>?> getList() async {
     List<WithdrawModel>? withdrawList = [];
     Response response = await apiClient.getData(AppConstants.withdrawListUri);
@@ -28,21 +26,18 @@ class PaymentRepository implements PaymentRepositoryInterface {
     return withdrawList;
   }
 
-  @override
   Future<bool> updateBankInfo(BankInfoBodyModel bankInfoBody) async {
     Response response = await apiClient.putData(
         AppConstants.updateBankInfoUri, bankInfoBody.toJson());
     return (response.statusCode == 200);
   }
 
-  @override
   Future<bool> requestWithdraw(Map<String?, String> data) async {
     Response response =
         await apiClient.postData(AppConstants.withdrawRequestUri, data);
     return (response.statusCode == 200);
   }
 
-  @override
   Future<List<WidthDrawMethodModel>?> getWithdrawMethodList() async {
     List<WidthDrawMethodModel>? widthDrawMethodList;
     Response response =
@@ -58,7 +53,6 @@ class PaymentRepository implements PaymentRepositoryInterface {
     return widthDrawMethodList;
   }
 
-  @override
   Future<ResponseModel> makeCollectCashPayment(
       double amount, String paymentGatewayName) async {
     ResponseModel responseModel;
@@ -84,14 +78,12 @@ class PaymentRepository implements PaymentRepositoryInterface {
     return responseModel;
   }
 
-  @override
   Future<bool> makeWalletAdjustment() async {
     Response response = await apiClient.postData(
         AppConstants.makeWalletAdjustmentUri, {'token': _getUserToken()});
     return (response.statusCode == 200);
   }
 
-  @override
   Future<List<Transactions>?> getWalletPaymentList() async {
     List<Transactions>? transactions;
     Response response =
@@ -109,25 +101,21 @@ class PaymentRepository implements PaymentRepositoryInterface {
     return sharedPreferences.getString(AppConstants.token) ?? "";
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();

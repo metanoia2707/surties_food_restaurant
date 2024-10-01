@@ -4,25 +4,30 @@ import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
 import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:surties_food_restaurant/features/profile/domain/services/profile_service_interface.dart';
+import 'package:surties_food_restaurant/features/profile/domain/repositories/profile_repository.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class ProfileController extends GetxController implements GetxService {
-  final ProfileServiceInterface profileServiceInterface;
-  ProfileController({required this.profileServiceInterface}) {
-    _notification = profileServiceInterface.isNotificationActive();
+  final ProfileRepository profileRepository;
+
+  ProfileController({required this.profileRepository}) {
+    _notification = profileRepository.isNotificationActive();
   }
 
   ProfileModel? _profileModel;
+
   ProfileModel? get profileModel => _profileModel;
 
   bool _notification = true;
+
   bool get notification => _notification;
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   XFile? _pickedFile;
+
   XFile? get pickedFile => _pickedFile;
 
   void setProfile(ProfileModel? proModel) {
@@ -30,7 +35,7 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   Future<void> getProfile() async {
-    ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
+    ProfileModel? profileModel = await profileRepository.getProfileInfo();
     if (profileModel != null) {
       _profileModel = profileModel;
     }
@@ -40,7 +45,7 @@ class ProfileController extends GetxController implements GetxService {
   Future<void> deleteVendor() async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await profileServiceInterface.deleteVendor();
+    ResponseModel responseModel = await profileRepository.delete();
     _isLoading = false;
     if (responseModel.isSuccess) {
       showCustomSnackBar('your_account_remove_successfully'.tr, isError: false);
@@ -54,7 +59,7 @@ class ProfileController extends GetxController implements GetxService {
 
   bool setNotificationActive(bool isActive) {
     _notification = isActive;
-    profileServiceInterface.setNotificationActive(isActive);
+    profileRepository.setNotificationActive(isActive);
     update();
     return _notification;
   }
@@ -64,14 +69,14 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   String getUserToken() {
-    return profileServiceInterface.getUserToken();
+    return profileRepository.getUserToken();
   }
 
   Future<bool> updateUserInfo(
       ProfileModel updateUserModel, String token) async {
     _isLoading = true;
     update();
-    bool success = await profileServiceInterface.updateProfile(
+    bool success = await profileRepository.updateProfile(
         updateUserModel, _pickedFile, token);
     _isLoading = false;
     bool isSuccess;

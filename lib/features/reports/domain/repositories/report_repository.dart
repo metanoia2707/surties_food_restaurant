@@ -1,14 +1,12 @@
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/features/reports/domain/models/report_model.dart';
-import 'package:surties_food_restaurant/features/reports/domain/repositories/report_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class ReportRepository implements ReportRepositoryInterface {
+class ReportRepository {
   final ApiClient apiClient;
   ReportRepository({required this.apiClient});
 
-  @override
   Future<TransactionReportModel?> getTransactionReportList(
       {required int offset, required String? from, required String? to}) async {
     TransactionReportModel? transactionReportModel;
@@ -20,7 +18,6 @@ class ReportRepository implements ReportRepositoryInterface {
     return transactionReportModel;
   }
 
-  @override
   Future<OrderReportModel?> getOrderReportList(
       {required int offset, required String? from, required String? to}) async {
     OrderReportModel? orderReportModel;
@@ -32,7 +29,6 @@ class ReportRepository implements ReportRepositoryInterface {
     return orderReportModel;
   }
 
-  @override
   Future<OrderReportModel?> getCampaignReportList(
       {required int offset, required String? from, required String? to}) async {
     OrderReportModel? campaignReportModel;
@@ -44,7 +40,6 @@ class ReportRepository implements ReportRepositoryInterface {
     return campaignReportModel;
   }
 
-  @override
   Future<FoodReportModel?> getFoodReportList(
       {required int offset, required String? from, required String? to}) async {
     FoodReportModel? foodReportModel;
@@ -56,31 +51,26 @@ class ReportRepository implements ReportRepositoryInterface {
     return foodReportModel;
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();

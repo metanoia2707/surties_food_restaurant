@@ -2,15 +2,14 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/models/config_model.dart';
-import 'package:surties_food_restaurant/features/splash/domain/repositories/splash_repository_service.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class SplashRepository implements SplashRepositoryInterface {
+class SplashRepository {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
+
   SplashRepository({required this.apiClient, required this.sharedPreferences});
 
-  @override
   Future<ConfigModel?> getConfigData() async {
     ConfigModel? configModel;
     Response response = await apiClient.getData(AppConstants.configUri);
@@ -20,7 +19,6 @@ class SplashRepository implements SplashRepositoryInterface {
     return configModel;
   }
 
-  @override
   Future<bool> initSharedData() {
     if (!sharedPreferences.containsKey(AppConstants.theme)) {
       return sharedPreferences.setBool(AppConstants.theme, false);
@@ -45,46 +43,38 @@ class SplashRepository implements SplashRepositoryInterface {
     return Future.value(true);
   }
 
-  @override
   Future<bool> removeSharedData() {
     return sharedPreferences.clear();
   }
 
-  @override
   bool showIntro() {
     return sharedPreferences.getBool(AppConstants.intro) ?? true;
   }
 
-  @override
   void setIntro(bool intro) {
     sharedPreferences.setBool(AppConstants.intro, intro);
   }
 
-  @override
   Future add(value) {
     // TODO: implement add
     throw UnimplementedError();
   }
 
-  @override
   Future delete({int? id}) {
     // TODO: implement delete
     throw UnimplementedError();
   }
 
-  @override
   Future get(int id) {
     // TODO: implement get
     throw UnimplementedError();
   }
 
-  @override
   Future getList() {
     // TODO: implement getList
     throw UnimplementedError();
   }
 
-  @override
   Future update(Map<String, dynamic> body) {
     // TODO: implement update
     throw UnimplementedError();
