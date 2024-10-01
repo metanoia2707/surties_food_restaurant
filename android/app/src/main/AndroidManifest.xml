@@ -30,7 +30,7 @@
     </queries>
 
     <application
-        android:label="SurtiesFood Restaurant"
+        android:label="Surties Food Restaurant"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
