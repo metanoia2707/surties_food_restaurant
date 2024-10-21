@@ -3,12 +3,13 @@ import 'package:surties_food_restaurant/util/images.dart';
 
 class AppConstants {
   static const String appName = 'SurtiesFood Restaurant';
-  static const double appVersion = 7.7;
+  static const double appVersion = 1.0;
 
   static const double limitOfPickedVideoSizeInMB = 50;
   static const double maxSizeOfASingleFile = 10;
 
   static const String baseUrl = 'https://surtiesfood.com';
+  // static const String baseUrl = 'http://10.0.0.5/surties_food_admin';
   static const String configUri = '/api/v1/config';
   static const String loginUri = '/api/v1/auth/vendor/login';
   static const String forgetPasswordUri = '/api/v1/auth/vendor/forgot-password';
