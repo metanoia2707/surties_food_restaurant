@@ -1,41 +1,44 @@
-import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
 import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
-import 'package:surties_food_restaurant/features/profile/domain/repositories/profile_repository.dart';
+import 'package:surties_food_restaurant/features/profile/domain/services/profile_service_interface.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends GetxController implements GetxService {
-  final ProfileRepository profileRepository;
-
-  ProfileController({required this.profileRepository}) {
-    _notification = profileRepository.isNotificationActive();
+  final ProfileServiceInterface profileServiceInterface;
+  ProfileController({required this.profileServiceInterface}){
+    _notification = profileServiceInterface.isNotificationActive();
   }
 
   ProfileModel? _profileModel;
-
   ProfileModel? get profileModel => _profileModel;
 
   bool _notification = true;
-
   bool get notification => _notification;
 
   bool _isLoading = false;
-
   bool get isLoading => _isLoading;
 
   XFile? _pickedFile;
-
   XFile? get pickedFile => _pickedFile;
+
+  bool _trialWidgetNotShow = false;
+  bool get trialWidgetNotShow => _trialWidgetNotShow;
+
+  void setTrialWidgetNotShow(bool value) {
+    _trialWidgetNotShow = value;
+    update();
+  }
 
   void setProfile(ProfileModel? proModel) {
     _profileModel = proModel;
   }
 
   Future<void> getProfile() async {
-    ProfileModel? profileModel = await profileRepository.getProfileInfo();
+    ProfileModel? profileModel = await profileServiceInterface.getProfileInfo();
     if (profileModel != null) {
       _profileModel = profileModel;
     }
@@ -45,13 +48,13 @@ class ProfileController extends GetxController implements GetxService {
   Future<void> deleteVendor() async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await profileRepository.delete();
+    ResponseModel responseModel = await profileServiceInterface.deleteVendor();
     _isLoading = false;
     if (responseModel.isSuccess) {
       showCustomSnackBar('your_account_remove_successfully'.tr, isError: false);
       Get.find<AuthController>().clearSharedData();
       Get.offAllNamed(RouteHelper.getSignInRoute());
-    } else {
+    }else{
       Get.back();
       showCustomSnackBar(responseModel.message, isError: true);
     }
@@ -59,7 +62,7 @@ class ProfileController extends GetxController implements GetxService {
 
   bool setNotificationActive(bool isActive) {
     _notification = isActive;
-    profileRepository.setNotificationActive(isActive);
+    profileServiceInterface.setNotificationActive(isActive);
     update();
     return _notification;
   }
@@ -69,15 +72,13 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   String getUserToken() {
-    return profileRepository.getUserToken();
+    return profileServiceInterface.getUserToken();
   }
 
-  Future<bool> updateUserInfo(
-      ProfileModel updateUserModel, String token) async {
+  Future<bool> updateUserInfo(ProfileModel updateUserModel, String token) async {
     _isLoading = true;
     update();
-    bool success = await profileRepository.updateProfile(
-        updateUserModel, _pickedFile, token);
+    bool success = await profileServiceInterface.updateProfile(updateUserModel, _pickedFile, token);
     _isLoading = false;
     bool isSuccess;
     if (success) {
@@ -96,4 +97,16 @@ class ProfileController extends GetxController implements GetxService {
     _pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     update();
   }
+
+  Future<bool> trialWidgetShow({required String route}) async {
+    const Set<String> routesToHideWidget = {
+      RouteHelper.mySubscription, 'show-dialog', RouteHelper.success, RouteHelper.payment, RouteHelper.signIn,
+    };
+    _trialWidgetNotShow = routesToHideWidget.contains(route);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      update();
+    });
+    return _trialWidgetNotShow;
+  }
+
 }

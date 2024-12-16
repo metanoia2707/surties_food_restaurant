@@ -3,6 +3,10 @@ enum NotificationType{
   order,
   general,
   advertisement,
+  block,
+  unblock,
+  withdraw,
+  campaign,
 }
 
 class NotificationBodyModel {
@@ -12,6 +16,9 @@ class NotificationBodyModel {
   int? deliveryManId;
   int? conversationId;
   String? type;
+  int? adminId;
+  int? advertisementId;
+  int? campaignId;
 
   NotificationBodyModel({
     this.notificationType,
@@ -20,6 +27,9 @@ class NotificationBodyModel {
     this.deliveryManId,
     this.conversationId,
     this.type,
+    this.adminId,
+    this.advertisementId,
+    this.campaignId,
   });
 
   NotificationBodyModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +39,9 @@ class NotificationBodyModel {
     deliveryManId = json['delivery_man_id'];
     conversationId = json['conversation_id'];
     type = json['type'];
+    adminId = json['admin_id'];
+    advertisementId = json['advertisement_id'];
+    campaignId = json['data_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +52,9 @@ class NotificationBodyModel {
     data['delivery_man_id'] = deliveryManId;
     data['conversation_id'] = conversationId;
     data['type'] = type;
+    data['admin_id'] = adminId;
+    data['advertisement_id'] = advertisementId;
+    data['data_id'] = campaignId;
     return data;
   }
 
@@ -51,6 +67,14 @@ class NotificationBodyModel {
       return NotificationType.message;
     }else if(enumString == NotificationType.advertisement.toString()) {
       return NotificationType.advertisement;
+    }else if(enumString == NotificationType.block.toString()) {
+      return NotificationType.block;
+    }else if(enumString == NotificationType.unblock.toString()) {
+      return NotificationType.unblock;
+    }else if(enumString == NotificationType.withdraw.toString()) {
+      return NotificationType.withdraw;
+    }else if(enumString == NotificationType.campaign.toString()) {
+      return NotificationType.campaign;
     }
     return NotificationType.general;
   }

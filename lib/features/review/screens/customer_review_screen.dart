@@ -19,24 +19,25 @@ class CustomerReviewScreen extends StatefulWidget {
 }
 
 class _CustomerReviewScreenState extends State<CustomerReviewScreen> {
+
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    Get.find<RestaurantController>().getRestaurantReviewList(
-        Get.find<ProfileController>().profileModel!.restaurants![0].id, '',
-        willUpdate: false);
+    Get.find<RestaurantController>().getRestaurantReviewList(Get.find<ProfileController>().profileModel!.restaurants![0].id, '', willUpdate: false);
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: CustomAppBarWidget(title: 'customer_reviews'.tr),
       body: GetBuilder<RestaurantController>(builder: (restaurantController) {
+
         List<ReviewModel>? searchReviewList;
-        if (restaurantController.isSearching) {
+        if(restaurantController.isSearching) {
           searchReviewList = restaurantController.searchReviewList;
         } else {
           searchReviewList = restaurantController.restaurantReviewList;
@@ -53,68 +54,44 @@ class _CustomerReviewScreenState extends State<CustomerReviewScreen> {
                   fromReview: true,
                   controller: _searchController,
                   hint: '${'search_by_order_id_food_name'.tr}...',
-                  suffixIcon: restaurantController.isSearching
-                      ? CupertinoIcons.clear_thick
-                      : CupertinoIcons.search,
+                  suffixIcon: restaurantController.isSearching ? CupertinoIcons.clear_thick : CupertinoIcons.search,
                   iconPressed: () {
                     if (!restaurantController.isSearching) {
                       if (_searchController.text.trim().isNotEmpty) {
-                        restaurantController.getRestaurantReviewList(
-                            Get.find<ProfileController>()
-                                .profileModel!
-                                .restaurants![0]
-                                .id,
-                            _searchController.text.trim());
+                        restaurantController.getRestaurantReviewList(Get.find<ProfileController>().profileModel!.restaurants![0].id, _searchController.text.trim());
                       } else {
-                        showCustomSnackBar(
-                            'write_order_id_food_name_for_search'.tr);
+                        showCustomSnackBar('write_order_id_food_name_for_search'.tr);
                       }
                     } else {
                       _searchController.clear();
-                      restaurantController.getRestaurantReviewList(
-                          Get.find<ProfileController>()
-                              .profileModel!
-                              .restaurants![0]
-                              .id,
-                          "");
+                      restaurantController.getRestaurantReviewList(Get.find<ProfileController>().profileModel!.restaurants![0].id, "");
                     }
                   },
                   onSubmit: (String text) {
                     if (_searchController.text.trim().isNotEmpty) {
                       restaurantController.getRestaurantReviewList(
-                          Get.find<ProfileController>()
-                              .profileModel!
-                              .restaurants![0]
-                              .id,
-                          _searchController.text.trim());
+                          Get.find<ProfileController>().profileModel!.restaurants![0].id, _searchController.text.trim());
                     } else {
-                      showCustomSnackBar(
-                          'write_order_id_food_name_for_search'.tr);
+                      showCustomSnackBar('write_order_id_food_name_for_search'.tr);
                     }
                   },
                 ),
+
               ),
             ),
           ),
+
           Expanded(
-            child: searchReviewList != null
-                ? searchReviewList.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: searchReviewList.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: Dimensions.paddingSizeDefault),
-                            child: ReviewCardWidget(
-                                review: searchReviewList![index]),
-                          );
-                        },
-                      )
-                    : Padding(
-                        padding: EdgeInsets.only(top: context.height * 0.35),
-                        child: Text('no_review_found'.tr))
-                : const CustomerReviewScreenShimmer(),
+            child: searchReviewList != null ? searchReviewList.isNotEmpty ? ListView.builder(
+              itemCount: searchReviewList.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
+                  child: ReviewCardWidget(review: searchReviewList![index]),
+                );
+              },
+            ) : Padding(padding: EdgeInsets.only(top: context.height * 0.35), child: Text('no_review_found'.tr)) : const CustomerReviewScreenShimmer(),
           ),
         ]);
       }),

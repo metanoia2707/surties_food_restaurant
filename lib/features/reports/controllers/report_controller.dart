@@ -1,92 +1,79 @@
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/reports/domain/services/report_service_interface.dart';
+import 'package:surties_food_restaurant/features/reports/domain/models/report_model.dart';
+import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
+import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:surties_food_restaurant/features/reports/domain/models/report_model.dart';
-import 'package:surties_food_restaurant/features/reports/domain/repositories/report_repository.dart';
-import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
+import 'package:surties_food_restaurant/helper/pdf_download_helper.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 
 class ReportController extends GetxController implements GetxService {
-  final ReportRepository reportRepository;
-
-  ReportController({required this.reportRepository});
+  final ReportServiceInterface reportServiceInterface;
+  ReportController({required this.reportServiceInterface});
 
   int? _pageSize;
-
   int? get pageSize => _pageSize;
 
   List<String> _offsetList = [];
 
   int _offset = 1;
-
   int get offset => _offset;
 
   bool _isLoading = false;
-
   bool get isLoading => _isLoading;
 
   double? _onHold;
-
   double? get onHold => _onHold;
 
   double? _canceled;
-
   double? get canceled => _canceled;
 
   double? _completedTransactions;
-
   double? get completedTransactions => _completedTransactions;
 
   List<OrderTransactions>? _orderTransactions;
-
   List<OrderTransactions>? get orderTransactions => _orderTransactions;
 
   late DateTimeRange _selectedDateRange;
 
   String? _from;
-
   String? get from => _from;
 
   String? _to;
-
   String? get to => _to;
 
   OtherData? _otherData;
-
   OtherData? get otherData => _otherData;
 
   List<Orders>? _orders;
-
   List<Orders>? get orders => _orders;
 
   List<String>? _label;
-
   List<String>? get label => _label;
 
   List<double>? _earning;
-
   List<double>? get earning => _earning;
 
   double? _earningAvg;
-
   double? get earningAvg => _earningAvg;
 
   List<Foods>? _foods;
-
   List<Foods>? get foods => _foods;
 
   String? _avgType;
-
   String? get avgType => _avgType;
 
   void initSetDate() {
-    _from = DateConverter.dateTimeForCoupon(
-        DateTime.now().subtract(const Duration(days: 30)));
+    _from = DateConverter.dateTimeForCoupon(DateTime.now().subtract(const Duration(days: 30)));
     _to = DateConverter.dateTimeForCoupon(DateTime.now());
   }
 
-  Future<void> getTransactionReportList(
-      {required String offset,
-      required String? from,
-      required String? to}) async {
+  Future<void> getTransactionReportList({required String offset, required String? from, required String? to}) async {
+
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -97,9 +84,7 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      TransactionReportModel? transactionReport =
-          await reportRepository.getTransactionReportList(
-              offset: int.parse(offset), from: from, to: to);
+      TransactionReportModel? transactionReport = await reportServiceInterface.getTransactionReportList(offset: int.parse(offset), from: from, to: to);
       if (transactionReport != null) {
         TransactionReportModel transactionReportModel = transactionReport;
         _onHold = transactionReportModel.onHold;
@@ -121,10 +106,8 @@ class ReportController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getOrderReportList(
-      {required String offset,
-      required String? from,
-      required String? to}) async {
+  Future<void> getOrderReportList({required String offset, required String? from, required String? to}) async {
+
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -135,8 +118,7 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      OrderReportModel? orderReport = await reportRepository.getOrderReportList(
-          offset: int.parse(offset), from: from, to: to);
+      OrderReportModel? orderReport = await reportServiceInterface.getOrderReportList(offset: int.parse(offset), from: from, to: to);
       if (orderReport != null) {
         OrderReportModel orderReportModel = orderReport;
         _otherData = orderReportModel.otherData;
@@ -156,10 +138,8 @@ class ReportController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getCampaignReportList(
-      {required String offset,
-      required String? from,
-      required String? to}) async {
+  Future<void> getCampaignReportList({required String offset, required String? from, required String? to}) async {
+
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -170,8 +150,7 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      OrderReportModel? campaignReport = await reportRepository
-          .getCampaignReportList(offset: int.parse(offset), from: from, to: to);
+      OrderReportModel? campaignReport = await reportServiceInterface.getCampaignReportList(offset: int.parse(offset), from: from, to: to);
       if (campaignReport != null) {
         OrderReportModel campaignReportModel = campaignReport;
         if (offset == '1') {
@@ -190,10 +169,8 @@ class ReportController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getFoodReportList(
-      {required String offset,
-      required String? from,
-      required String? to}) async {
+  Future<void> getFoodReportList({required String offset, required String? from, required String? to}) async {
+
     if (offset == '1') {
       _offsetList = [];
       _offset = 1;
@@ -207,8 +184,7 @@ class ReportController extends GetxController implements GetxService {
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
 
-      FoodReportModel? foodReport = await reportRepository.getFoodReportList(
-          offset: int.parse(offset), from: from, to: to);
+      FoodReportModel? foodReport = await reportServiceInterface.getFoodReportList(offset: int.parse(offset), from: from, to: to);
       if (foodReport != null) {
         FoodReportModel foodReportModel = foodReport;
         if (offset == '1') {
@@ -244,10 +220,21 @@ class ReportController extends GetxController implements GetxService {
     update();
   }
 
-  void showDatePicker(BuildContext context,
-      {bool transaction = false,
-      bool order = false,
-      bool campaign = false}) async {
+  Future<void> getTransactionReportStatement(int orderId) async {
+    _isLoading = true;
+    update();
+
+    Response response = await reportServiceInterface.getTransactionReportStatement(orderId: orderId);
+    if (response.statusCode == 200) {
+      downloadPdf(response.body['file_url'], orderId);
+    } else {
+      showCustomSnackBar('download_failed'.tr);
+    }
+    _isLoading = false;
+    update();
+  }
+
+  void showDatePicker(BuildContext context, {bool transaction = false, bool order = false, bool campaign = false}) async {
     final DateTimeRange? result = await showDateRangePicker(
       context: context,
       firstDate: DateTime.now().subtract(const Duration(days: 365)),
@@ -267,16 +254,48 @@ class ReportController extends GetxController implements GetxService {
       _from = _selectedDateRange.start.toString().split(' ')[0];
       _to = _selectedDateRange.end.toString().split(' ')[0];
       update();
-      if (transaction) {
+      if(transaction){
         getTransactionReportList(offset: '1', from: _from, to: _to);
       }
-      if (order) {
+      if(order){
         getOrderReportList(offset: '1', from: _from, to: _to);
       }
-      if (campaign) {
+      if(campaign) {
         getCampaignReportList(offset: '1', from: _from, to: _to);
       }
       getFoodReportList(offset: '1', from: _from, to: _to);
     }
   }
+
+  Future<void> downloadPdf(String url, int orderId) async {
+    try {
+      // Request storage permission
+      var status = await Permission.storage.request();
+
+      if (status.isGranted) {
+        var response = await http.get(Uri.parse(url));
+
+        if (response.statusCode == 200) {
+          Directory directory = await PdfDownloadHelper.getProjectDirectory(Get.find<SplashController>().configModel?.businessName ?? AppConstants.appName);
+          String fileName = 'Report $orderId.pdf';
+          String filePath = '${directory.path}/$fileName';
+
+          // Write the file to the directory
+          File file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+
+          String relativePath = file.path.replaceAll('/storage/emulated/0/', '');
+
+          showCustomSnackBar('${'download_complete_file_saved_at'.tr} $relativePath', isError: false);
+        } else {
+          showCustomSnackBar('download_failed'.tr);
+        }
+      } else if (status.isDenied || status.isPermanentlyDenied) {
+        showCustomSnackBar('permission_denied_cannot_download_the_file'.tr);
+      }
+    } catch (e) {
+      showCustomSnackBar('download_failed'.tr);
+    }
+  }
+
 }

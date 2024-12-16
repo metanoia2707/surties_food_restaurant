@@ -1,23 +1,25 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:surties_food_restaurant/common/controllers/theme_controller.dart';
 import 'package:surties_food_restaurant/common/widgets/confirmation_dialog_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/order_shimmer_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/order_widget.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
 import 'package:surties_food_restaurant/features/home/widgets/ads_section_widget.dart';
-import 'package:surties_food_restaurant/features/home/widgets/order_button_widget.dart';
 import 'package:surties_food_restaurant/features/home/widgets/order_summary_card.dart';
 import 'package:surties_food_restaurant/features/notification/controllers/notification_controller.dart';
 import 'package:surties_food_restaurant/features/order/controllers/order_controller.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
+import 'package:surties_food_restaurant/features/home/widgets/order_button_widget.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/subscription/controllers/subscription_controller.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
 import 'package:surties_food_restaurant/util/dimensions.dart';
 import 'package:surties_food_restaurant/util/images.dart';
 import 'package:surties_food_restaurant/util/styles.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +29,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
   Future<void> _loadData() async {
     await Get.find<ProfileController>().getProfile();
     await Get.find<OrderController>().getCurrentOrders();
@@ -51,8 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _loadData();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).cardColor,
@@ -61,8 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Image.asset(Images.logo, height: 30, width: 30),
         ),
         titleSpacing: 0,
-        elevation: 0,
-        title: const Text("Surties Food"),
+        surfaceTintColor: Theme.of(context).cardColor,
+        shadowColor: Theme.of(context).disabledColor.withOpacity(0.5),
+        elevation: 2,
+        title: const Text(AppConstants.appName),
         actions: [
           IconButton(
             icon: GetBuilder<NotificationController>(
@@ -96,7 +104,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     : const SizedBox(),
               ]);
             }),
-            onPressed: () => Get.toNamed(RouteHelper.getNotificationRoute()),
+            onPressed: () {
+              Get.find<SubscriptionController>()
+                  .trialEndBottomSheet()
+                  .then((trialEnd) {
+                if (trialEnd) {
+                  Get.toNamed(RouteHelper.getNotificationRoute());
+                }
+              });
+            },
           )
         ],
       ),
@@ -105,7 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
           await _loadData();
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+          padding: const EdgeInsets.symmetric(
+              vertical: Dimensions.paddingSizeDefault,
+              horizontal: Dimensions.paddingSizeSmall),
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(children: [
             GetBuilder<ProfileController>(builder: (profileController) {
@@ -116,9 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius:
                         BorderRadius.circular(Dimensions.radiusDefault),
                     color: Theme.of(context).cardColor,
-                    border: Border.all(
-                        color:
-                            Theme.of(context).disabledColor.withOpacity(0.5)),
                     boxShadow: const [
                       BoxShadow(
                           color: Colors.black12, spreadRadius: 0, blurRadius: 5)
@@ -165,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.grey[300])),
                   ]),
                 ),
-                const SizedBox(height: Dimensions.paddingSizeSmall),
+                const SizedBox(height: Dimensions.paddingSizeDefault),
                 OrderSummaryCard(profileController: profileController),
                 const SizedBox(height: Dimensions.paddingSizeLarge),
                 const AdsSectionWidget(),

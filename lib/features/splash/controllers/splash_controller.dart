@@ -1,12 +1,14 @@
+import 'package:surties_food_restaurant/common/models/config_model.dart';
+import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
+import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
+import 'package:surties_food_restaurant/features/splash/domain/services/splash_service_interface.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:surties_food_restaurant/common/models/config_model.dart';
-import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
-import 'package:surties_food_restaurant/features/splash/domain/repositories/splash_repository.dart';
+import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class SplashController extends GetxController implements GetxService {
-  final SplashRepository splashRepository;
-  SplashController({required this.splashRepository});
+  final SplashServiceInterface splashServiceInterface;
+  SplashController({required this.splashServiceInterface});
 
   ConfigModel? _configModel;
   ConfigModel? get configModel => _configModel;
@@ -18,32 +20,46 @@ class SplashController extends GetxController implements GetxService {
   bool get firstTimeConnectionCheck => _firstTimeConnectionCheck;
 
   Future<bool> getConfigData() async {
-    ConfigModel? configModel = await splashRepository.getConfigData();
+    ConfigModel? configModel  = await splashServiceInterface.getConfigData();
     bool isSuccess = false;
-    if (configModel != null) {
+    if(configModel != null) {
       _configModel = configModel;
+
+      bool isMaintenanceMode = _configModel!.maintenanceMode!;
+      String platform = 'restaurant_app';
+      bool isInMaintenance = isMaintenanceMode && _configModel!.maintenanceModeData!.maintenanceSystemSetup!.contains(platform);
+
+      if(isInMaintenance) {
+        Get.offNamed(RouteHelper.getUpdateRoute(false));
+      }else if((Get.currentRoute.contains(RouteHelper.update) && !isMaintenanceMode) || (!isInMaintenance)) {
+        if(Get.find<AuthController>().isLoggedIn()) {
+          Get.offAllNamed(RouteHelper.getInitialRoute());
+        }else {
+          Get.offAllNamed(RouteHelper.getSignInRoute());
+        }
+      }
+
       isSuccess = true;
-      Get.find<RestaurantController>().setOrderStatus(
-          _configModel!.instantOrder!, _configModel!.scheduleOrder!);
+      Get.find<RestaurantController>().setOrderStatus(_configModel!.instantOrder!, _configModel!.scheduleOrder!);
     }
     update();
     return isSuccess;
   }
 
   Future<bool> initSharedData() {
-    return splashRepository.initSharedData();
+    return splashServiceInterface.initSharedData();
   }
 
   Future<bool> removeSharedData() {
-    return splashRepository.removeSharedData();
+    return splashServiceInterface.removeSharedData();
   }
 
   bool showIntro() {
-    return splashRepository.showIntro();
+    return splashServiceInterface.showIntro();
   }
 
   void setIntro(bool intro) {
-    splashRepository.setIntro(intro);
+    splashServiceInterface.setIntro(intro);
   }
 
   void initialConnectionCheck(bool isChecked) {
@@ -53,17 +69,16 @@ class SplashController extends GetxController implements GetxService {
   bool isRestaurantClosed() {
     DateTime open = DateFormat('hh:mm').parse('');
     DateTime close = DateFormat('hh:mm').parse('');
-    DateTime openTime = DateTime(_currentTime.year, _currentTime.month,
-        _currentTime.day, open.hour, open.minute);
-    DateTime closeTime = DateTime(_currentTime.year, _currentTime.month,
-        _currentTime.day, close.hour, close.minute);
-    if (closeTime.isBefore(openTime)) {
+    DateTime openTime = DateTime(_currentTime.year, _currentTime.month, _currentTime.day, open.hour, open.minute);
+    DateTime closeTime = DateTime(_currentTime.year, _currentTime.month, _currentTime.day, close.hour, close.minute);
+    if(closeTime.isBefore(openTime)) {
       closeTime = closeTime.add(const Duration(days: 1));
     }
-    if (_currentTime.isAfter(openTime) && _currentTime.isBefore(closeTime)) {
+    if(_currentTime.isAfter(openTime) && _currentTime.isBefore(closeTime)) {
       return false;
-    } else {
+    }else {
       return true;
     }
   }
+
 }

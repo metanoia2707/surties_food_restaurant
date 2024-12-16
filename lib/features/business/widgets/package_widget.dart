@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:surties_food_restaurant/util/dimensions.dart';
 import 'package:surties_food_restaurant/util/styles.dart';
 
 class PackageWidget extends StatelessWidget {
   final String title;
-  const PackageWidget({super.key, required this.title});
+  final bool isSelect;
+  const PackageWidget({super.key, required this.title, this.isSelect = false});
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
-        padding:
-            EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.15),
+        padding: const EdgeInsets.only(left: 30),
         child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Icon(Icons.check_circle,
-              size: 18, color: Theme.of(context).primaryColor),
+          Icon(Icons.check_circle, size: 18, color: isSelect ? Theme.of(context).cardColor : Colors.green),
           const SizedBox(width: Dimensions.paddingSizeSmall),
-          Text(title, style: robotoMedium),
+
+          Text(title.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: isSelect ? Theme.of(context).cardColor
+          : Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7))),
+
         ]),
       ),
-      Divider(
-          indent: 50,
-          endIndent: 50,
-          color: Theme.of(context).dividerColor,
-          thickness: 1),
+
+      Divider(indent: 20, endIndent: 50, color: isSelect ? Theme.of(context).cardColor.withOpacity(0.2) : Theme.of(context).disabledColor.withOpacity(0.3), thickness: 1),
+
     ]);
   }
 }

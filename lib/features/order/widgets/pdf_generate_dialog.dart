@@ -14,14 +14,14 @@ import 'package:surties_food_restaurant/util/styles.dart';
 class PdfGenerateDialog extends StatefulWidget {
   final OrderModel? order;
   final List<OrderDetailsModel>? orderDetails;
-  const PdfGenerateDialog(
-      {super.key, required this.order, required this.orderDetails});
+  const PdfGenerateDialog({super.key, required this.order, required this.orderDetails});
 
   @override
   State<PdfGenerateDialog> createState() => _PdfGenerateDialogState();
 }
 
 class _PdfGenerateDialogState extends State<PdfGenerateDialog> {
+
   ScreenshotController screenshotController = ScreenshotController();
   bool _isLoading = false;
 
@@ -30,56 +30,53 @@ class _PdfGenerateDialogState extends State<PdfGenerateDialog> {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        InvoiceDialogWidget(
-          order: widget.order,
-          orderDetails: widget.orderDetails,
-          screenshotController: screenshotController,
+
+        Expanded(
+          child: SingleChildScrollView(
+            child: InvoiceDialogWidget(
+              order: widget.order, orderDetails: widget.orderDetails,
+              screenshotController: screenshotController,
+            ),
+          ),
         ),
+
         Padding(
           padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-          child: _isLoading
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(
-                        Theme.of(context).primaryColor),
-                  ),
-                  onPressed: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    screenshotController
-                        .capture(delay: const Duration(milliseconds: 10))
-                        .then((Uint8List? capturedImage) async {
-                      //Capture Done
-                      if (kDebugMode) {
-                        print('its calling :  $capturedImage');
-                      }
-                      await capturedImageToPdf(
-                        capturedImage: capturedImage,
-                        businessName: Get.find<SplashController>()
-                                .configModel
-                                ?.businessName ??
-                            AppConstants.appName,
-                        orderId: widget.order!.id.toString(),
-                      );
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    }).catchError((onError) {
-                      if (kDebugMode) {
-                        print(onError);
-                      }
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    }).then((value) {
-                      Get.back();
-                    });
-                  },
-                  child: Text('download_pdf'.tr,
-                      style: robotoMedium.copyWith(color: Colors.white)),
-                ),
+          child: _isLoading ? const CircularProgressIndicator() : ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).primaryColor),
+            ),
+            onPressed: () async {
+              setState(() {
+                _isLoading = true;
+              });
+              screenshotController.capture(delay: const Duration(milliseconds: 10)).then((Uint8List? capturedImage) async {
+                //Capture Done
+                if (kDebugMode) {
+                  print('its calling :  $capturedImage');
+                }
+                await capturedImageToPdf(
+                  capturedImage: capturedImage,
+                  businessName: Get.find<SplashController>().configModel?.businessName ?? AppConstants.appName,
+                  orderId: widget.order!.id.toString(),
+                );
+                setState(() {
+                  _isLoading = false;
+                });
+
+              }).catchError((onError) {
+                if (kDebugMode) {
+                  print(onError);
+                }
+                setState(() {
+                  _isLoading = false;
+                });
+              }).then((value) {
+                Get.back();
+              });
+            },
+            child: Text('download_pdf'.tr, style: robotoMedium.copyWith(color: Colors.white)),
+          ),
         ),
       ]),
     );

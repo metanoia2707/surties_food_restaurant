@@ -38,8 +38,7 @@ class ReviewModel {
     customerName = json['customer_name'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    customer =
-        json['customer'] != null ? Customer.fromJson(json['customer']) : null;
+    customer = json['customer'] != null ? Customer.fromJson(json['customer']) : null;
     orderId = json['order_id'];
     reply = json['reply'];
     customerPhone = json['customer_phone'];

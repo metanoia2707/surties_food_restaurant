@@ -6,7 +6,9 @@ class PackageModel {
   PackageModel.fromJson(Map<String, dynamic> json) {
     if (json['packages'] != null) {
       packages = <Packages>[];
-      json['packages'].forEach((v) { packages!.add(Packages.fromJson(v)); });
+      json['packages'].forEach((v) {
+        packages!.add(Packages.fromJson(v));
+      });
     }
   }
 
@@ -36,6 +38,7 @@ class Packages {
   String? createdAt;
   String? updatedAt;
   String? color;
+  String? description;
 
   Packages({
     this.id,
@@ -54,25 +57,27 @@ class Packages {
     this.createdAt,
     this.updatedAt,
     this.color,
+    this.description,
   });
 
   Packages.fromJson(Map<String, dynamic> json) {
-  id = json['id'];
-  packageName = json['package_name'];
-  price = json['price']?.toDouble();
-  validity = json['validity'];
-  maxOrder = json['max_order'];
-  maxProduct = json['max_product'];
-  pos = json['pos'];
-  mobileApp = json['mobile_app'];
-  chat = json['chat'];
-  review = json['review'];
-  selfDelivery = json['self_delivery'];
-  status = json['status'];
-  def = json['default'];
-  createdAt = json['created_at'];
-  updatedAt = json['updated_at'];
-  color = json['colour'];
+    id = json['id'];
+    packageName = json['package_name'];
+    price = json['price'].toDouble();
+    validity = json['validity'];
+    maxOrder = json['max_order'];
+    maxProduct = json['max_product'];
+    pos = json['pos'];
+    mobileApp = json['mobile_app'];
+    chat = json['chat'];
+    review = json['review'];
+    selfDelivery = json['self_delivery'];
+    status = json['status'];
+    def = json['default'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    color = json['colour'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +98,7 @@ class Packages {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['colour'] = color;
+    data['description'] = description;
     return data;
   }
 }

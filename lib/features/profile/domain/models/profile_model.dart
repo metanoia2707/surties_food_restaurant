@@ -25,8 +25,6 @@ class ProfileModel {
   double? thisWeekEarning;
   double? thisMonthEarning;
   List<Restaurant>? restaurants;
-  Subscription? subscription;
-  SubscriptionOtherData? subscriptionOtherData;
   List<Translation>? translations;
   double? withdrawAbleBalance;
   double? payableBalance;
@@ -38,6 +36,9 @@ class ProfileModel {
   String? dynamicBalanceType;
   double? dynamicBalance;
   bool? showPayNowButton;
+  Subscription? subscription;
+  SubscriptionOtherData? subscriptionOtherData;
+  bool? subscriptionTransactions;
 
   ProfileModel({
     this.id,
@@ -77,6 +78,7 @@ class ProfileModel {
     this.dynamicBalanceType,
     this.dynamicBalance,
     this.showPayNowButton,
+    this.subscriptionTransactions,
   });
 
   ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -112,9 +114,7 @@ class ProfileModel {
     if (json['subscription'] != null) {
       subscription = Subscription.fromJson(json['subscription']);
     }
-    subscriptionOtherData = json['subscription_other_data'] != null
-        ? SubscriptionOtherData.fromJson(json['subscription_other_data'])
-        : null;
+    subscriptionOtherData = json['subscription_other_data'] != null ? SubscriptionOtherData.fromJson(json['subscription_other_data']) : null;
     if (json['translations'] != null) {
       translations = [];
       json['translations'].forEach((v) {
@@ -131,6 +131,7 @@ class ProfileModel {
     dynamicBalanceType = json['dynamic_balance_type'];
     dynamicBalance = json['dynamic_balance']?.toDouble();
     showPayNowButton = json['show_pay_now_button'];
+    subscriptionTransactions = json['subscription_transactions'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -171,6 +172,7 @@ class ProfileModel {
     data['dynamic_balance_type'] = dynamicBalanceType;
     data['dynamic_balance'] = dynamicBalance;
     data['show_pay_now_button'] = showPayNowButton;
+    data['subscription_transactions'] = subscriptionTransactions;
     return data;
   }
 }
@@ -229,6 +231,8 @@ class Restaurant {
   bool? isHalalActive;
   List<String>? characteristics;
   bool? isExtraPackagingActive;
+  String? restaurantBusinessModel;
+  double? comission;
 
   Restaurant({
     this.id,
@@ -284,6 +288,8 @@ class Restaurant {
     this.isHalalActive,
     this.characteristics,
     this.isExtraPackagingActive,
+    this.restaurantBusinessModel,
+    this.comission,
   });
 
   Restaurant.fromJson(Map<String, dynamic> json) {
@@ -323,8 +329,7 @@ class Restaurant {
     restaurantModel = json['restaurant_model'];
     veg = json['veg'];
     nonVeg = json['non_veg'];
-    discount =
-        json['discount'] != null ? Discount.fromJson(json['discount']) : null;
+    discount = json['discount'] != null ? Discount.fromJson(json['discount']) : null;
     if (json['schedules'] != null) {
       schedules = <Schedules>[];
       json['schedules'].forEach((v) {
@@ -351,12 +356,13 @@ class Restaurant {
     announcementMessage = json['announcement_message'];
     isAnnouncementActive = json['announcement'];
     instanceOrder = json['instant_order'];
-    extraPackagingStatus =
-        json['extra_packaging_status'].runtimeType == bool ? 1 : 0;
+    extraPackagingStatus = json['extra_packaging_status'].runtimeType == bool ? 1 : 0;
     extraPackagingAmount = json['extra_packaging_amount']?.toDouble();
     isHalalActive = json['halal_tag_status'] ?? false;
     characteristics = json['characteristics'].cast<String>();
     isExtraPackagingActive = json['is_extra_packaging_active'];
+    restaurantBusinessModel = json['restaurant_model'];
+    comission = json['comission']?.toDouble();
   }
 
   Map<String, dynamic> toJson() {
@@ -419,6 +425,8 @@ class Restaurant {
     data['halal_tag_status'] = isHalalActive;
     data['characteristics'] = characteristics;
     data['is_extra_packaging_active'] = isExtraPackagingActive;
+    data['restaurant_model'] = restaurantBusinessModel;
+    data['comission'] = comission;
     return data;
   }
 }
@@ -599,9 +607,14 @@ class Subscription {
   int? review;
   int? selfDelivery;
   int? status;
+  int? isTrial;
   int? totalPackageRenewed;
   String? createdAt;
   String? updatedAt;
+  String? renewedAt;
+  int? isCanceled;
+  String? canceledBy;
+  int? validity;
   Package? package;
 
   Subscription({
@@ -617,9 +630,14 @@ class Subscription {
     this.review,
     this.selfDelivery,
     this.status,
+    this.isTrial,
     this.totalPackageRenewed,
     this.createdAt,
     this.updatedAt,
+    this.renewedAt,
+    this.isCanceled,
+    this.canceledBy,
+    this.validity,
     this.package,
   });
 
@@ -636,11 +654,15 @@ class Subscription {
     review = json['review'] ?? 0;
     selfDelivery = json['self_delivery'];
     status = json['status'];
+    isTrial = json['is_trial'];
     totalPackageRenewed = json['total_package_renewed'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    package =
-        json['package'] != null ? Package.fromJson(json['package']) : null;
+    renewedAt = json['renewed_at'];
+    isCanceled = json['is_canceled'];
+    canceledBy = json['canceled_by'];
+    validity = json['validity'];
+    package = json['package'] != null ? Package.fromJson(json['package']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -660,6 +682,10 @@ class Subscription {
     data['total_package_renewed'] = totalPackageRenewed;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['renewed_at'] = renewedAt;
+    data['is_canceled'] = isCanceled;
+    data['canceled_by'] = canceledBy;
+    data['validity'] = validity;
     if (package != null) {
       data['package'] = package!.toJson();
     }
@@ -752,19 +778,25 @@ class Package {
 class SubscriptionOtherData {
   double? totalBill;
   int? maxProductUpload;
+  double? pendingBill;
 
-  SubscriptionOtherData({this.totalBill, this.maxProductUpload});
+  SubscriptionOtherData({
+    this.totalBill,
+    this.maxProductUpload,
+    this.pendingBill,
+  });
 
   SubscriptionOtherData.fromJson(Map<String, dynamic> json) {
     totalBill = json['total_bill']?.toDouble();
     maxProductUpload = json['max_product_uploads'];
+    pendingBill = json['pending_bill']?.toDouble();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['total_bill'] = totalBill;
     data['max_product_uploads'] = maxProductUpload;
-
+    data['pending_bill'] = pendingBill;
     return data;
   }
 }

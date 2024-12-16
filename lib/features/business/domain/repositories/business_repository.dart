@@ -1,51 +1,48 @@
 import 'package:get/get.dart';
 import 'package:surties_food_restaurant/api/api_client.dart';
-import 'package:surties_food_restaurant/features/business/domain/models/business_plan_model.dart';
+import 'package:surties_food_restaurant/features/business/domain/models/business_plan_body.dart';
 import 'package:surties_food_restaurant/features/business/domain/models/package_model.dart';
+import 'package:surties_food_restaurant/features/business/domain/repositories/business_repository_interface.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
 
-class BusinessRepository {
+class BusinessRepository implements BusinessRepositoryInterface<dynamic> {
   final ApiClient apiClient;
+
   BusinessRepository({required this.apiClient});
 
-  Future<PackageModel?> getList() async {
+  @override
+  Future<Response> setUpBusinessPlan(BusinessPlanBody businessPlanBody) async {
+    return await apiClient.postData(AppConstants.businessPlanUri, businessPlanBody.toJson());
+  }
+
+  @override
+  Future<PackageModel?> getList({int? offset}) async {
     PackageModel? packageModel;
-    Response response =
-        await apiClient.getData(AppConstants.restaurantPackagesUri);
-    if (response.statusCode == 200) {
+    Response response = await apiClient.getData(AppConstants.restaurantPackagesUri);
+    if(response.statusCode == 200) {
       packageModel = PackageModel.fromJson(response.body);
     }
     return packageModel;
   }
 
-  Future<Response> setUpBusinessPlan(
-      BusinessPlanModel businessPlanModel) async {
-    return await apiClient.postData(
-        AppConstants.businessPlanUri, businessPlanModel.toJson());
-  }
-
-  Future<Response> subscriptionPayment(String id, String? paymentName) async {
-    return await apiClient.postData(AppConstants.businessPlanPaymentUri,
-        {'id': id, 'payment_gateway': paymentName});
-  }
-
-  Future add(value) {
-    // TODO: implement add
+  @override
+  Future add(dynamic value) {
     throw UnimplementedError();
   }
 
+  @override
   Future delete({int? id}) {
-    // TODO: implement delete
     throw UnimplementedError();
   }
 
-  Future get(int id) {
-    // TODO: implement get
+  @override
+  Future get(int? id) {
     throw UnimplementedError();
   }
 
+  @override
   Future update(Map<String, dynamic> body) {
-    // TODO: implement update
     throw UnimplementedError();
   }
+
 }

@@ -1,16 +1,13 @@
-import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'dart:io';
+import 'package:surties_food_restaurant/common/widgets/custom_toast.dart';
+import 'package:surties_food_restaurant/helper/pdf_download_helper.dart';
 
-Future<void> capturedImageToPdf(
-    {Uint8List? capturedImage,
-    required String businessName,
-    required String orderId}) async {
+Future<void> capturedImageToPdf({Uint8List? capturedImage, required String businessName, required String orderId}) async {
   if (capturedImage == null) return;
 
   final pdf = pw.Document();
@@ -27,35 +24,25 @@ Future<void> capturedImageToPdf(
     ),
   );
 
-  final output = await getProjectDirectory(businessName);
+  final output = await PdfDownloadHelper.getProjectDirectory(businessName);
   final file = File("${output.path}/${'invoice'.tr}-$orderId.pdf");
 
   await Permission.storage.request();
 
   if (await Permission.storage.isGranted) {
     await file.writeAsBytes(await pdf.save());
-    showCustomSnackBar(
-        '${'pdf_saved_at'.tr} ${file.path.replaceAll('/storage/emulated/0/', '')}',
-        isError: false);
+    ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: CustomToast(text: '${'pdf_saved_at'.tr} ${file.path.replaceAll('/storage/emulated/0/', '')}', isError: false),
+      duration: const Duration(seconds: 2),
+    ));
   } else {
-    showCustomSnackBar('permission_denied_cannot_download_the_file'.tr);
+    ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: CustomToast(text: 'permission_denied_cannot_download_the_file'.tr, isError: true),
+      duration: const Duration(seconds: 2),
+    ));
   }
-}
-
-Future<Directory> getProjectDirectory(String projectName) async {
-  Directory? downloadsDirectory;
-  if (Platform.isAndroid) {
-    downloadsDirectory = Directory('/storage/emulated/0/Download/$projectName');
-  } else if (Platform.isIOS) {
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    downloadsDirectory = Directory('${documentsDirectory.path}/$projectName');
-  } else {
-    throw UnsupportedError('Unsupported platform');
-  }
-
-  if (!await downloadsDirectory.exists()) {
-    await downloadsDirectory.create(recursive: true);
-  }
-
-  return downloadsDirectory;
 }

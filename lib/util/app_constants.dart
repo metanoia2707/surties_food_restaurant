@@ -5,11 +5,11 @@ class AppConstants {
   static const String appName = 'SurtiesFood Restaurant';
   static const double appVersion = 1.0;
 
-  static const double limitOfPickedVideoSizeInMB = 50;
-  static const double maxSizeOfASingleFile = 10;
+  ///Flutter SDK 3.24.5
+
+  // static const String baseUrl = 'http://10.0.0.5/surties_food_admin';
 
   static const String baseUrl = 'https://surtiesfood.com';
-  // static const String baseUrl = 'http://10.0.0.5/surties_food_admin';
   static const String configUri = '/api/v1/config';
   static const String loginUri = '/api/v1/auth/vendor/login';
   static const String forgetPasswordUri = '/api/v1/auth/vendor/forgot-password';
@@ -72,9 +72,6 @@ class AppConstants {
   static const String placeDetailsUri = '/api/v1/config/place-api-details';
   static const String zoneUri = '/api/v1/config/get-zone-id';
   static const String restaurantRegisterUri = '/api/v1/auth/vendor/register';
-  static const String restaurantPackagesUri =
-      '/api/v1/auth/vendor/package-view';
-  static const String businessPlanUri = '/api/v1/auth/vendor/business_plan';
   static const String renewBusinessPlanUri =
       '/api/v1/auth/vendor/package-renew';
   static const String addCouponUri = '/api/v1/vendor/coupon-store';
@@ -128,6 +125,22 @@ class AppConstants {
       '/api/v1/vendor/get-characteristic-suggestion';
   static const String productUpdateStock =
       '/api/v1/vendor/product/update-stock';
+  static const String getTransactionStatement =
+      '/api/v1/vendor/generate-transaction-statement';
+  static const String getNutritionSuggestionUri =
+      '/api/v1/food/get-nutrition-name-list';
+  static const String getAllergicIngredientsSuggestionUri =
+      '/api/v1/food/get-allergy-name-list';
+
+  ///Subscription
+  static const String businessPlanUri = '/api/v1/vendor/business_plan';
+  static const String restaurantPackagesUri = '/api/v1/vendor/package-view';
+  static const String subscriptionTransactionUri =
+      '/api/v1/vendor/subscription-transaction';
+  static const String cancelSubscriptionUri =
+      '/api/v1/vendor/cancel-subscription';
+  static const String checkProductLimitsUri =
+      '/api/v1/vendor/check-product-limits';
 
   ///Chatting
   static const String getConversationListUri = '/api/v1/vendor/message/list';
@@ -170,6 +183,9 @@ class AppConstants {
   static const String zoneTopic = 'zone_topic';
   static const String localizationKey = 'X-localization';
   static const String bluetoothMacAddress = 'bluetooth_mac_address';
+  static const String maintenanceModeTopic = 'maintenance_mode_restaurant_app';
+  static const String isRestaurantRegister =
+      'surtiesfood_restaurant_registration';
 
   static List<LanguageModel> languages = [
     LanguageModel(
@@ -178,4 +194,10 @@ class AppConstants {
         countryCode: 'IN',
         languageCode: 'en'),
   ];
+
+  static const double maxLimitOfFileSentINConversation = 25;
+  static const double maxLimitOfTotalFileSent = 5;
+  static const double maxSizeOfASingleFile = 10;
+  static const double maxImageSend = 10;
+  static const double limitOfPickedVideoSizeInMB = 50;
 }

@@ -44,17 +44,15 @@ class OrderDetailsModel {
     foodId = json['food_id'];
     orderId = json['order_id'];
     price = json['price']?.toDouble();
-    foodDetails = json['food_details'] != null
-        ? Product.fromJson(json['food_details'])
-        : null;
+    foodDetails = json['food_details'] != null ? Product.fromJson(json['food_details']) : null;
     variation = [];
     oldVariation = [];
     if (json['variation'] != null && json['variation'].isNotEmpty) {
-      if (json['variation'][0]['values'] != null) {
+      if(json['variation'][0]['values'] != null) {
         json['variation'].forEach((v) {
           variation!.add(Variation.fromJson(v));
         });
-      } else {
+      }else {
         json['variation'].forEach((v) {
           oldVariation!.add(OldVariation.fromJson(v));
         });

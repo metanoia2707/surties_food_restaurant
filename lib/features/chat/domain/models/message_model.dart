@@ -8,22 +8,14 @@ class MessageModel {
   Conversation? conversation;
   List<Message>? messages;
 
-  MessageModel(
-      {this.totalSize,
-      this.limit,
-      this.offset,
-      this.messages,
-      this.status,
-      this.conversation});
+  MessageModel({this.totalSize, this.limit, this.offset, this.messages, this.status, this.conversation});
 
   MessageModel.fromJson(Map<String, dynamic> json) {
     totalSize = json['total_size'];
     limit = json['limit'];
     offset = json['offset'];
     status = json['status'];
-    conversation = json['conversation'] != null
-        ? Conversation.fromJson(json['conversation'])
-        : null;
+    conversation = json['conversation'] != null ? Conversation.fromJson(json['conversation']) : null;
     if (json['messages'] != null) {
       messages = <Message>[];
       json['messages'].forEach((v) {
@@ -74,7 +66,14 @@ class Message {
     conversationId = json['conversation_id'];
     senderId = json['sender_id'];
     message = json['message'];
-    filesFullUrl = json['file_full_url'].cast<String>();
+    if (json['file_full_url'] != null) {
+      filesFullUrl = <String>[];
+      json['file_full_url'].forEach((v) {
+        if(v != null) {
+          filesFullUrl!.add(v);
+        }
+      });
+    }
     isSeen = json['is_seen'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

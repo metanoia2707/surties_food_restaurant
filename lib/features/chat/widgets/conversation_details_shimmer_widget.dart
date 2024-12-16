@@ -18,13 +18,12 @@ class ConversationDetailsShimmer extends StatelessWidget {
         enabled: true,
         direction: const ShimmerDirection.fromLTRB(),
         child: SizedBox(
-          height: Get.height * 0.80,
+          height:Get.height*0.80,
           child: SingleChildScrollView(
             child: Column(
-              children: [
+              children:[
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   height: 65,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -32,13 +31,12 @@ class ConversationDetailsShimmer extends StatelessWidget {
                       Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).shadowColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(100),
+                        decoration: BoxDecoration(color: Theme.of(context).shadowColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(100),
                           ),
                         ),
                       ),
+
                       const SizedBox(width: Dimensions.paddingSizeDefault),
                       Container(
                         height: 40,
@@ -48,8 +46,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomRight: Radius.circular(
-                              Dimensions.radiusDefault,
+                            bottomRight: Radius.circular(Dimensions.radiusDefault,
                             ),
                           ),
                         ),
@@ -57,9 +54,10 @@ class ConversationDetailsShimmer extends StatelessWidget {
                     ],
                   ),
                 ),
+
+
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -72,8 +70,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomLeft:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomLeft: Radius.circular(Dimensions.radiusDefault),
                           ),
                         ),
                       ),
@@ -83,16 +80,15 @@ class ConversationDetailsShimmer extends StatelessWidget {
                         width: 50,
                         decoration: BoxDecoration(
                           color: Theme.of(context).shadowColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
+                          borderRadius: const BorderRadius.all(Radius.circular(100)
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -102,12 +98,12 @@ class ConversationDetailsShimmer extends StatelessWidget {
                         width: 50,
                         decoration: BoxDecoration(
                           color: Theme.of(context).shadowColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(100),
+                          borderRadius: const BorderRadius.all(Radius.circular(100),
                           ),
                         ),
                       ),
                       const SizedBox(width: Dimensions.paddingSizeDefault),
+
                       Container(
                         height: 80,
                         width: 250,
@@ -116,8 +112,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomRight:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomRight: Radius.circular(Dimensions.radiusDefault),
                           ),
                         ),
                       ),
@@ -125,8 +120,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -136,23 +130,19 @@ class ConversationDetailsShimmer extends StatelessWidget {
                         width: 50,
                         decoration: BoxDecoration(
                           color: Theme.of(context).shadowColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
+                          borderRadius: const BorderRadius.all(Radius.circular(100)),
                         ),
                       ),
                       const SizedBox(width: Dimensions.paddingSizeDefault),
-                      Container(
-                        height: 120,
-                        width: 120,
+
+                      Container(height: 120, width: 120,
                         decoration: BoxDecoration(
                           color: Theme.of(context).shadowColor,
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomRight:
-                                Radius.circular(Dimensions.radiusDefault),
-                            bottomLeft:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomRight: Radius.circular(Dimensions.radiusDefault),
+                            bottomLeft: Radius.circular(Dimensions.radiusDefault),
                           ),
                         ),
                       ),
@@ -160,8 +150,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   height: 65,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -174,8 +163,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomLeft:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomLeft: Radius.circular(Dimensions.radiusDefault),
                           ),
                         ),
                       ),
@@ -183,19 +171,15 @@ class ConversationDetailsShimmer extends StatelessWidget {
                       Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).shadowColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(100),
-                          ),
+                        decoration: BoxDecoration(color: Theme.of(context).shadowColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(100),),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -208,27 +192,25 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomLeft:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomLeft: Radius.circular(Dimensions.radiusDefault),
                           ),
                         ),
                       ),
                       const SizedBox(width: Dimensions.paddingSizeDefault),
+
                       Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).shadowColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
+                        decoration: BoxDecoration(color: Theme.of(context).shadowColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(100)),
                         ),
                       ),
                     ],
                   ),
                 ),
+
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -236,10 +218,8 @@ class ConversationDetailsShimmer extends StatelessWidget {
                       Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).shadowColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
+                        decoration: BoxDecoration(color: Theme.of(context).shadowColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(100)),
                         ),
                       ),
                       const SizedBox(width: Dimensions.paddingSizeDefault),
@@ -251,17 +231,17 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomRight:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomRight: Radius.circular(Dimensions.radiusDefault),
                           ),
+
                         ),
                       ),
                     ],
                   ),
                 ),
+
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -269,10 +249,8 @@ class ConversationDetailsShimmer extends StatelessWidget {
                       Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).shadowColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
+                        decoration: BoxDecoration(color: Theme.of(context).shadowColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(100)),
                         ),
                       ),
                       const SizedBox(width: Dimensions.paddingSizeDefault),
@@ -284,8 +262,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomRight:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomRight: Radius.circular(Dimensions.radiusDefault),
                           ),
                         ),
                       ),
@@ -293,8 +270,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -307,10 +283,8 @@ class ConversationDetailsShimmer extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(Dimensions.radiusDefault),
                             topLeft: Radius.circular(Dimensions.radiusDefault),
-                            bottomRight:
-                                Radius.circular(Dimensions.radiusDefault),
-                            bottomLeft:
-                                Radius.circular(Dimensions.radiusDefault),
+                            bottomRight: Radius.circular(Dimensions.radiusDefault),
+                            bottomLeft: Radius.circular(Dimensions.radiusDefault),
                           ),
                         ),
                       ),
@@ -320,8 +294,7 @@ class ConversationDetailsShimmer extends StatelessWidget {
                         width: 50,
                         decoration: BoxDecoration(
                           color: Theme.of(context).shadowColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
+                          borderRadius: const BorderRadius.all(Radius.circular(100)),
                         ),
                       ),
                     ],

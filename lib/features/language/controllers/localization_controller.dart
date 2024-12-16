@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
 import 'package:surties_food_restaurant/features/language/domain/models/language_model.dart';
-import 'package:surties_food_restaurant/features/language/domain/repositories/language_repository.dart';
-import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/language/domain/services/language_service_interface.dart';
 import 'package:surties_food_restaurant/features/restaurant/controllers/restaurant_controller.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/util/app_constants.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LocalizationController extends GetxController implements GetxService {
-  final LanguageRepository languageRepository;
+  final LanguageServiceInterface languageServiceInterface;
 
-  LocalizationController({required this.languageRepository}) {
+  LocalizationController({required this.languageServiceInterface}){
     loadCurrentLanguage();
   }
 
-  Locale _locale = Locale(AppConstants.languages[0].languageCode!,
-      AppConstants.languages[0].countryCode);
+  Locale _locale = Locale(AppConstants.languages[0].languageCode!, AppConstants.languages[0].countryCode);
   Locale get locale => _locale;
 
   bool _isLtr = true;
@@ -31,14 +30,14 @@ class LocalizationController extends GetxController implements GetxService {
     Get.updateLocale(locale);
     _locale = locale;
     _locale.languageCode == 'ar' ? _isLtr = false : _isLtr = true;
-    languageRepository.updateHeader(_locale);
+    languageServiceInterface.updateHeader(_locale);
 
-    if (!fromBottomSheet) {
+    if(!fromBottomSheet) {
       saveLanguage(_locale);
     }
 
-    if (Get.find<AuthController>().isLoggedIn() && !fromBottomSheet) {
-      Get.find<RestaurantController>().getProductList('1', 'all');
+    if(Get.find<AuthController>().isLoggedIn() && !fromBottomSheet){
+      Get.find<RestaurantController>().getProductList(offset: '1', foodType: 'all', stockType: 'all');
       Get.find<ProfileController>().getProfile();
     }
     update();
@@ -50,10 +49,10 @@ class LocalizationController extends GetxController implements GetxService {
   }
 
   void loadCurrentLanguage() async {
-    _locale = languageRepository.getLocaleFromSharedPref();
+    _locale = languageServiceInterface.getLocaleFromSharedPref();
     _isLtr = _locale.languageCode != 'ar';
-    for (int index = 0; index < AppConstants.languages.length; index++) {
-      if (_locale.languageCode == AppConstants.languages[index].languageCode) {
+    for(int index = 0; index < AppConstants.languages.length; index++) {
+      if(_locale.languageCode == AppConstants.languages[index].languageCode) {
         _selectedLanguageIndex = index;
         break;
       }
@@ -64,25 +63,23 @@ class LocalizationController extends GetxController implements GetxService {
   }
 
   void saveLanguage(Locale locale) async {
-    languageRepository.saveLanguage(locale);
+    languageServiceInterface.saveLanguage(locale);
   }
 
   void saveCacheLanguage(Locale? locale) {
-    languageRepository.saveCacheLanguage(
-        locale ?? languageRepository.getLocaleFromSharedPref());
+    languageServiceInterface.saveCacheLanguage(locale ?? languageServiceInterface.getLocaleFromSharedPref());
   }
 
   Locale getCacheLocaleFromSharedPref() {
-    return languageRepository.getCacheLocaleFromSharedPref();
+    return languageServiceInterface.getCacheLocaleFromSharedPref();
   }
 
   void searchSelectedLanguage() {
     for (var language in AppConstants.languages) {
-      if (language.languageCode!
-          .toLowerCase()
-          .contains(_locale.languageCode.toLowerCase())) {
+      if (language.languageCode!.toLowerCase().contains(_locale.languageCode.toLowerCase())) {
         _selectedLanguageIndex = AppConstants.languages.indexOf(language);
       }
     }
   }
+
 }

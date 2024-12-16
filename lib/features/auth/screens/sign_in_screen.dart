@@ -1,29 +1,61 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_button_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_text_field_widget.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
-import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/auth/widgets/restaurant_registartion_success_bottom_sheet.dart';
 import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 import 'package:surties_food_restaurant/util/dimensions.dart';
 import 'package:surties_food_restaurant/util/images.dart';
 import 'package:surties_food_restaurant/util/styles.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class SignInScreen extends StatelessWidget {
-  SignInScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _emailController.text = Get.find<AuthController>().getUserNumber();
     _passwordController.text = Get.find<AuthController>().getUserPassword();
 
+    _showRegistrationSuccessBottomSheet();
+  }
+
+  _showRegistrationSuccessBottomSheet() {
+    bool canShowBottomSheet =
+        Get.find<AuthController>().getIsRestaurantRegistrationSharedPref();
+    if (canShowBottomSheet) {
+      Future.delayed(const Duration(seconds: 1), () {
+        showModalBottomSheet(
+          context: Get.context!,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (con) => const RestaurantRegistrationSuccessBottomSheet(),
+        ).then((value) {
+          Get.find<AuthController>()
+              .saveIsRestaurantRegistrationSharedPref(false);
+          setState(() {});
+        });
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
           child: Center(
@@ -37,7 +69,7 @@ class SignInScreen extends StatelessWidget {
                 child: GetBuilder<AuthController>(builder: (authController) {
                   return Column(children: [
                     Image.asset(Images.logo, width: 100),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
+                    const SizedBox(height: Dimensions.paddingSizeExtraLarge),
                     Text('sign_in'.tr.toUpperCase(),
                         style: robotoBlack.copyWith(fontSize: 30)),
                     const SizedBox(height: Dimensions.paddingSizeExtraSmall),
@@ -167,8 +199,6 @@ class SignInScreen extends StatelessWidget {
 
     if (email.isEmpty) {
       showCustomSnackBar('enter_email_address'.tr);
-    } else if (!GetUtils.isEmail(email)) {
-      showCustomSnackBar('enter_a_valid_email_address'.tr);
     } else if (password.isEmpty) {
       showCustomSnackBar('enter_password'.tr);
     } else if (password.length < 6) {

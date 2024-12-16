@@ -1,26 +1,29 @@
 import 'dart:async';
-
+import 'package:surties_food_restaurant/common/widgets/custom_app_bar_widget.dart';
+import 'package:surties_food_restaurant/features/payment/widgets/fund_payment_dialog_widget.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/helper/route_helper.dart';
+import 'package:surties_food_restaurant/util/app_constants.dart';
+import 'package:surties_food_restaurant/util/dimensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
-import 'package:surties_food_restaurant/common/widgets/custom_app_bar_widget.dart';
-import 'package:surties_food_restaurant/features/business/widgets/fund_payment_dialog_widget.dart';
-import 'package:surties_food_restaurant/helper/route_helper.dart';
-import 'package:surties_food_restaurant/util/app_constants.dart';
-import 'package:surties_food_restaurant/util/dimensions.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String paymentMethod;
   final String? redirectUrl;
-  const PaymentScreen(
-      {super.key, required this.paymentMethod, this.redirectUrl});
+  final int? restaurantId;
+  final bool? isSubscriptionPayment;
+  final int? packageId;
+  const PaymentScreen({super.key,required this.paymentMethod, this.redirectUrl, this.restaurantId, this.isSubscriptionPayment, this.packageId});
 
   @override
   PaymentScreenState createState() => PaymentScreenState();
 }
 
 class PaymentScreenState extends State<PaymentScreen> {
+
   late String selectedUrl;
   double value = 0.0;
   final bool _isLoading = true;
@@ -37,35 +40,33 @@ class PaymentScreenState extends State<PaymentScreen> {
   }
 
   void _initData() async {
-    browser = MyInAppBrowser(redirectUrl: widget.redirectUrl);
 
-    await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+    await Get.find<ProfileController>().trialWidgetShow(route: RouteHelper.payment);
 
-    bool swAvailable = await WebViewFeature.isFeatureSupported(
-        WebViewFeature.SERVICE_WORKER_BASIC_USAGE);
-    bool swInterceptAvailable = await WebViewFeature.isFeatureSupported(
-        WebViewFeature.SERVICE_WORKER_SHOULD_INTERCEPT_REQUEST);
+    browser = MyInAppBrowser(redirectUrl: widget.redirectUrl, restaurantId: widget.restaurantId, isSubscriptionPayment: widget.isSubscriptionPayment, packageId: widget.packageId);
 
-    if (swAvailable && swInterceptAvailable) {
-      ServiceWorkerController serviceWorkerController =
-          ServiceWorkerController.instance();
-      await serviceWorkerController.setServiceWorkerClient(ServiceWorkerClient(
-        shouldInterceptRequest: (request) async {
-          if (kDebugMode) {
-            print(request);
-          }
-          return null;
-        },
-      ));
-    }
+      await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+
+      bool swAvailable = await WebViewFeature.isFeatureSupported(WebViewFeature.SERVICE_WORKER_BASIC_USAGE);
+      bool swInterceptAvailable = await WebViewFeature.isFeatureSupported(WebViewFeature.SERVICE_WORKER_SHOULD_INTERCEPT_REQUEST);
+
+      if (swAvailable && swInterceptAvailable) {
+        ServiceWorkerController serviceWorkerController = ServiceWorkerController.instance();
+        await serviceWorkerController.setServiceWorkerClient(ServiceWorkerClient(
+          shouldInterceptRequest: (request) async {
+            if (kDebugMode) {
+              print(request);
+            }
+            return null;
+          },
+        ));
+      }
 
     await browser.openUrlRequest(
       urlRequest: URLRequest(url: WebUri(selectedUrl)),
       settings: InAppBrowserClassSettings(
-        webViewSettings: InAppWebViewSettings(
-            useShouldOverrideUrlLoading: true, useOnLoadResource: true),
-        browserSettings: InAppBrowserSettings(
-            hideUrlBar: true, hideToolbarTop: GetPlatform.isAndroid),
+        webViewSettings: InAppWebViewSettings(useShouldOverrideUrlLoading: true, useOnLoadResource: true),
+        browserSettings: InAppBrowserSettings(hideUrlBar: true, hideToolbarTop: GetPlatform.isAndroid),
       ),
     );
   }
@@ -74,24 +75,23 @@ class PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         _exitApp().then((value) => value!);
+        Get.find<ProfileController>().trialWidgetShow(route: RouteHelper.payment);
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        appBar: CustomAppBarWidget(
-            title: 'payment'.tr, onBackPressed: () => _exitApp()),
+        appBar: CustomAppBarWidget(title: 'payment'.tr, onBackPressed: () {
+          _exitApp();
+          Get.find<ProfileController>().trialWidgetShow(route: '');
+        }),
         body: Center(
           child: SizedBox(
             width: Dimensions.webMaxWidth,
             child: Stack(children: [
-              _isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).primaryColor)),
-                    )
-                  : const SizedBox.shrink(),
+              _isLoading ? Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
+              ) : const SizedBox.shrink(),
             ]),
           ),
         ),
@@ -106,7 +106,10 @@ class PaymentScreenState extends State<PaymentScreen> {
 
 class MyInAppBrowser extends InAppBrowser {
   final String? redirectUrl;
-  MyInAppBrowser({super.windowId, super.initialUserScripts, this.redirectUrl});
+  final int? restaurantId;
+  final bool? isSubscriptionPayment;
+  final int? packageId;
+  MyInAppBrowser({super.windowId, super.initialUserScripts, this.redirectUrl, this.restaurantId, this.isSubscriptionPayment, this.packageId});
 
   bool _canRedirect = true;
 
@@ -122,7 +125,7 @@ class MyInAppBrowser extends InAppBrowser {
     if (kDebugMode) {
       print("\n\nStarted: $url\n\n");
     }
-    _redirect(url.toString());
+    _redirect(url.toString(), restaurantId, isSubscriptionPayment, packageId);
   }
 
   @override
@@ -131,7 +134,7 @@ class MyInAppBrowser extends InAppBrowser {
     if (kDebugMode) {
       print("\n\nStopped: $url\n\n");
     }
-    _redirect(url.toString());
+    _redirect(url.toString(), restaurantId, isSubscriptionPayment, packageId);
   }
 
   @override
@@ -154,7 +157,7 @@ class MyInAppBrowser extends InAppBrowser {
 
   @override
   void onExit() {
-    if (_canRedirect) {
+    if(_canRedirect) {
       // Get.dialog(PaymentFailedDialog(orderID: orderID, orderAmount: orderAmount, maxCodOrderAmount: maxCodOrderAmount));
     }
     if (kDebugMode) {
@@ -163,8 +166,7 @@ class MyInAppBrowser extends InAppBrowser {
   }
 
   @override
-  Future<NavigationActionPolicy> shouldOverrideUrlLoading(
-      navigationAction) async {
+  Future<NavigationActionPolicy> shouldOverrideUrlLoading(navigationAction) async {
     if (kDebugMode) {
       print("\n\nOverride ${navigationAction.request.url}\n\n");
     }
@@ -174,49 +176,41 @@ class MyInAppBrowser extends InAppBrowser {
   @override
   void onLoadResource(resource) {
     if (kDebugMode) {
-      print(
-          "Started at: ${resource.startTime}ms ---> duration: ${resource.duration}ms ${resource.url ?? ''}");
+      print("Started at: ${resource.startTime}ms ---> duration: ${resource.duration}ms ${resource.url ?? ''}");
     }
   }
 
   @override
   void onConsoleMessage(consoleMessage) {
-    if (kDebugMode) {
-      print(
-          """console output: message: ${consoleMessage.message}messageLevel: ${consoleMessage.messageLevel.toValue()}""");
+    if (kDebugMode) {print("""console output: message: ${consoleMessage.message}messageLevel: ${consoleMessage.messageLevel.toValue()}""");
     }
   }
 
-  void _redirect(String url) {
-    if (_canRedirect) {
-      bool isSuccess =
-          url.contains('${AppConstants.baseUrl}/payment-success') ||
-              url.contains('${AppConstants.baseUrl}/success?flag=success');
-      bool isFailed = url.contains('${AppConstants.baseUrl}/payment-fail') ||
-          url.contains('${AppConstants.baseUrl}/success?flag=fail');
-      bool isCancel = url.contains('${AppConstants.baseUrl}/payment-cancel') ||
-          url.contains('${AppConstants.baseUrl}/success?flag=cancel');
+  void _redirect(String url, int? restaurantId, bool? isSubscriptionPayment, int? packageId) {
+    if(_canRedirect) {
+      bool isSuccess = url.contains('${AppConstants.baseUrl}/payment-success') || url.contains('${AppConstants.baseUrl}/success?flag=success');
+      bool isFailed = url.contains('${AppConstants.baseUrl}/payment-fail') || url.contains('${AppConstants.baseUrl}/success?flag=fail');
+      bool isCancel = url.contains('${AppConstants.baseUrl}/payment-cancel') || url.contains('${AppConstants.baseUrl}/success?flag=cancel');
       if (isSuccess || isFailed || isCancel) {
         _canRedirect = false;
         close();
       }
 
-      if (isSuccess || isFailed || isCancel) {
-        if (Get.currentRoute.contains(RouteHelper.payment)) {
+
+      if(isSuccess || isFailed || isCancel) {
+        if(Get.currentRoute.contains(RouteHelper.payment)) {
           Get.back();
         }
-        Get.back();
-        Get.toNamed(RouteHelper.getSuccessRoute(
-            isSuccess
-                ? 'success'
-                : isFailed
-                    ? 'fail'
-                    : 'cancel',
-            isWalletPayment: url
-                    .contains('${AppConstants.baseUrl}/success?flag=success') ||
-                url.contains('${AppConstants.baseUrl}/success?flag=fail') ||
-                url.contains('${AppConstants.baseUrl}/success?flag=cancel')));
+
+        if(isSubscriptionPayment == true){
+          Get.offAllNamed(RouteHelper.getSubscriptionSuccessRoute(status: isSuccess ? 'success' : isFailed ? 'fail' : 'cancel', fromSubscription: true, restaurantId: restaurantId, packageId: packageId));
+        }else {
+          Get.back();
+          Get.toNamed(RouteHelper.getSuccessRoute(isSuccess ? 'success' : isFailed ? 'fail' : 'cancel',
+              isWalletPayment: url.contains('${AppConstants.baseUrl}/success?flag=success') || url.contains('${AppConstants.baseUrl}/success?flag=fail') || url.contains('${AppConstants.baseUrl}/success?flag=cancel')));
+        }
       }
     }
   }
+
 }

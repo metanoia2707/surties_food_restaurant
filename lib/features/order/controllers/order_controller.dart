@@ -1,119 +1,96 @@
-import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:surties_food_restaurant/api/api_client.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
-import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/order/domain/services/order_service_interface.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
+import 'package:surties_food_restaurant/api/api_client.dart';
+import 'package:surties_food_restaurant/features/order/domain/models/update_status_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/order_cancellation_body_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/order_details_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/order_model.dart';
 import 'package:surties_food_restaurant/features/order/domain/models/running_order_model.dart';
-import 'package:surties_food_restaurant/features/order/domain/models/update_status_model.dart';
-import 'package:surties_food_restaurant/features/order/domain/repositories/order_repository.dart';
-import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
-import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:surties_food_restaurant/features/subscription/domain/models/subscription_model.dart';
+import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class OrderController extends GetxController implements GetxService {
-  final OrderRepository orderRepository;
-
-  OrderController({required this.orderRepository});
+  final OrderServiceInterface orderServiceInterface;
+  OrderController({required this.orderServiceInterface});
 
   List<OrderModel>? _runningOrderList;
-
   List<OrderModel>? get runningOrderList => _runningOrderList;
 
   List<RunningOrderModel>? _runningOrders;
-
   List<RunningOrderModel>? get runningOrders => _runningOrders;
 
   List<OrderModel>? _historyOrderList;
-
   List<OrderModel>? get historyOrderList => _historyOrderList;
 
   List<OrderDetailsModel>? _orderDetailsModel;
-
   List<OrderDetailsModel>? get orderDetailsModel => _orderDetailsModel;
 
   bool _isLoading = false;
-
   bool get isLoading => _isLoading;
 
   int _orderIndex = 0;
-
   int get orderIndex => _orderIndex;
 
   bool _campaignOnly = false;
-
   bool get campaignOnly => _campaignOnly;
 
   bool _subscriptionOnly = false;
-
   bool get subscriptionOnly => _subscriptionOnly;
 
   String _otp = '';
-
   String get otp => _otp;
 
   int _historyIndex = 0;
-
   int get historyIndex => _historyIndex;
 
-  final List<String> _statusList = ['all', 'delivered', 'refunded'];
-
+  final List<String> _statusList = ['all', 'delivered', 'refunded', 'canceled', 'failed'];
   List<String> get statusList => _statusList;
 
   bool _paginate = false;
-
   bool get paginate => _paginate;
 
   int? _pageSize;
-
   int? get pageSize => _pageSize;
 
   List<int> _offsetList = [];
 
   int _offset = 1;
-
   int get offset => _offset;
 
   String _orderType = 'all';
-
   String get orderType => _orderType;
 
   OrderModel? _orderModel;
-
   OrderModel? get orderModel => _orderModel;
 
   List<CancellationData>? _orderCancelReasons;
-
   List<CancellationData>? get orderCancelReasons => _orderCancelReasons;
 
   String? _cancelReason = '';
-
   String? get cancelReason => _cancelReason;
 
   SubscriptionModel? _subscriptionModel;
-
   SubscriptionModel? get subscriptionModel => _subscriptionModel;
 
   bool _isFirstTimeSubOrder = true;
 
   bool _showDeliveryImageField = false;
-
   bool get showDeliveryImageField => _showDeliveryImageField;
 
   List<XFile> _pickedPrescriptions = [];
-
   List<XFile> get pickedPrescriptions => _pickedPrescriptions;
 
   bool _hideNotificationButton = false;
-
   bool get hideNotificationButton => _hideNotificationButton;
 
   Future<bool> sendDeliveredNotification(int? orderID) async {
     _hideNotificationButton = true;
     update();
-    bool success = await orderRepository.sendDeliveredNotification(orderID);
+    bool success = await orderServiceInterface.sendDeliveredNotification(orderID);
     bool isSuccess;
     success ? isSuccess = true : isSuccess = false;
     _hideNotificationButton = false;
@@ -121,24 +98,21 @@ class OrderController extends GetxController implements GetxService {
     return isSuccess;
   }
 
-  void changeDeliveryImageStatus({bool willUpdate = true}) {
+  void changeDeliveryImageStatus({bool willUpdate = true}){
     _showDeliveryImageField = !_showDeliveryImageField;
-    if (willUpdate) {
+    if(willUpdate) {
       update();
     }
   }
 
-  void pickPrescriptionImage(
-      {required bool isRemove, required bool isCamera}) async {
-    if (isRemove) {
+  void pickPrescriptionImage({required bool isRemove, required bool isCamera}) async {
+    if(isRemove) {
       _pickedPrescriptions = [];
-    } else {
-      XFile? xFile = await ImagePicker().pickImage(
-          source: isCamera ? ImageSource.camera : ImageSource.gallery,
-          imageQuality: 50);
-      if (xFile != null) {
+    }else {
+      XFile? xFile = await ImagePicker().pickImage(source: isCamera ? ImageSource.camera : ImageSource.gallery, imageQuality: 50);
+      if(xFile != null) {
         _pickedPrescriptions.add(xFile);
-        if (Get.isDialogOpen!) {
+        if(Get.isDialogOpen!){
           Get.back();
         }
       }
@@ -151,14 +125,13 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  void setOrderCancelReason(String? reason) {
+  void setOrderCancelReason(String? reason){
     _cancelReason = reason;
     update();
   }
 
   Future<void> getOrderCancelReasons() async {
-    List<CancellationData>? orderCancelReasons =
-        await orderRepository.getCancelReasons();
+    List<CancellationData>? orderCancelReasons = await orderServiceInterface.getCancelReasons();
     if (orderCancelReasons != null) {
       _orderCancelReasons = [];
       _orderCancelReasons!.addAll(orderCancelReasons);
@@ -166,14 +139,13 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
+
   Future<void> setOrderDetails(OrderModel orderModel) async {
-    if (orderModel.orderStatus != null &&
-        orderModel.customer != null &&
-        orderModel.deliveryMan != null) {
+    if(orderModel.orderStatus != null && orderModel.customer != null && orderModel.deliveryMan != null){
       _orderModel = orderModel;
-    } else {
-      OrderModel? order = await orderRepository.getOrderWithId(orderModel.id);
-      if (order != null) {
+    }else{
+      OrderModel? order = await orderServiceInterface.getOrderWithId(orderModel.id);
+      if(order != null) {
         _orderModel = order;
       }
       update();
@@ -181,9 +153,8 @@ class OrderController extends GetxController implements GetxService {
   }
 
   Future<void> getCurrentOrders() async {
-    List<OrderModel>? runningOrderList =
-        await orderRepository.getCurrentOrders();
-    if (runningOrderList != null) {
+    List<OrderModel>? runningOrderList = await orderServiceInterface.getCurrentOrders();
+    if(runningOrderList != null) {
       _runningOrderList = [];
       _runningOrders = [
         RunningOrderModel(status: 'pending', orderList: []),
@@ -200,18 +171,17 @@ class OrderController extends GetxController implements GetxService {
   }
 
   Future<void> getPaginatedOrders(int offset, bool reload) async {
-    if (offset == 1 || reload) {
+    if(offset == 1 || reload) {
       _offsetList = [];
       _offset = 1;
-      if (reload) {
+      if(reload) {
         _historyOrderList = null;
       }
       update();
     }
     if (!_offsetList.contains(offset)) {
       _offsetList.add(offset);
-      PaginatedOrderModel? historyOrderModel = await orderRepository
-          .getPaginatedOrderList(offset, _statusList[_historyIndex]);
+      PaginatedOrderModel? historyOrderModel = await orderServiceInterface.getPaginatedOrderList(offset, _statusList[_historyIndex]);
       if (historyOrderModel != null) {
         if (offset == 1) {
           _historyOrderList = [];
@@ -222,7 +192,7 @@ class OrderController extends GetxController implements GetxService {
         update();
       }
     } else {
-      if (_paginate) {
+      if(_paginate) {
         _paginate = false;
         update();
       }
@@ -243,31 +213,28 @@ class OrderController extends GetxController implements GetxService {
     getPaginatedOrders(1, true);
   }
 
-  Future<bool> updateOrderStatus(int? orderID, String status,
-      {bool back = false, String? processingTime, String? reason}) async {
+  Future<bool> updateOrderStatus(int? orderID, String status, {bool back = false, String? processingTime, String? reason}) async {
     _isLoading = true;
     update();
     List<MultipartBody> multiParts = [];
-    for (XFile file in _pickedPrescriptions) {
+    for(XFile file in _pickedPrescriptions) {
       multiParts.add(MultipartBody('order_proof[]', file));
     }
     UpdateStatusModel updateStatusBody = UpdateStatusModel(
-      orderId: orderID,
-      status: status,
+      orderId: orderID, status: status,
       otp: status == 'delivered' ? _otp : null,
       processingTime: processingTime,
       reason: reason,
     );
-    ResponseModel responseModel =
-        await orderRepository.updateOrderStatus(updateStatusBody, multiParts);
+    ResponseModel responseModel = await orderServiceInterface.updateOrderStatus(updateStatusBody, multiParts);
     Get.back(result: responseModel.isSuccess);
-    if (responseModel.isSuccess) {
-      if (back) {
+    if(responseModel.isSuccess) {
+      if(back) {
         Get.back();
       }
       getCurrentOrders();
       showCustomSnackBar(responseModel.message, isError: false);
-    } else {
+    }else{
       showCustomSnackBar(responseModel.message, isError: true);
     }
     _isLoading = false;
@@ -277,14 +244,12 @@ class OrderController extends GetxController implements GetxService {
 
   Future<void> getOrderDetails(int orderID) async {
     _orderDetailsModel = null;
-    Response response = await orderRepository.get(orderID);
-    if (response.statusCode == 200) {
+    Response response = await orderServiceInterface.getOrderDetails(orderID);
+    if(response.statusCode == 200) {
       _orderDetailsModel = [];
-      response.body['order']['details'].forEach((orderDetails) =>
-          _orderDetailsModel!.add(OrderDetailsModel.fromJson(orderDetails)));
-      if (response.body['order']['subscription'] != null) {
-        _subscriptionModel =
-            SubscriptionModel.fromJson(response.body['order']['subscription']);
+      response.body['order']['details'].forEach((orderDetails) => _orderDetailsModel!.add(OrderDetailsModel.fromJson(orderDetails)));
+      if(response.body['order']['subscription'] != null){
+        _subscriptionModel = SubscriptionModel.fromJson(response.body['order']['subscription']);
       }
     }
     update();
@@ -296,7 +261,7 @@ class OrderController extends GetxController implements GetxService {
   }
 
   void toggleCampaignOnly() {
-    if (_subscriptionOnly) {
+    if(_subscriptionOnly){
       _subscriptionOnly = !_subscriptionOnly;
     }
     _campaignOnly = !_campaignOnly;
@@ -306,39 +271,18 @@ class OrderController extends GetxController implements GetxService {
     _runningOrders![3].orderList = [];
     _runningOrders![4].orderList = [];
     for (var order in _runningOrderList!) {
-      if (order.orderStatus == 'pending' &&
-          (Get.find<SplashController>().configModel!.orderConfirmationModel !=
-                  'deliveryman' ||
-              order.orderType == 'take_away' ||
-              Get.find<ProfileController>()
-                      .profileModel!
-                      .restaurants![0]
-                      .selfDeliverySystem ==
-                  1) &&
-          (_campaignOnly
-              ? order.foodCampaign == 1
-              : order.subscriptionId == null)) {
+      if(order.orderStatus == 'pending' && (Get.find<SplashController>().configModel!.orderConfirmationModel != 'deliveryman'
+          || order.orderType == 'take_away' || Get.find<ProfileController>().profileModel!.restaurants![0].selfDeliverySystem == 1)
+          && (_campaignOnly ? order.foodCampaign == 1 :  order.subscriptionId == null)) {
         _runningOrders![0].orderList.add(order);
-      } else if ((order.orderStatus == 'confirmed' ||
-              (order.orderStatus == 'accepted' && order.confirmed != null)) &&
-          (_campaignOnly
-              ? order.foodCampaign == 1
-              : order.subscriptionId == null)) {
+      }else if((order.orderStatus == 'confirmed' || (order.orderStatus == 'accepted' && (order.confirmed != null || order.accepted != null)))
+          && (_campaignOnly ? order.foodCampaign == 1 : order.subscriptionId == null)) {
         _runningOrders![1].orderList.add(order);
-      } else if (order.orderStatus == 'processing' &&
-          (_campaignOnly
-              ? order.foodCampaign == 1
-              : order.subscriptionId == null)) {
+      }else if(order.orderStatus == 'processing' && (_campaignOnly ? order.foodCampaign == 1 : order.subscriptionId == null)) {
         _runningOrders![2].orderList.add(order);
-      } else if (order.orderStatus == 'handover' &&
-          (_campaignOnly
-              ? order.foodCampaign == 1
-              : order.subscriptionId == null)) {
+      }else if(order.orderStatus == 'handover' && (_campaignOnly ? order.foodCampaign == 1 : order.subscriptionId == null)) {
         _runningOrders![3].orderList.add(order);
-      } else if (order.orderStatus == 'picked_up' &&
-          (_campaignOnly
-              ? order.foodCampaign == 1
-              : order.subscriptionId == null)) {
+      }else if(order.orderStatus == 'picked_up' && (_campaignOnly ? order.foodCampaign == 1 : order.subscriptionId == null)) {
         _runningOrders![4].orderList.add(order);
       }
     }
@@ -346,7 +290,8 @@ class OrderController extends GetxController implements GetxService {
   }
 
   void toggleSubscriptionOnly() {
-    if (_campaignOnly && !_isFirstTimeSubOrder) {
+
+    if(_campaignOnly && !_isFirstTimeSubOrder){
       _campaignOnly = !_campaignOnly;
     }
     _isFirstTimeSubOrder = false;
@@ -357,39 +302,18 @@ class OrderController extends GetxController implements GetxService {
     _runningOrders![3].orderList = [];
     _runningOrders![4].orderList = [];
     for (var order in _runningOrderList!) {
-      if (order.orderStatus == 'pending' &&
-          (Get.find<SplashController>().configModel!.orderConfirmationModel !=
-                  'deliveryman' ||
-              order.orderType == 'take_away' ||
-              Get.find<ProfileController>()
-                      .profileModel!
-                      .restaurants![0]
-                      .selfDeliverySystem ==
-                  1) &&
-          (_subscriptionOnly
-              ? order.subscriptionId != null
-              : order.subscriptionId == null)) {
+      if(order.orderStatus == 'pending' && (Get.find<SplashController>().configModel!.orderConfirmationModel != 'deliveryman'
+          || order.orderType == 'take_away' || Get.find<ProfileController>().profileModel!.restaurants![0].selfDeliverySystem == 1)
+          && (_subscriptionOnly ? order.subscriptionId != null : order.subscriptionId == null)) {
         _runningOrders![0].orderList.add(order);
-      } else if ((order.orderStatus == 'confirmed' ||
-              (order.orderStatus == 'accepted' && order.confirmed != null)) &&
-          (_subscriptionOnly
-              ? order.subscriptionId != null
-              : order.subscriptionId == null)) {
+      }else if((order.orderStatus == 'confirmed' || (order.orderStatus == 'accepted' && order.confirmed != null))
+          && (_subscriptionOnly ? order.subscriptionId != null : order.subscriptionId == null)) {
         _runningOrders![1].orderList.add(order);
-      } else if (order.orderStatus == 'processing' &&
-          (_subscriptionOnly
-              ? order.subscriptionId != null
-              : order.subscriptionId == null)) {
+      }else if(order.orderStatus == 'processing' && (_subscriptionOnly ? order.subscriptionId != null : order.subscriptionId == null)) {
         _runningOrders![2].orderList.add(order);
-      } else if (order.orderStatus == 'handover' &&
-          (_subscriptionOnly
-              ? order.subscriptionId != null
-              : order.subscriptionId == null)) {
+      }else if(order.orderStatus == 'handover' && (_subscriptionOnly ? order.subscriptionId != null : order.subscriptionId == null)) {
         _runningOrders![3].orderList.add(order);
-      } else if (order.orderStatus == 'picked_up' &&
-          (_subscriptionOnly
-              ? order.subscriptionId != null
-              : order.subscriptionId == null)) {
+      }else if(order.orderStatus == 'picked_up' && (_subscriptionOnly ? order.subscriptionId != null : order.subscriptionId == null)) {
         _runningOrders![4].orderList.add(order);
       }
     }
@@ -398,7 +322,7 @@ class OrderController extends GetxController implements GetxService {
 
   void setOtp(String otp) {
     _otp = otp;
-    if (otp != '') {
+    if(otp != '') {
       update();
     }
   }
@@ -409,8 +333,8 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  String? getBluetoothMacAddress() => orderRepository.getBluetoothAddress();
+  String? getBluetoothMacAddress() => orderServiceInterface.getBluetoothAddress();
 
-  void setBluetoothMacAddress(String? address) =>
-      orderRepository.setBluetoothAddress(address);
+  void setBluetoothMacAddress(String? address) => orderServiceInterface.setBluetoothAddress(address);
+
 }

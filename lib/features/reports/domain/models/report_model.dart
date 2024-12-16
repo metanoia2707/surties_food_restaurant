@@ -243,6 +243,7 @@ class Orders {
   String? paymentMethod;
   String? orderStatus;
   String? paymentStatus;
+  double? deliverymanTips;
 
   Orders({
     this.orderId,
@@ -258,6 +259,7 @@ class Orders {
     this.paymentMethod,
     this.orderStatus,
     this.paymentStatus,
+    this.deliverymanTips,
   });
 
   Orders.fromJson(Map<String, dynamic> json) {
@@ -274,6 +276,7 @@ class Orders {
     paymentMethod = json['payment_method'];
     orderStatus = json['order_status'];
     paymentStatus = json['payment_status'];
+    deliverymanTips = json['dm_tips']?.toDouble();
   }
 
   Map<String, dynamic> toJson() {
@@ -291,6 +294,7 @@ class Orders {
     data['payment_method'] = paymentMethod;
     data['order_status'] = orderStatus;
     data['payment_status'] = paymentStatus;
+    data['dm_tips'] = deliverymanTips;
     return data;
   }
 }

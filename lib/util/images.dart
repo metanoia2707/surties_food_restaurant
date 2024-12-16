@@ -1,6 +1,6 @@
 class Images {
   static const String logo = 'assets/image/logo.png';
-  static const String logoName = 'assets/image/logo_name.png';
+
   static const String arabic = 'assets/image/arabic.png';
   static const String spanish = 'assets/image/spanish.png';
   static const String english = 'assets/image/english.png';
@@ -46,18 +46,25 @@ class Images {
   static const String coupon = 'assets/image/coupon.png';
   static const String couponVertical = 'assets/image/cupon.png';
   static const String couponBgDark = 'assets/image/coupon_bg_dark1.png';
-  static const String notificationPlaceholder = 'assets/image/notification_placeholder.jpg';
+  static const String notificationPlaceholder =
+      'assets/image/notification_placeholder.jpg';
   static const String couponDetails = 'assets/image/coupon_details.png';
   static const String deliveredSuccess = 'assets/image/delivered_success.gif';
   static const String bengali = 'assets/image/bangla.png';
   static const String announcementIcon = 'assets/image/announcement_icon.png';
-  static const String attentionWarningIcon = 'assets/image/attention_warning_icon.png';
-  static const String transactionReportIcon = 'assets/image/transaction_report_icon.png';
-  static const String completeTransactionIcon = 'assets/image/complete_transaction_icon.png';
-  static const String onHoldTransactionIcon = 'assets/image/on_hold_transaction_icon.png';
-  static const String cancelTransactionIcon = 'assets/image/cancel_transaction_icon.png';
+  static const String attentionWarningIcon =
+      'assets/image/attention_warning_icon.png';
+  static const String transactionReportIcon =
+      'assets/image/transaction_report_icon.png';
+  static const String completeTransactionIcon =
+      'assets/image/complete_transaction_icon.png';
+  static const String onHoldTransactionIcon =
+      'assets/image/on_hold_transaction_icon.png';
+  static const String cancelTransactionIcon =
+      'assets/image/cancel_transaction_icon.png';
   static const String phoneIcon = 'assets/image/phone.png';
-  static const String deliveryManMarker = 'assets/image/delivery_man_marker.png';
+  static const String deliveryManMarker =
+      'assets/image/delivery_man_marker.png';
   static const String scheduled = 'assets/image/scheduled.png';
   static const String processing = 'assets/image/processing.png';
   static const String cancel = 'assets/image/cancel.png';
@@ -77,49 +84,80 @@ class Images {
   static const String documentIcon = 'assets/image/documents.png';
   static const String pdfIcon = 'assets/image/pdf.png';
   static const String review = 'assets/image/review.png';
-  static const String withdrawAbleBalanceBgIcon = 'assets/image/withdrawable_balance_bg_Icon.png';
-  static const String alreadyWithdrawBgIcon = 'assets/image/already_withdraw_bg_icon.png';
-  static const String pendingWithdrawBgIcon = 'assets/image/pending_withdraw_bg_icon.png';
-  static const String totalWithdrawBgIcon = 'assets/image/total_withdraw_bg_icon.png';
-  static const String cashInHandBgIcon = 'assets/image/cash_in_hand_bg_icon.png';
+  static const String withdrawAbleBalanceBgIcon =
+      'assets/image/withdrawable_balance_bg_Icon.png';
+  static const String alreadyWithdrawBgIcon =
+      'assets/image/already_withdraw_bg_icon.png';
+  static const String pendingWithdrawBgIcon =
+      'assets/image/pending_withdraw_bg_icon.png';
+  static const String totalWithdrawBgIcon =
+      'assets/image/total_withdraw_bg_icon.png';
+  static const String cashInHandBgIcon =
+      'assets/image/cash_in_hand_bg_icon.png';
   static const String aboutUsBg = 'assets/image/about_us_bg.png';
   static const String refundPolicyBg = 'assets/image/refund_policy_bg.png';
   static const String privacyPolicyBg = 'assets/image/privacy_policy_bg.png';
   static const String campaignJoinIcon = 'assets/image/campaign_join_icon.png';
-  static const String confirmCampaignIcon = 'assets/image/confirm_campaign_icon.png';
+  static const String confirmCampaignIcon =
+      'assets/image/confirm_campaign_icon.png';
   static const String vegImage = 'assets/image/veg.png';
   static const String nonVegImage = 'assets/image/non_veg.png';
   static const String penIcon = 'assets/image/pen_icon.png';
-  static const String couponPercentIcon = 'assets/image/coupon_percent_icon.png';
+  static const String couponPercentIcon =
+      'assets/image/coupon_percent_icon.png';
   static const String cashIcon = 'assets/image/cash.png';
-  static const String cautionDialogIcon = 'assets/image/caution_dialog_icon.png';
+  static const String cautionDialogIcon =
+      'assets/image/caution_dialog_icon.png';
   static const String deleteDialogIcon = 'assets/image/delete_dialog_icon.png';
   static const String pauseDialogIcon = 'assets/image/pause_dialog_icon.png';
   static const String resumeDialogIcon = 'assets/image/resume_dialog_icon.png';
-  static const String addonDeleteWarningIcon = 'assets/image/addon_delete_warning_icon.png';
-  static const String accountDeleteWarningIcon = 'assets/image/account_delete_warning_icon.png';
-  static const String accountDeleteIcon = 'assets/image/account_delect_icon.png';
+  static const String addonDeleteWarningIcon =
+      'assets/image/addon_delete_warning_icon.png';
+  static const String accountDeleteWarningIcon =
+      'assets/image/account_delete_warning_icon.png';
+  static const String accountDeleteIcon =
+      'assets/image/account_delect_icon.png';
+  static const String fileIcon = 'assets/image/file.png';
+  static const String changeIcon = 'assets/image/change_icon.png';
+  static const String walletIcon = 'assets/image/wallet_icon.png';
+  static const String nextBillingDateIcon =
+      'assets/image/next_billing_date_icon.png';
+  static const String totalBillIcon = 'assets/image/total_bill_icon.png';
+  static const String numberOfUsesIcon = 'assets/image/number_of_uses_icon.png';
+  static const String trial = 'assets/image/trial.png';
 
   static String get adsRoundShape => 'assets/image/ads_round_shape.svg';
+
   static String get adsCurveShape => 'assets/image/ads_curve_shape.svg';
 
   static const String languageBg = 'assets/image/language_bg.svg';
-  static const String noNotificationIcon = 'assets/image/no_notification_icon.svg';
+  static const String noNotificationIcon =
+      'assets/image/no_notification_icon.svg';
   static const String noOrderIcon = 'assets/image/no_order_icon.svg';
   static const String noFoodIcon = 'assets/image/no_food_icon.svg';
   static const String noCouponIcon = 'assets/image/no_coupon_icon.svg';
-  static const String noTransactionIcon = 'assets/image/no_transaction_icon.svg';
-  static const String changePasswordBgImage = 'assets/image/change_password_bg_image.svg';
-  static const String passwordUpdateIcon = 'assets/image/password_update_icon.svg';
+  static const String noTransactionIcon =
+      'assets/image/no_transaction_icon.svg';
+  static const String changePasswordBgImage =
+      'assets/image/change_password_bg_image.svg';
+  static const String passwordUpdateIcon =
+      'assets/image/password_update_icon.svg';
   static const String messageEmpty = 'assets/image/message_empty.svg';
   static const String cash = 'assets/image/money.svg';
   static const String adsImage = 'assets/image/adsImage.svg';
   static const String adsMenu = 'assets/image/ads_menu.png';
   static const String adsListImage = 'assets/image/ads-list.svg';
   static const String previewImage = 'assets/image/preview.svg';
-  static const String otpVerificationBg = 'assets/image/otp_verification_bg.svg';
+  static const String otpVerificationBg =
+      'assets/image/otp_verification_bg.svg';
   static const String paymentStatus = 'assets/image/payment_status.svg';
   static const String calender = 'assets/image/calender.svg';
   static const String adsType = 'assets/image/ads_type.svg';
   static const String adsSuccess = 'assets/image/ads_success.svg';
+  static const String attachment = 'assets/image/attachment.svg';
+  static const String sendIcon = 'assets/image/send.svg';
+  static const String checkGif = 'assets/image/check.gif';
+  static const String cancelGif = 'assets/image/cancel.gif';
+  static const String storeRegistrationSuccess =
+      'assets/image/store_registration_success.svg';
 }
