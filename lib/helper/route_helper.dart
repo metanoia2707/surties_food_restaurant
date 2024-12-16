@@ -133,7 +133,7 @@ class RouteHelper {
     }
     return '$splash?data=$data';
   }
-  static String getLanguageRoute(String page) => '$language?page=$page';
+
   static String getSignInRoute() => signIn;
   static String getVerificationRoute(String email) => '$verification?email=$email';
   static String getMainRoute(String page) => '$main?page=$page';
@@ -257,7 +257,7 @@ class RouteHelper {
       }
       return SplashScreen(body: data);
     }),
-    GetPage(name: language, page: () => LanguageScreen(fromMenu: Get.parameters['page'] == 'menu')),
+
     GetPage(name: signIn, page: () => const SignInScreen()),
     GetPage(name: verification, page: () => VerificationScreen(email: Get.parameters['email'])),
     GetPage(name: main, page: () => DashboardScreen(

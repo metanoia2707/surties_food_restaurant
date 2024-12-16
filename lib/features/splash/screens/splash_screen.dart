@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
   final NotificationBodyModel? body;
+
   const SplashScreen({super.key, required this.body});
 
   @override
@@ -22,7 +23,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
   StreamSubscription<List<ConnectivityResult>>? _onConnectivityChanged;
 
@@ -31,17 +31,21 @@ class SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     bool firstTime = true;
-    _onConnectivityChanged = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      bool isConnected = result.contains(ConnectivityResult.wifi) || result.contains(ConnectivityResult.mobile);
+    _onConnectivityChanged = Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> result) {
+      bool isConnected = result.contains(ConnectivityResult.wifi) ||
+          result.contains(ConnectivityResult.mobile);
 
-      if(!firstTime) {
+      if (!firstTime) {
         ScaffoldMessenger.of(Get.context!).hideCurrentSnackBar();
         ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
           backgroundColor: isConnected ? Colors.green : Colors.red,
           duration: Duration(seconds: isConnected ? 3 : 6000),
-          content: Text(isConnected ? 'connected'.tr : 'no_connection'.tr, textAlign: TextAlign.center),
+          content: Text(isConnected ? 'connected'.tr : 'no_connection'.tr,
+              textAlign: TextAlign.center),
         ));
-        if(isConnected) {
+        if (isConnected) {
           _route();
         }
       }
@@ -51,7 +55,6 @@ class SplashScreenState extends State<SplashScreen> {
 
     Get.find<SplashController>().initSharedData();
     _route();
-
   }
 
   @override
@@ -66,9 +69,15 @@ class SplashScreenState extends State<SplashScreen> {
       if (isSuccess) {
         Timer(const Duration(seconds: 1), () async {
           double? minimumVersion = _getMinimumVersion();
-          bool isMaintenanceMode = Get.find<SplashController>().configModel!.maintenanceMode!;
+          bool isMaintenanceMode =
+              Get.find<SplashController>().configModel!.maintenanceMode!;
           bool needsUpdate = AppConstants.appVersion < minimumVersion!;
-          bool inMaintenanceForApp = isMaintenanceMode && Get.find<SplashController>().configModel!.maintenanceModeData!.maintenanceSystemSetup!.contains('restaurant_app');
+          bool inMaintenanceForApp = isMaintenanceMode &&
+              Get.find<SplashController>()
+                  .configModel!
+                  .maintenanceModeData!
+                  .maintenanceSystemSetup!
+                  .contains('restaurant_app');
 
           if (needsUpdate || inMaintenanceForApp) {
             Get.offNamed(RouteHelper.getUpdateRoute(needsUpdate));
@@ -95,20 +104,27 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _handleNotificationRouting(NotificationBodyModel? body) async {
-    if(body!.notificationType == NotificationType.order){
+    if (body!.notificationType == NotificationType.order) {
       await Get.find<ProfileController>().getProfile();
-      Get.toNamed(RouteHelper.getOrderDetailsRoute(body.orderId, fromNotification: true));
-    }else if(body.notificationType == NotificationType.message){
-      Get.toNamed(RouteHelper.getChatRoute(notificationBody: body, conversationId: body.conversationId, fromNotification: true));
-    }else if(body.notificationType == NotificationType.block || body.notificationType == NotificationType.unblock) {
+      Get.toNamed(RouteHelper.getOrderDetailsRoute(body.orderId,
+          fromNotification: true));
+    } else if (body.notificationType == NotificationType.message) {
+      Get.toNamed(RouteHelper.getChatRoute(
+          notificationBody: body,
+          conversationId: body.conversationId,
+          fromNotification: true));
+    } else if (body.notificationType == NotificationType.block ||
+        body.notificationType == NotificationType.unblock) {
       Get.toNamed(RouteHelper.getSignInRoute());
-    }else if(body.notificationType == NotificationType.withdraw){
+    } else if (body.notificationType == NotificationType.withdraw) {
       Get.to(const DashboardScreen(pageIndex: 3));
-    }else if(body.notificationType == NotificationType.advertisement){
-      Get.toNamed(RouteHelper.getAdvertisementDetailsScreen(advertisementId: body.advertisementId, fromNotification: true));
-    }else if(body.notificationType == NotificationType.campaign){
-      Get.toNamed(RouteHelper.getCampaignDetailsRoute(id: body.campaignId, fromNotification: true));
-    }else{
+    } else if (body.notificationType == NotificationType.advertisement) {
+      Get.toNamed(RouteHelper.getAdvertisementDetailsScreen(
+          advertisementId: body.advertisementId, fromNotification: true));
+    } else if (body.notificationType == NotificationType.campaign) {
+      Get.toNamed(RouteHelper.getCampaignDetailsRoute(
+          id: body.campaignId, fromNotification: true));
+    } else {
       Get.toNamed(RouteHelper.getNotificationRoute(fromNotification: true));
     }
   }
@@ -119,11 +135,7 @@ class SplashScreenState extends State<SplashScreen> {
       await Get.find<ProfileController>().getProfile();
       Get.offNamed(RouteHelper.getInitialRoute());
     } else {
-      if (AppConstants.languages.length > 1 && Get.find<SplashController>().showIntro()) {
-        Get.offNamed(RouteHelper.getLanguageRoute('splash'));
-      } else {
-        Get.offNamed(RouteHelper.getSignInRoute());
-      }
+      Get.offNamed(RouteHelper.getSignInRoute());
     }
   }
 
@@ -135,12 +147,10 @@ class SplashScreenState extends State<SplashScreen> {
         child: Padding(
           padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-
             Image.asset(Images.logo, width: 100),
             const SizedBox(height: Dimensions.paddingSizeSmall),
-
-            Text('suffix_name'.tr, style: robotoMedium, textAlign: TextAlign.center),
-
+            Text('suffix_name'.tr,
+                style: robotoMedium, textAlign: TextAlign.center),
           ]),
         ),
       ),

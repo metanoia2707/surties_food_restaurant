@@ -39,7 +39,7 @@ class MenuScreen extends StatelessWidget {
       if(Get.find<SplashController>().configModel!.disbursementType == 'automated')
       MenuModel(icon: Images.disbursementIcon, title: 'disbursement'.tr, route: RouteHelper.getDisbursementMenuRoute()),
 
-      MenuModel(icon: Images.language, title: 'language'.tr, route: '', isLanguage: true),
+
 
       MenuModel(
         icon: Images.chat, title: 'conversation'.tr, route: RouteHelper.getConversationListRoute(),
