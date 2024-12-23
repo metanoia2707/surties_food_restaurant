@@ -6,6 +6,7 @@ import 'package:surties_food_restaurant/features/language/controllers/localizati
 import 'package:surties_food_restaurant/common/controllers/theme_controller.dart';
 import 'package:surties_food_restaurant/features/chat/domain/models/notification_body_model.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/firebase_options.dart';
 import 'package:surties_food_restaurant/helper/date_converter_helper.dart';
 import 'package:surties_food_restaurant/helper/notification_helper.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
@@ -31,7 +32,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> languages = await di.init();
 
-  if(GetPlatform.isAndroid) {
+  /*if(GetPlatform.isAndroid) {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
           apiKey: 'AIzaSyCc3OCd5I2xSlnftZ4bFAbuCzMhgQHLivA',
@@ -40,9 +41,9 @@ Future<void> main() async {
           projectId: 'stackmart-500c7',
         ),
       );
-    } else {
-      await Firebase.initializeApp();
-    }
+    } else {*/
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    // }
 
   NotificationBodyModel? body;
   try {
