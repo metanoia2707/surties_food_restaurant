@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 ThemeData light = ThemeData(
   fontFamily: 'Roboto',
-  primaryColor: const Color(0xFFEF7822),
+  primaryColor: const Color(0xFFFFC300),
   secondaryHeaderColor: const Color(0xFF000743),
   disabledColor: const Color(0xFFA0AEC0),
   brightness: Brightness.light,
   hintColor: const Color(0xFF5E6472),
   cardColor: Colors.white,
   shadowColor: Colors.black.withOpacity(0.03),
-  textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(0xFFEF7822))),
-  colorScheme: const ColorScheme.light(primary: Color(0xFFEF7822), secondary: Color(0xFFEF7822)).copyWith(error: const Color(0xFFE84D4F), tertiary: const Color(0xFF334257)),
+  textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(0xFFFFC300))),
+  colorScheme: const ColorScheme.light(primary: Color(0xFFFFC300), secondary: Color(0xFFFFC300)).copyWith(error: const Color(0xFFE84D4F), tertiary: const Color(0xFF334257)),
   popupMenuTheme: const PopupMenuThemeData(color: Colors.white, surfaceTintColor: Colors.white),
   dialogTheme: const DialogTheme(surfaceTintColor: Colors.white),
   floatingActionButtonTheme: FloatingActionButtonThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500)), elevation: 5.5),
