@@ -26,6 +26,18 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to the camera to upload profile picture.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location to manage coverage of restaurant and when add a new address.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access to location to manage coverage of restaurant and when add a new address.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The application does not use this feature</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the gallery to upload profile picture.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>The application does not use this feature</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -49,6 +61,10 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	</array>
 </dict>
 </plist>
