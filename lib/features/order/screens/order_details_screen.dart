@@ -204,8 +204,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           for (AddOn addOn in orderDetails.addOns!) {
             addOns = addOns + (addOn.price! * addOn.quantity!);
           }
-          itemsPrice =
-              itemsPrice + (orderDetails.price! * orderDetails.quantity!);
+          itemsPrice = itemsPrice +
+              ((orderDetails.foodDetails!.price! -
+                      (orderDetails.foodDetails!.price! *
+                          (order.restaurantComission!/100))) *
+                  orderDetails.quantity!);
         }
       }
       double subTotal = itemsPrice + addOns;

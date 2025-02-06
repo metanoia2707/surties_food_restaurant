@@ -66,6 +66,7 @@ class OrderModel {
   String? restaurantLat;
   String? restaurantLng;
   String? restaurantLogo;
+  int? restaurantComission;
   int? foodCampaign;
   int? detailsCount;
   Customer? customer;
@@ -120,6 +121,7 @@ class OrderModel {
     this.restaurantLat,
     this.restaurantLng,
     this.restaurantLogo,
+    this.restaurantComission,
     this.foodCampaign,
     this.detailsCount,
     this.customer,
@@ -175,6 +177,7 @@ class OrderModel {
     restaurantLat = json['restaurant_lat'];
     restaurantLng = json['restaurant_lng'];
     restaurantLogo = json['restaurant_logo'];
+    restaurantComission = json['restaurant_comission'];
     foodCampaign = json['food_campaign'];
     detailsCount = json['details_count'];
     customer = json['customer'] != null ? Customer.fromJson(json['customer']) : null;
@@ -245,6 +248,7 @@ class OrderModel {
     data['restaurant_lat'] = restaurantLat;
     data['restaurant_lng'] = restaurantLng;
     data['restaurant_logo'] = restaurantLogo;
+    data['restaurant_comission'] = restaurantComission;
     data['food_campaign'] = foodCampaign;
     data['details_count'] = detailsCount;
     if (customer != null) {
@@ -302,8 +306,8 @@ class DeliveryAddress {
     longitude = json['longitude'];
     latitude = json['latitude'];
     streetNumber = json['road'];
-    house = json['house'];
-    floor = json['floor'];
+    house = json['house'].toString();
+    floor = json['floor'].toString();
   }
 
   Map<String, dynamic> toJson() {

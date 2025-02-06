@@ -72,7 +72,9 @@ class OrderProductWidget extends StatelessWidget {
             Row(children: [
 
               Expanded(child: Text(
-                PriceConverter.convertPrice(orderDetails.price),
+                PriceConverter.convertPrice(orderDetails.foodDetails!.price! -
+                    (orderDetails.foodDetails!.price! *
+                        (order!.restaurantComission!/100))),
                 style: robotoMedium, textDirection: TextDirection.ltr,
               )),
 
