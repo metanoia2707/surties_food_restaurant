@@ -68,22 +68,7 @@ class SplashScreenState extends State<SplashScreen> {
     Get.find<SplashController>().getConfigData().then((isSuccess) async {
       if (isSuccess) {
         Timer(const Duration(seconds: 1), () async {
-          double? minimumVersion = _getMinimumVersion();
-          bool isMaintenanceMode =
-              Get.find<SplashController>().configModel!.maintenanceMode!;
-          bool needsUpdate = AppConstants.appVersion < minimumVersion!;
-          bool inMaintenanceForApp = isMaintenanceMode &&
-              Get.find<SplashController>()
-                  .configModel!
-                  .maintenanceModeData!
-                  .maintenanceSystemSetup!
-                  .contains('restaurant_app');
-
-          if (needsUpdate || inMaintenanceForApp) {
-            Get.offNamed(RouteHelper.getUpdateRoute(needsUpdate));
-            return;
-          }
-
+          advancedStatusCheck();
           if (widget.body != null) {
             await _handleNotificationRouting(widget.body);
           } else {

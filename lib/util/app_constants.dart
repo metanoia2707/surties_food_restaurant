@@ -1,15 +1,20 @@
+import 'dart:developer';
+
+import 'package:get/get.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:surties_food_restaurant/features/language/domain/models/language_model.dart';
+import 'package:surties_food_restaurant/helper/route_helper.dart';
 import 'package:surties_food_restaurant/util/images.dart';
 
 class AppConstants {
   static const String appName = 'SurtiesFood Restaurant';
-  static const double appVersion = 1.3;
+  static const String appVersion = "1.3.1";
 
   ///Flutter SDK 3.24.5
 
-  // static const String baseUrl = 'http://10.0.0.5/surties_food_admin';
+  static const String baseUrl = 'http://10.0.0.4/surties_food_admin';
 
-  static const String baseUrl = 'https://surtiesfood.com';
+  // static const String baseUrl = 'https://surtiesfood.com';
   static const String configUri = '/api/v1/config';
   static const String loginUri = '/api/v1/auth/vendor/login';
   static const String forgetPasswordUri = '/api/v1/auth/vendor/forgot-password';
@@ -200,4 +205,27 @@ class AppConstants {
   static const double maxSizeOfASingleFile = 10;
   static const double maxImageSend = 10;
   static const double limitOfPickedVideoSizeInMB = 50;
+}
+
+advancedStatusCheck() {
+  bool updateAvailable = false;
+  final newVersion = NewVersionPlus(
+    iOSId: 'com.food.surtiesFoodRestaurant',
+    androidId: 'com.food.surties_food_restaurant',
+  );
+  newVersion.getVersionStatus().then((status) async {
+    log('Status : $status');
+    if (status != null) {
+      log('${status.releaseNotes}');
+      log(status.appStoreLink);
+      log(status.localVersion);
+      log(status.storeVersion);
+      log(status.canUpdate.toString());
+      if (status.canUpdate) {
+        Get.offNamed(RouteHelper.getUpdateRoute(true));
+      }
+    }
+  }).catchError((err) {
+    log(err);
+  });
 }
