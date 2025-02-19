@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -26,26 +30,27 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>The application does not use this feature</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>The application does not use this feature</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera to upload profile picture.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location to manage coverage of restaurant and when add a new address.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access to location to manage coverage of restaurant and when add a new address.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location to manage coverage of restaurant and when add a new address.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>The application does not use this feature</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to the gallery to upload profile picture.</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>The application does not use this feature</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>The application does not use this feature</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>processing</string>
 		<string>remote-notification</string>
+		<string>fetch</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -63,10 +68,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	</array>
 </dict>
 </plist>
