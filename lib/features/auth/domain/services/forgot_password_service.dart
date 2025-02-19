@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/features/auth/domain/repositories/forgot_password_repository_interface.dart';
 import 'package:surties_food_restaurant/features/auth/domain/services/forgot_password_service_interface.dart';
@@ -26,5 +27,8 @@ class ForgotPasswordService implements ForgotPasswordServiceInterface {
   Future<ResponseModel> resetPassword(String? resetToken, String? email, String password, String confirmPassword) async {
     return await forgotPasswordRepositoryInterface.resetPassword(resetToken, email, password, confirmPassword);
   }
-
+  @override
+  Future<Response> verifyFirebaseOtp({required bool isLogin,required String phoneNumber, required String session, required String otp}) async {
+    return await forgotPasswordRepositoryInterface.verifyFirebaseOtp(isLogin:isLogin,phoneNumber: phoneNumber, session: session, otp: otp);
+  }
 }

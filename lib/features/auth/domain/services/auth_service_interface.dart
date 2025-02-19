@@ -9,13 +9,17 @@ import 'package:surties_food_restaurant/features/profile/domain/models/profile_m
 
 abstract class AuthServiceInterface {
   Future<dynamic> login(String? email, String password);
+  Future<ResponseModel> otpLogin({required String phone, required String otp, required String verified});
   Future<bool> saveUserToken(String token, String zoneTopic);
   Future<dynamic> updateToken({String notificationDeviceToken = ''});
   bool isLoggedIn();
   Future<bool> clearSharedData();
   Future<void> saveUserCredentials(String number, String password);
+  Future<void> saveUserNumberAndPassword(String number, String countryCode);
   String getUserNumber();
+  String getUserCountryCode();
   String getUserPassword();
+  Future<bool> clearUserNumberAndPassword();
   Future<bool> clearUserCredentials();
   String getUserToken();
   void setNotificationActive(bool isActive);

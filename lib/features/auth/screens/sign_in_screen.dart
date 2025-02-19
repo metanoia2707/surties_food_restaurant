@@ -1,10 +1,15 @@
+import 'package:country_code_picker/country_code_picker.dart';
+import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_button_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_text_field_widget.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
 import 'package:surties_food_restaurant/features/auth/widgets/restaurant_registartion_success_bottom_sheet.dart';
+import 'package:surties_food_restaurant/features/language/controllers/localization_controller.dart';
 import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/helper/custom_validator.dart';
+import 'package:surties_food_restaurant/helper/responsive_helper.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 import 'package:surties_food_restaurant/util/dimensions.dart';
 import 'package:surties_food_restaurant/util/images.dart';
@@ -20,17 +25,21 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final FocusNode _emailFocus = FocusNode();
-  final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _phoneFocus = FocusNode();
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  String? countryDialCode;
+
+  final TextEditingController _phoneController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _emailController.text = Get.find<AuthController>().getUserNumber();
-    _passwordController.text = Get.find<AuthController>().getUserPassword();
+    countryDialCode = Get.find<AuthController>().getUserCountryCode().isNotEmpty
+        ? Get.find<AuthController>().getUserCountryCode()
+        : CountryCode.fromCountryCode(
+                Get.find<SplashController>().configModel!.country!)
+            .dialCode;
+    _phoneController.text = Get.find<AuthController>().getUserNumber();
 
     _showRegistrationSuccessBottomSheet();
   }
@@ -58,8 +67,30 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: Center(
-        child: Scrollbar(
+          child: Align(
+        alignment: Alignment.center,
+        child: Container(
+          width: context.width > 700 ? 500 : context.width,
+          padding: context.width > 700
+              ? const EdgeInsets.all(50)
+              : const EdgeInsets.symmetric(
+                  horizontal: Dimensions.paddingSizeExtraLarge),
+          margin:
+              context.width > 700 ? const EdgeInsets.all(50) : EdgeInsets.zero,
+          decoration: context.width > 700
+              ? BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                  boxShadow: ResponsiveHelper.isDesktop(context)
+                      ? null
+                      : [
+                          BoxShadow(
+                              color: Colors.grey[Get.isDarkMode ? 700 : 300]!,
+                              blurRadius: 5,
+                              spreadRadius: 1)
+                        ],
+                )
+              : null,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
@@ -68,58 +99,52 @@ class _SignInScreenState extends State<SignInScreen> {
                 width: 1170,
                 child: GetBuilder<AuthController>(builder: (authController) {
                   return Column(children: [
-                    Image.asset(Images.logo, width: 100),
+                    Row(mainAxisSize: MainAxisSize.min, children: [
+                      Image.asset(Images.logo, height: 80, width: 80),
+                    ]),
                     const SizedBox(height: Dimensions.paddingSizeExtraLarge),
-                    Text('sign_in'.tr.toUpperCase(),
-                        style: robotoBlack.copyWith(fontSize: 30)),
-                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-                    Text(
-                      'only_for_restaurant_owner'.tr,
-                      textAlign: TextAlign.center,
-                      style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          color: Theme.of(context).primaryColor),
-                    ),
-                    const SizedBox(height: 50),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.radiusSmall),
-                        color: Theme.of(context).cardColor,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black12,
-                              spreadRadius: 0,
-                              blurRadius: 5)
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('sign_in'.tr,
+                              style: robotoBold.copyWith(
+                                  fontSize: Dimensions.fontSizeExtraLarge)),
+                          const SizedBox(
+                              height: Dimensions.paddingSizeExtraSmall),
+                          Text(
+                            'only_for_restaurant_owner'.tr,
+                            textAlign: TextAlign.center,
+                            style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeExtraSmall,
+                                color: Theme.of(context).primaryColor),
+                          ),
                         ],
                       ),
-                      child: Column(children: [
-                        CustomTextFieldWidget(
-                          hintText: 'email'.tr,
-                          showLabelText: false,
-                          controller: _emailController,
-                          focusNode: _emailFocus,
-                          nextFocus: _passwordFocus,
-                          inputType: TextInputType.emailAddress,
-                          prefixIcon: Icons.mail_outline_rounded,
-                          divider: true,
-                          showBorder: false,
-                        ),
-                        CustomTextFieldWidget(
-                          hintText: 'password'.tr,
-                          showLabelText: false,
-                          controller: _passwordController,
-                          focusNode: _passwordFocus,
-                          inputAction: TextInputAction.done,
-                          inputType: TextInputType.visiblePassword,
-                          prefixIcon: Icons.lock,
-                          isPassword: true,
-                          showBorder: false,
-                          onSubmit: (text) =>
-                              GetPlatform.isWeb ? _login(authController) : null,
-                        ),
-                      ]),
                     ),
+                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                    CustomTextFieldWidget(
+                      hintText: 'xxx-xxx-xxxxx'.tr,
+                      showLabelText: false,
+                      controller: _phoneController,
+                      focusNode: _phoneFocus,
+                      inputType: TextInputType.phone,
+                      isPhone: true,
+                      onCountryChanged: (CountryCode countryCode) {
+                        countryDialCode = countryCode.dialCode;
+                      },
+                      countryDialCode: countryDialCode != null
+                          ? CountryCode.fromCountryCode(
+                                  Get.find<SplashController>()
+                                      .configModel!
+                                      .country!)
+                              .code
+                          : Get.find<LocalizationController>()
+                              .locale
+                              .countryCode,
+                    ),
+                    const SizedBox(height: Dimensions.paddingSizeSmall),
                     const SizedBox(height: 10),
                     Row(children: [
                       Expanded(
@@ -137,17 +162,18 @@ class _SignInScreenState extends State<SignInScreen> {
                           horizontalTitleGap: 0,
                         ),
                       ),
-                      TextButton(
+                     /* TextButton(
                         onPressed: () =>
                             Get.toNamed(RouteHelper.getForgotPassRoute()),
                         child: Text('${'forgot_password'.tr}?'),
-                      ),
+                      ),*/
                     ]),
                     const SizedBox(height: 50),
                     !authController.isLoading
                         ? CustomButtonWidget(
                             buttonText: 'sign_in'.tr,
-                            onPressed: () => _login(authController),
+                            onPressed: () => _login(authController,
+                                _phoneController, countryDialCode!, context),
                           )
                         : const Center(child: CircularProgressIndicator()),
                     SizedBox(
@@ -193,34 +219,57 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void _login(AuthController authController) async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+  void _login(AuthController authController, TextEditingController phoneCtlr,
+      String countryCode, BuildContext context) async {
+    String phone = phoneCtlr.text.trim();
 
-    if (email.isEmpty) {
-      showCustomSnackBar('enter_email_address'.tr);
-    } else if (password.isEmpty) {
-      showCustomSnackBar('enter_password'.tr);
-    } else if (password.length < 6) {
-      showCustomSnackBar('password_should_be'.tr);
+    String numberWithCountryCode = countryCode + phone;
+    PhoneValid phoneValid =
+    await CustomValidator.isPhoneValid(numberWithCountryCode);
+    numberWithCountryCode = phoneValid.phone;
+
+    if (phone.isEmpty) {
+      showCustomSnackBar('enter_phone_number'.tr);
+    } else if (!phoneValid.isValid) {
+      showCustomSnackBar('invalid_phone_number'.tr);
     } else {
-      authController.login(email, password).then((status) async {
-        if (status != null) {
-          if (status.isSuccess) {
-            if (authController.isActiveRememberMe) {
-              authController.saveUserCredentials(email, password);
-            } else {
-              authController.clearUserCredentials();
-            }
-            await Get.find<ProfileController>().getProfile();
-            Get.offAllNamed(RouteHelper.getInitialRoute());
-          } else {
-            if (status.message != 'no') {
-              showCustomSnackBar(status.message);
-            }
-          }
+      authController
+          .otpLogin(
+        phone: numberWithCountryCode,
+        otp: '',
+        verified: '',
+      )
+          .then((status) async {
+        if (status.isSuccess) {
+          _processOtpSuccessSetup(status, authController, phone, countryCode);
+        } else {
+          showCustomSnackBar(status.message);
         }
       });
+    }
+  }
+
+  void _processOtpSuccessSetup(
+      ResponseModel response,
+      AuthController authController,
+      String phone,
+      String countryDialCode) async {
+    if (authController.isActiveRememberMe) {
+      authController.saveUserNumberAndPassword(phone, countryDialCode);
+    } else {
+      authController.clearUserNumberAndPassword();
+    }
+    if (response.authResponseModel != null &&
+        !response.authResponseModel!.isPhoneVerified!) {
+      if (Get.find<SplashController>().configModel!.firebaseOtpVerification!) {
+        Get.find<AuthController>()
+            .firebaseVerifyPhoneNumber(countryDialCode + phone, '');
+      } else {
+        Get.toNamed(RouteHelper.getVerificationRoute(
+            countryDialCode + phone, null, 'signUp'));
+      }
+    } else {
+      Get.back();
     }
   }
 }

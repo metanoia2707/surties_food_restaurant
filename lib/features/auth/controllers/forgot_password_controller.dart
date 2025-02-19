@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:surties_food_restaurant/common/models/response_model.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/features/auth/domain/services/forgot_password_service_interface.dart';
 import 'package:surties_food_restaurant/features/profile/domain/models/profile_model.dart';
 import 'package:get/get.dart';
+import 'package:surties_food_restaurant/helper/route_helper.dart';
 
 class ForgotPasswordController extends GetxController implements GetxService {
   final ForgotPasswordServiceInterface forgotPasswordServiceInterface;
@@ -66,6 +68,45 @@ class ForgotPasswordController extends GetxController implements GetxService {
     _isLoading = false;
     update();
     return responseModel;
+  }
+
+  Future<Response> verifyFirebaseOtp({required bool isLogin,required String phoneNumber, required String session, required String otp}) async {
+    _isLoading = true;
+    update();
+    Response responseModel = await forgotPasswordServiceInterface.verifyFirebaseOtp(isLogin:isLogin,phoneNumber: phoneNumber, session: session, otp: otp);
+    _isLoading = false;
+    update();
+    return responseModel;
+  }
+
+  Future<void> firebaseVerifyPhoneNumber(String phoneNumber, {bool canRoute = true}) async {
+    _isLoading = true;
+    update();
+
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {
+        _isLoading = false;
+        update();
+
+        if(e.code == 'invalid-phone-number') {
+          showCustomSnackBar('please_submit_a_valid_phone_number'.tr);
+        }else{
+          showCustomSnackBar(e.message?.replaceAll('_', ' '));
+        }
+
+      },
+      codeSent: (String vId, int? resendToken) {
+        _isLoading = false;
+        update();
+
+        if(canRoute) {
+          Get.toNamed(RouteHelper.getVerificationRoute(phoneNumber,'','', session: vId));
+        }
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
   }
   
 }

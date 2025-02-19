@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
 import 'package:surties_food_restaurant/features/business/controllers/business_controller.dart';
 import 'package:surties_food_restaurant/features/business/domain/models/package_model.dart';
@@ -16,96 +17,130 @@ import 'package:image_picker/image_picker.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthServiceInterface authServiceInterface;
+
   AuthController({required this.authServiceInterface});
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   bool _notification = true;
+
   bool get notification => _notification;
 
   ProfileModel? _profileModel;
+
   ProfileModel? get profileModel => _profileModel;
 
- XFile? _pickedFile;
+  XFile? _pickedFile;
+
   XFile? get pickedFile => _pickedFile;
 
   XFile? _pickedLogo;
+
   XFile? get pickedLogo => _pickedLogo;
 
   XFile? _pickedCover;
+
   XFile? get pickedCover => _pickedCover;
 
   String? _subscriptionType;
+
   String? get subscriptionType => _subscriptionType;
 
   String? _expiredToken;
+
   String? get expiredToken => _expiredToken;
 
   double _storeStatus = 0.1;
+
   double get storeStatus => _storeStatus;
 
   String _storeMinTime = '--';
+
   String get storeMinTime => _storeMinTime;
 
   String _storeMaxTime = '--';
+
   String get storeMaxTime => _storeMaxTime;
 
   String _storeTimeUnit = 'minute';
+
   String get storeTimeUnit => _storeTimeUnit;
 
   bool _showPassView = false;
+
   bool get showPassView => _showPassView;
 
   bool _lengthCheck = false;
+
   bool get lengthCheck => _lengthCheck;
 
   bool _numberCheck = false;
+
   bool get numberCheck => _numberCheck;
 
   bool _uppercaseCheck = false;
+
   bool get uppercaseCheck => _uppercaseCheck;
 
   bool _lowercaseCheck = false;
+
   bool get lowercaseCheck => _lowercaseCheck;
 
   bool _spatialCheck = false;
+
   bool get spatialCheck => _spatialCheck;
 
   bool _isActiveRememberMe = false;
+
   bool get isActiveRememberMe => _isActiveRememberMe;
 
   List<Data>? _dataList;
+
   List<Data>? get dataList => _dataList;
 
   List<dynamic>? _additionalList;
-  List<dynamic>? get additionalList => _additionalList;
 
+  List<dynamic>? get additionalList => _additionalList;
 
   void setJoinUsPageData({bool willUpdate = true}) {
     _dataList = [];
     _additionalList = [];
-    if(Get.find<SplashController>().configModel!.restaurantAdditionalJoinUsPageData != null) {
-      for (var data in Get.find<SplashController>().configModel!.restaurantAdditionalJoinUsPageData!.data!) {
-        int index = Get.find<SplashController>().configModel!.restaurantAdditionalJoinUsPageData!.data!.indexOf(data);
+    if (Get.find<SplashController>()
+            .configModel!
+            .restaurantAdditionalJoinUsPageData !=
+        null) {
+      for (var data in Get.find<SplashController>()
+          .configModel!
+          .restaurantAdditionalJoinUsPageData!
+          .data!) {
+        int index = Get.find<SplashController>()
+            .configModel!
+            .restaurantAdditionalJoinUsPageData!
+            .data!
+            .indexOf(data);
         _dataList!.add(data);
-        if(data.fieldType == 'text' || data.fieldType == 'number' || data.fieldType == 'email' || data.fieldType == 'phone'){
+        if (data.fieldType == 'text' ||
+            data.fieldType == 'number' ||
+            data.fieldType == 'email' ||
+            data.fieldType == 'phone') {
           _additionalList!.add(TextEditingController());
-        } else if(data.fieldType == 'date') {
+        } else if (data.fieldType == 'date') {
           _additionalList!.add(null);
-        } else if(data.fieldType == 'check_box') {
+        } else if (data.fieldType == 'check_box') {
           _additionalList!.add([]);
-          if(data.checkData != null) {
-            for(int i=0; i<data.checkData!.length; i++) {
+          if (data.checkData != null) {
+            for (int i = 0; i < data.checkData!.length; i++) {
               _additionalList![index].add(0);
             }
           }
-        } else if(data.fieldType == 'file') {
+        } else if (data.fieldType == 'file') {
           _additionalList!.add([]);
         }
       }
     }
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
@@ -116,7 +151,7 @@ class AuthController extends GetxController implements GetxService {
   }
 
   void setAdditionalCheckData(int index, int i, String date) {
-    if(_additionalList![index][i] == date){
+    if (_additionalList![index][i] == date) {
       _additionalList![index][i] = 0;
     } else {
       _additionalList![index][i] = date;
@@ -131,7 +166,7 @@ class AuthController extends GetxController implements GetxService {
 
   Future<void> pickFile(int index, MediaData mediaData) async {
     FilePickerResult? result = await authServiceInterface.picFile(mediaData);
-    if(result != null) {
+    if (result != null) {
       _additionalList![index].add(result);
     }
     update();
@@ -141,17 +176,32 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = true;
     update();
     Response response = await authServiceInterface.login(email, password);
-    ResponseModel? responseModel = await authServiceInterface.manageLogin(response);
+    ResponseModel? responseModel =
+        await authServiceInterface.manageLogin(response);
+    _isLoading = false;
+    update();
+    return responseModel;
+  }
+
+  Future<ResponseModel> otpLogin(
+      {required String phone,
+        required String otp,
+        required String verified}) async {
+    _isLoading = true;
+    update();
+    ResponseModel responseModel = await authServiceInterface.otpLogin(
+        phone: phone, otp: otp, verified: verified);
+
     _isLoading = false;
     update();
     return responseModel;
   }
 
   void pickImageForRegistration(bool isLogo, bool isRemove) async {
-    if(isRemove) {
+    if (isRemove) {
       _pickedLogo = null;
       _pickedCover = null;
-    }else {
+    } else {
       if (isLogo) {
         _pickedLogo = await authServiceInterface.pickImageFromGallery();
       } else {
@@ -161,6 +211,9 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
+  Future<bool> saveUserToken(String token, String zoneTopic) async {
+    return await authServiceInterface.saveUserToken(token, zoneTopic);
+  }
   Future<void> updateToken() async {
     await authServiceInterface.updateToken();
   }
@@ -182,8 +235,20 @@ class AuthController extends GetxController implements GetxService {
     authServiceInterface.saveUserCredentials(number, password);
   }
 
+  void saveUserNumberAndPassword(String number, String countryCode) {
+    authServiceInterface.saveUserNumberAndPassword(number, countryCode);
+  }
+
+  Future<bool> clearUserNumberAndPassword() async {
+    return authServiceInterface.clearUserNumberAndPassword();
+  }
+
   String getUserNumber() {
     return authServiceInterface.getUserNumber();
+  }
+
+  String getUserCountryCode() {
+    return authServiceInterface.getUserCountryCode();
   }
 
   String getUserPassword() {
@@ -232,26 +297,33 @@ class AuthController extends GetxController implements GetxService {
       showCustomSnackBar('your_account_remove_successfully'.tr, isError: false);
       Get.find<AuthController>().clearSharedData();
       Get.offAllNamed(RouteHelper.getSignInRoute());
-    }else{
+    } else {
       Get.back();
     }
   }
 
-  Future<void> registerRestaurant(Map<String, String> data, List<FilePickerResult> additionalDocuments, List<String> inputTypeList) async {
+  Future<void> registerRestaurant(
+      Map<String, String> data,
+      List<FilePickerResult> additionalDocuments,
+      List<String> inputTypeList) async {
     _isLoading = true;
     update();
 
-    List<MultipartDocument> multiPartsDocuments = authServiceInterface.prepareMultipartDocuments(inputTypeList, additionalDocuments);
-    Response response = await authServiceInterface.registerRestaurant(data, _pickedLogo, _pickedCover, multiPartsDocuments);
+    List<MultipartDocument> multiPartsDocuments = authServiceInterface
+        .prepareMultipartDocuments(inputTypeList, additionalDocuments);
+    Response response = await authServiceInterface.registerRestaurant(
+        data, _pickedLogo, _pickedCover, multiPartsDocuments);
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       int? restaurantId = response.body['restaurant_id'];
       int? packageId = response.body['package_id'];
 
-      if(packageId == null) {
-        Get.find<BusinessController>().submitBusinessPlan(restaurantId: restaurantId!, packageId: null);
-      }else{
-        Get.toNamed(RouteHelper.getSubscriptionPaymentRoute(restaurantId: restaurantId, packageId: packageId));
+      if (packageId == null) {
+        Get.find<BusinessController>()
+            .submitBusinessPlan(restaurantId: restaurantId!, packageId: null);
+      } else {
+        Get.toNamed(RouteHelper.getSubscriptionPaymentRoute(
+            restaurantId: restaurantId, packageId: packageId));
       }
     }
 
@@ -259,31 +331,31 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  void storeStatusChange(double value, {bool willUpdate = true}){
+  void storeStatusChange(double value, {bool willUpdate = true}) {
     _storeStatus = value;
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
 
-  void showHidePass({bool willUpdate = true}){
-    _showPassView = ! _showPassView;
-    if(willUpdate) {
+  void showHidePass({bool willUpdate = true}) {
+    _showPassView = !_showPassView;
+    if (willUpdate) {
       update();
     }
   }
 
-  void minTimeChange(String time){
+  void minTimeChange(String time) {
     _storeMinTime = time;
     update();
   }
 
-  void maxTimeChange(String time){
+  void maxTimeChange(String time) {
     _storeMaxTime = time;
     update();
   }
 
-  void timeUnitChange(String unit){
+  void timeUnitChange(String unit) {
     _storeTimeUnit = unit;
     update();
   }
@@ -295,75 +367,87 @@ class AuthController extends GetxController implements GetxService {
     _lowercaseCheck = false;
     _spatialCheck = false;
 
-    if(pass.length > 7){
+    if (pass.length > 7) {
       _lengthCheck = true;
     }
-    if(pass.contains(RegExp(r'[a-z]'))){
+    if (pass.contains(RegExp(r'[a-z]'))) {
       _lowercaseCheck = true;
     }
-    if(pass.contains(RegExp(r'[A-Z]'))){
+    if (pass.contains(RegExp(r'[A-Z]'))) {
       _uppercaseCheck = true;
     }
-    if(pass.contains(RegExp(r'[ .!@#$&*~^%]'))){
+    if (pass.contains(RegExp(r'[ .!@#$&*~^%]'))) {
       _spatialCheck = true;
     }
-    if(pass.contains(RegExp(r'[\d+]'))){
+    if (pass.contains(RegExp(r'[\d+]'))) {
       _numberCheck = true;
     }
-    if(willUpdate) {
+    if (willUpdate) {
       update();
     }
   }
 
   String _businessPlanStatus = 'business';
+
   String get businessPlanStatus => _businessPlanStatus;
 
   int _paymentIndex = 0;
+
   int get paymentIndex => _paymentIndex;
 
   int _businessIndex = 0;
+
   int get businessIndex => _businessIndex;
 
   int _activeSubscriptionIndex = 0;
+
   int get activeSubscriptionIndex => _activeSubscriptionIndex;
 
   bool _isFirstTime = true;
+
   bool get isFirstTime => _isFirstTime;
 
   PackageModel? _packageModel;
+
   PackageModel? get packageModel => _packageModel;
 
   void changeFirstTimeStatus() {
     _isFirstTime = !_isFirstTime;
   }
 
-  void resetBusiness(){
-    _businessIndex = (Get.find<SplashController>().configModel!.commissionBusinessModel == 0) ? 1 : 0;
+  void resetBusiness() {
+    _businessIndex =
+        (Get.find<SplashController>().configModel!.commissionBusinessModel == 0)
+            ? 1
+            : 0;
     _activeSubscriptionIndex = 0;
     _businessPlanStatus = 'business';
     _isFirstTime = true;
-    _paymentIndex = Get.find<SplashController>().configModel!.subscriptionFreeTrialStatus! ? 0 : 1;
+    _paymentIndex =
+        Get.find<SplashController>().configModel!.subscriptionFreeTrialStatus!
+            ? 0
+            : 1;
   }
 
   Future<void> getPackageList({bool isUpdate = true}) async {
     _packageModel = await authServiceInterface.getPackageList();
-    if(isUpdate) {
+    if (isUpdate) {
       update();
     }
   }
 
-  void setBusiness(int business){
+  void setBusiness(int business) {
     _activeSubscriptionIndex = 0;
     _businessIndex = business;
     update();
   }
 
-  void setBusinessStatus(String status){
+  void setBusinessStatus(String status) {
     _businessPlanStatus = status;
     update();
   }
 
-  void selectSubscriptionCard(int index){
+  void selectSubscriptionCard(int index) {
     _activeSubscriptionIndex = index;
     update();
   }
@@ -376,4 +460,36 @@ class AuthController extends GetxController implements GetxService {
     return authServiceInterface.getIsRestaurantRegistration();
   }
 
+  Future<void> firebaseVerifyPhoneNumber(
+      String phoneNumber, String? token) async {
+    _isLoading = true;
+    update();
+
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {
+        _isLoading = false;
+        update();
+
+        if (e.code == 'invalid-phone-number') {
+          showCustomSnackBar('please_submit_a_valid_phone_number'.tr);
+        } else {
+          showCustomSnackBar(e.message?.replaceAll('_', ' '));
+        }
+      },
+      codeSent: (String vId, int? resendToken) {
+        _isLoading = false;
+        update();
+
+        Get.toNamed(RouteHelper.getVerificationRoute(
+          phoneNumber,
+          token,
+          'signUp',
+          session: vId,
+        ));
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
 }

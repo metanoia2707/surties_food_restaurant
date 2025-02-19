@@ -57,6 +57,7 @@ class ConfigModel {
   int? subscriptionBusinessModel;
   int? commissionBusinessModel;
   String? subscriptionFreeTrialType;
+  bool? firebaseOtpVerification;
 
   ConfigModel({
     this.businessName,
@@ -117,6 +118,7 @@ class ConfigModel {
     this.subscriptionBusinessModel,
     this.commissionBusinessModel,
     this.subscriptionFreeTrialType,
+    this.firebaseOtpVerification,
   });
 
   ConfigModel.fromJson(Map<String, dynamic> json) {
@@ -188,6 +190,7 @@ class ConfigModel {
     subscriptionBusinessModel = json['subscription_business_model'];
     commissionBusinessModel = json['commission_business_model'];
     subscriptionFreeTrialType = json['subscription_free_trial_type'];
+    firebaseOtpVerification = json['firebase_otp_verification'] == 1;
   }
 
   Map<String, dynamic> toJson() {
@@ -259,6 +262,7 @@ class ConfigModel {
     data['subscription_business_model'] = subscriptionBusinessModel;
     data['commission_business_model'] = commissionBusinessModel;
     data['subscription_free_trial_type'] = subscriptionFreeTrialType;
+    data['firebase_otp_verification'] = firebaseOtpVerification;
     return data;
   }
 }

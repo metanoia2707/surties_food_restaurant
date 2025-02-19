@@ -5,4 +5,5 @@ abstract class ForgotPasswordServiceInterface {
   Future<dynamic> verifyToken(String? email, String token);
   Future<dynamic> changePassword(ProfileModel userInfoModel, String password);
   Future<dynamic> resetPassword(String? resetToken, String? email, String password, String confirmPassword);
+  Future<dynamic> verifyFirebaseOtp({required bool isLogin,required String phoneNumber, required String session, required String otp});
 }

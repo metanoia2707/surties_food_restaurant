@@ -12,11 +12,14 @@ class AppConstants {
 
   ///Flutter SDK 3.24.5
 
-  static const String baseUrl = 'http://10.0.0.4/surties_food_admin';
+  // static const String baseUrl = 'http://10.0.0.4/surties_food_admin';
 
-  // static const String baseUrl = 'https://surtiesfood.com';
+  static const String baseUrl = 'https://surtiesfood.com';
   static const String configUri = '/api/v1/config';
-  static const String loginUri = '/api/v1/auth/vendor/login';
+  static const String loginUri = '/api/v1/auth/vendor/otp-login';
+  static const String firebaseLoginAuthVerify =
+      '/api/v1/auth/vendor/firebase-login-verify-token';
+
   static const String forgetPasswordUri = '/api/v1/auth/vendor/forgot-password';
   static const String verifyTokenUri = '/api/v1/auth/vendor/verify-token';
   static const String resetPasswordUri = '/api/v1/auth/vendor/reset-password';
@@ -181,6 +184,7 @@ class AppConstants {
   static const String userPassword = 'user_password';
   static const String userAddress = 'user_address';
   static const String userNumber = 'user_number';
+  static const String userCountryCode = 'user_country_code';
   static const String notification = 'notification';
   static const String notificationCount = 'notification_count';
   static const String searchHistory = 'search_history';

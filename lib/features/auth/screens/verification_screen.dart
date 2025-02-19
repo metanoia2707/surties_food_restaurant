@@ -3,7 +3,11 @@ import 'package:surties_food_restaurant/common/widgets/custom_app_bar_widget.dar
 import 'package:surties_food_restaurant/common/widgets/custom_asset_image_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_button_widget.dart';
 import 'package:surties_food_restaurant/common/widgets/custom_snackbar_widget.dart';
+import 'package:surties_food_restaurant/features/auth/controllers/auth_controller.dart';
 import 'package:surties_food_restaurant/features/auth/controllers/forgot_password_controller.dart';
+import 'package:surties_food_restaurant/features/business/screens/subscription_payment_screen.dart';
+import 'package:surties_food_restaurant/features/profile/controllers/profile_controller.dart';
+import 'package:surties_food_restaurant/features/splash/controllers/splash_controller.dart';
 import 'package:surties_food_restaurant/helper/route_helper.dart';
 import 'package:surties_food_restaurant/util/dimensions.dart';
 import 'package:surties_food_restaurant/util/images.dart';
@@ -13,24 +17,35 @@ import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class VerificationScreen extends StatefulWidget {
-  final String? email;
-  const VerificationScreen({super.key, required this.email});
+  final String? number;
+  final String? firebaseSession;
+  final bool fromSignUp;
+
+  const VerificationScreen(
+      {super.key,
+      required this.number,
+      this.firebaseSession,
+      required this.fromSignUp});
 
   @override
   VerificationScreenState createState() => VerificationScreenState();
 }
 
 class VerificationScreenState extends State<VerificationScreen> {
-
+  String? _number;
   Timer? _timer;
   int _seconds = 0;
+  AuthController authController = Get.find();
 
   @override
   void initState() {
     super.initState();
 
-    Get.find<ForgotPasswordController>().updateVerificationCode('', canUpdate: false);
-
+    Get.find<ForgotPasswordController>()
+        .updateVerificationCode('', canUpdate: false);
+    _number = widget.number!.startsWith('+')
+        ? widget.number
+        : '+${widget.number!.substring(1, widget.number!.length)}';
     _startTimer();
   }
 
@@ -38,7 +53,7 @@ class VerificationScreenState extends State<VerificationScreen> {
     _seconds = 60;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _seconds = _seconds - 1;
-      if(_seconds == 0) {
+      if (_seconds == 0) {
         timer.cancel();
         _timer?.cancel();
       }
@@ -56,126 +71,172 @@ class VerificationScreenState extends State<VerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: CustomAppBarWidget(title: 'otp_verification'.tr),
-
-      body: GetBuilder<ForgotPasswordController>(builder: (forgotPasswordController) {
-        return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-
-          Flexible(
-            child: SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.all(Dimensions.paddingSizeLarge),
-                padding: const EdgeInsets.only(
-                  left: Dimensions.paddingSizeSmall, right: Dimensions.paddingSizeSmall,
-                  top: Dimensions.paddingSizeDefault, bottom: Dimensions.paddingSizeDefault,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 5)],
-                  borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                ),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-
-                  const CustomAssetImageWidget(
-                    image: Images.otpVerificationBg,
-                    height: 145, width: 160,
-                  ),
-                  const SizedBox(height: Dimensions.paddingSizeDefault),
-
-                  SizedBox(
-                    width: context.width * 0.75,
-                    child: Text('submit_the_otp_code_sent_to_your_registered_mail_address_and_verify'.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5)), textAlign: TextAlign.center),
-                  ),
-                  const SizedBox(height: 30),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: PinCodeTextField(
-                      length: 4,
-                      appContext: context,
-                      keyboardType: TextInputType.number,
-                      animationType: AnimationType.slide,
-                      pinTheme: PinTheme(
-                        shape: PinCodeFieldShape.box,
-                        fieldHeight: 60,
-                        fieldWidth: 55,
-                        borderWidth: 1,
-                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                        selectedColor: Theme.of(context).primaryColor,
-                        selectedFillColor: Colors.white,
-                        inactiveFillColor: Colors.white,
-                        inactiveColor: Theme.of(context).disabledColor.withOpacity(0.3),
-                        activeColor: Theme.of(context).disabledColor.withOpacity(0.3),
-                        activeFillColor: Colors.white,
+      body: SafeArea(
+          child: Center(
+              child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+        child: Center(
+            child: SizedBox(
+                width: 1170,
+                child: GetBuilder<ForgotPasswordController>(
+                    builder: (forgotPasswordController) {
+                  return Column(children: [
+                    Get.find<SplashController>().configModel!.demo!
+                        ? Text(
+                            'for_demo_purpose'.tr,
+                            style: robotoRegular,
+                          )
+                        : RichText(
+                            text: TextSpan(children: [
+                            TextSpan(
+                                text: 'enter_the_verification_sent_to'.tr,
+                                style: robotoRegular.copyWith(
+                                    color: Theme.of(context).disabledColor)),
+                            TextSpan(
+                                text: ' $_number',
+                                style: robotoMedium.copyWith(
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .color)),
+                          ])),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeDefault,
+                          vertical: 35),
+                      child: PinCodeTextField(
+                        length: 6,
+                        appContext: context,
+                        keyboardType: TextInputType.number,
+                        animationType: AnimationType.slide,
+                        pinTheme: PinTheme(
+                          shape: PinCodeFieldShape.box,
+                          fieldHeight: 60,
+                          fieldWidth: 50,
+                          borderWidth: 1,
+                          borderRadius:
+                              BorderRadius.circular(Dimensions.radiusSmall),
+                          selectedColor:
+                              Theme.of(context).primaryColor.withOpacity(0.2),
+                          selectedFillColor: Colors.white,
+                          inactiveFillColor:
+                              Theme.of(context).disabledColor.withOpacity(0.2),
+                          inactiveColor:
+                              Theme.of(context).primaryColor.withOpacity(0.2),
+                          activeColor:
+                              Theme.of(context).primaryColor.withOpacity(0.4),
+                          activeFillColor:
+                              Theme.of(context).disabledColor.withOpacity(0.2),
+                        ),
+                        animationDuration: const Duration(milliseconds: 300),
+                        backgroundColor: Colors.transparent,
+                        enableActiveFill: true,
+                        onChanged:
+                            forgotPasswordController.updateVerificationCode,
+                        beforeTextPaste: (text) => true,
                       ),
-                      animationDuration: const Duration(milliseconds: 300),
-                      backgroundColor: Colors.transparent,
-                      enableActiveFill: true,
-                      onChanged: forgotPasswordController.updateVerificationCode,
-                      beforeTextPaste: (text) => true,
                     ),
-                  ),
-                  const SizedBox(height: Dimensions.paddingSizeSmall),
-
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-
-                    Text(
-                      'did_not_receive_the_code'.tr,
-                      style: robotoRegular.copyWith(color: Theme.of(context).disabledColor),
-                    ),
-
-                    !forgotPasswordController.isForgotLoading ? TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Text(
+                        'did_not_receive_the_code'.tr,
+                        style: robotoRegular.copyWith(
+                            color: Theme.of(context).disabledColor),
                       ),
-                      onPressed: _seconds < 1 ? () {
-                        forgotPasswordController.forgotPassword(widget.email).then((value) {
-                          if (value.isSuccess) {
-                            _startTimer();
-                            showCustomSnackBar('resend_code_successful'.tr, isError: false);
-                          } else {
-                            showCustomSnackBar(value.message);
-                          }
-                        });
-                      } : null,
-                      child: Text('${_seconds > 0 ? '' : ' ${'resend'.tr}'}${_seconds > 0 ? '(${_seconds}s)' : ''}', style: TextStyle(color: Theme.of(context).primaryColor)),
-                    ): const Row(children: [
-                      SizedBox(width: 5),
-                      SizedBox(height: 15, width: 15, child: CircularProgressIndicator(strokeWidth: 2)),
+                      !forgotPasswordController.isLoading
+                          ? TextButton(
+                              onPressed: _seconds < 1
+                                  ? () async {
+                                      ///Firebase OTP
+                                      if (widget.firebaseSession != null) {
+                                        await forgotPasswordController
+                                            .firebaseVerifyPhoneNumber(_number!,
+                                                canRoute: false);
+                                        _startTimer();
+                                      }
+                                    }
+                                  : null,
+                              child: Text(
+                                  '${'resent'.tr}${_seconds > 0 ? ' ($_seconds)' : ''}'),
+                            )
+                          : Container(
+                              height: 20,
+                              width: 20,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimensions.paddingSizeLarge),
+                              child: const CircularProgressIndicator(),
+                            ),
                     ]),
-                  ]),
-
-                ]),
-              ),
-            ),
-          ),
-
-          GetBuilder<ForgotPasswordController>(builder: (forgotPasswordController) {
-            return forgotPasswordController.verificationCode.length == 4 ? Container(
-              padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault, horizontal: Dimensions.paddingSizeExtraLarge),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                boxShadow: const [BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 5)],
-              ),
-              child: forgotPasswordController.verificationCode.length == 4 ? !forgotPasswordController.isLoading ? CustomButtonWidget(
-                buttonText: 'verify'.tr,
-                onPressed: () {
-                  forgotPasswordController.verifyToken(widget.email).then((value) {
-                    if(value.isSuccess) {
-                      Get.toNamed(RouteHelper.getResetPasswordRoute(widget.email, forgotPasswordController.verificationCode, 'reset-password'));
-                    }else {
-                      showCustomSnackBar(value.message);
-                    }
-                  });
-                },
-              ) : const Center(child: CircularProgressIndicator()) : const SizedBox.shrink(),
-            ) : const SizedBox.shrink();
-          }),
-
-        ]);
-      }),
+                    forgotPasswordController.verificationCode.length == 6
+                        ? !forgotPasswordController.isLoading
+                            ? CustomButtonWidget(
+                                buttonText: 'verify'.tr,
+                                onPressed: () {
+                                  if (widget.fromSignUp) {
+                                    forgotPasswordController
+                                        .verifyFirebaseOtp(
+                                            isLogin: widget.fromSignUp,
+                                            phoneNumber: _number!,
+                                            session: widget.firebaseSession!,
+                                            otp: forgotPasswordController
+                                                .verificationCode)
+                                        .then((value) {
+                                      if (value.statusCode == 200) {
+                                        _handleVerifyResponse(value, _number);
+                                      } else {
+                                        showCustomSnackBar(
+                                            value.body["message"]);
+                                      }
+                                    });
+                                  } else {
+                                    forgotPasswordController
+                                        .verifyToken(_number)
+                                        .then((value) {
+                                      if (value.isSuccess) {
+                                        Get.toNamed(
+                                            RouteHelper.getResetPasswordRoute(
+                                                _number,
+                                                forgotPasswordController
+                                                    .verificationCode,
+                                                'reset-password'));
+                                      } else {
+                                        showCustomSnackBar(value.message);
+                                      }
+                                    });
+                                  }
+                                },
+                              )
+                            : const Center(child: CircularProgressIndicator())
+                        : const SizedBox.shrink(),
+                  ]);
+                }))),
+      ))),
     );
+  }
+
+  void _handleVerifyResponse(Response response, String? number) async {
+    if (response.body['subscribed'] != null) {
+      int? restaurantId = response.body['subscribed']['restaurant_id'];
+      int? packageId = response.body['subscribed']['package_id'];
+
+      if (packageId == null) {
+        authController.saveUserToken(response.body['subscribed']['token'],
+            response.body['subscribed']['zone_wise_topic']);
+        await authController.updateToken();
+        await Get.find<ProfileController>().getProfile();
+
+        Get.toNamed(RouteHelper.getMySubscriptionRoute(fromNotification: true));
+      } else {
+        Get.to(() => SubscriptionPaymentScreen(
+            restaurantId: restaurantId!, packageId: packageId));
+      }
+    } else {
+      authController.saveUserToken(
+          response.body['token'], response.body['zone_wise_topic']);
+      await authController.updateToken();
+      Get.find<ProfileController>().getProfile();
+      Get.offAllNamed(RouteHelper.getInitialRoute());
+    }
   }
 }
