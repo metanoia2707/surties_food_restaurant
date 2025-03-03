@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>217158828499-3o9d414kf9o1dbovb0dn4lhi9av78ds8.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.217158828499-3o9d414kf9o1dbovb0dn4lhi9av78ds8</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>217158828499-0no63dvsq2rsrb2bnmcer8e0on2ro9bb.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAcKz7eobn-smBIklWG71yb4AKbXn4EwvY</string>
 	<key>GCM_SENDER_ID</key>
@@ -9,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.food.surtiesfoodrestaurant.surtiesFoodRestaurant</string>
+	<string>com.food.surtiesFoodRestaurant</string>
 	<key>PROJECT_ID</key>
 	<string>surtiesfood-ae499</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:217158828499:ios:eab88e76a799ead0a06f26</string>
+	<string>1:217158828499:ios:f8032e0a4eae5714a06f26</string>
+	<key>DATABASE_URL</key>
+	<string>https://surtiesfood-ae499-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>

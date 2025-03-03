@@ -8,7 +8,7 @@ import 'package:surties_food_restaurant/util/images.dart';
 
 class AppConstants {
   static const String appName = 'SurtiesFood Restaurant';
-  static const String appVersion = "1.3.1";
+  static const String appVersion = "1.3.2";
 
   ///Flutter SDK 3.24.5
 

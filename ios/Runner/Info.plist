@@ -26,6 +26,17 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+    	<array>
+    		<dict>
+    			<key>CFBundleURLSchemes</key>
+    			<array>
+    				<string>app-1-217158828499-ios-4cb0a4c8a8d74a3ca06f26</string>
+    				<string>app-1-217158828499-ios-f8032e0a4eae5714a06f26</string>
+    				<string>com.googleusercontent.apps.217158828499-2ef38e5tqv8mdth4s0q3ichvufl2mq6e</string>
+    			</array>
+    		</dict>
+    	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
