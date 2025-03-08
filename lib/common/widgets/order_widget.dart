@@ -26,7 +26,8 @@ class OrderWidget extends StatelessWidget {
     double totalAmount = (orderModel.orderAmount! -
         orderModel.totalTaxAmount! -
         orderModel.deliveryCharge!);
-    // totalAmount = totalAmount + (totalAmount * (orderModel.restaurantComission!/100));
+    totalAmount =
+        totalAmount - (totalAmount * (orderModel.restaurantComission! / 100));
     return InkWell(
       onTap: () => Get.toNamed(RouteHelper.getOrderDetailsRoute(orderModel.id),
           arguments: OrderDetailsScreen(

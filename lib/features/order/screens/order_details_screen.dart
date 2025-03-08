@@ -170,7 +170,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
       double? discount = 0;
       double? couponDiscount = 0;
       double? dmTips = 0;
-      double? tax = 0;
+
       bool? taxIncluded = false;
       double addOns = 0;
       double additionalCharge = 0;
@@ -193,7 +193,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           dmTips = order.dmTips;
         }
         discount = order.restaurantDiscountAmount;
-        tax = order.totalTaxAmount;
+
         taxIncluded = order.taxStatus;
         couponDiscount = order.couponDiscountAmount;
         additionalCharge = order.additionalCharge ?? 0;
@@ -204,16 +204,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
           for (AddOn addOn in orderDetails.addOns!) {
             addOns = addOns + (addOn.price! * addOn.quantity!);
           }
-          itemsPrice = itemsPrice +
-              (orderDetails.price! *
-                  orderDetails.quantity!);
+          itemsPrice =
+              itemsPrice + (orderDetails.price! * orderDetails.quantity!);
         }
       }
       double subTotal = itemsPrice + addOns;
       double total = itemsPrice +
           addOns -
           discount! +
-          (taxIncluded! ? 0 : tax!) -
           couponDiscount! +
           additionalCharge +
           extraPackagingAmount -
@@ -1480,8 +1478,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                                '${'subtotal'.tr} ${taxIncluded ? '(${'tax_included'.tr})' : ''}',
+                                            Text('${'subtotal'.tr}',
                                                 style: robotoMedium),
                                             Text(
                                                 PriceConverter.convertPrice(
@@ -1522,22 +1519,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen>
                                           : const SizedBox(),
                                       SizedBox(
                                           height: couponDiscount > 0 ? 10 : 0),
-                                      !taxIncluded
-                                          ? Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                  Text('vat_tax'.tr,
-                                                      style: robotoRegular),
-                                                  Text(
-                                                      '(+) ${PriceConverter.convertPrice(tax)}',
-                                                      style: robotoRegular,
-                                                      textDirection:
-                                                          TextDirection.ltr),
-                                                ])
-                                          : const SizedBox(),
-                                      SizedBox(height: taxIncluded ? 0 : 10),
                                       (extraPackagingAmount > 0)
                                           ? Row(
                                               mainAxisAlignment:
